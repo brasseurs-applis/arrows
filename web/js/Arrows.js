@@ -10,6 +10,10 @@ var Arrows = function(ctx, width, height) {
 	this.imgWidth  = width;
 	this.imgHeight = height;
 
+	this.x = Math.round(width/4);
+	this.yTop = 0;
+	this.yBottom = Math.round(height/2);
+
 	this.results = (localStorage.results) ? JSON.parse(localStorage.results) : [];
 
 	this.getImage = function(src) {
@@ -49,17 +53,13 @@ var Arrows = function(ctx, width, height) {
 	    }
 	};
 
-	this.sequence = function(first, second, t1, t2, t3, t4, x, y, ratio) {
+	this.sequence = function(first, second, t1, t2, t3, t4, position) {
 
-		x     = (x    !==undefined)?x:     0;
-		y     = (y    !==undefined)?y:     0;
-		ratio = 1;
+		var x = this.x;
+		var y = (position === 'top') ? this.yTop : this.yBottom;
 
-		var width  = Math.round(this.imgWidth  * ratio);
-		var height = Math.round(this.imgHeight * ratio);
-
-		if (x > (this.imgWidth  - width))  { x = this.imgWidth  - width;  }
-		if (y > (this.imgHeight - height)) { y = this.imgHeight - height; }
+		var width  = Math.round(this.imgWidth / 2);
+		var height = Math.round(this.imgHeight / 2);
 
 		var imgFirst  = (first  === "left") ? this.smLeft  : this.smRight;
 		var imgSecond = (second === "left") ? this.bigLeft : this.bigRight;
@@ -87,25 +87,16 @@ var Arrows = function(ctx, width, height) {
 		return (Math.round(Math.random()) === 1)?"left":"right";
 	};
 
-	this.getRatio = function() {
-		var ratio = Math.round(Math.random()*10);
-		if (ratio<3) { ratio = 3; }
-		return ratio/10;
-	};
-
-	this.getRandomX = function() {
-		return Math.round((Math.round(Math.random()*10)/10) * this.imgWidth);
-	};
-
-	this.getRandomY = function() {
-		return Math.round((Math.round(Math.random()*10)/10) * this.imgHeight);
-	};
+    this.topOrBottom = function() {
+        return (Math.round(Math.random()) === 1)?"top":"bottom";
+    };
 
 	this.nextSequence = function() {
-		var first  = this.leftOrRight();
-		var second = this.leftOrRight();
+		var first    = this.leftOrRight();
+		var second   = this.leftOrRight();
+		var position = this.topOrBottom();
 
-		this.sequence(first, second, 700, 17, 67, 150, this.getRandomX(), this.getRandomY(), this.getRatio());
+		this.sequence(first, second, 700, 17, 67, 150, position);
 	};
 
 	this.addResult = function(result) {

@@ -1,0 +1,11 @@
+#!/usr/bin/env php
+<?php
+
+use BrasseursDApplis\Arrows\ArrowsMessageComponent;
+use Ratchet\App;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+$app = new App('localhost', 8080);
+$app->route('/arrows/{sessionId}', new ArrowsMessageComponent(), ['*']);
+$app->run();
