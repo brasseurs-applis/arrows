@@ -1,10 +1,10 @@
 <?php
 
-namespace BrasseursDApplis\Arrows;
+namespace BrasseursDApplis\Arrows\App\Message;
 
 use Guzzle\Http\Message\EntityEnclosingRequest;
-use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
+use Ratchet\MessageComponentInterface;
 
 class ArrowsMessageComponent implements MessageComponentInterface
 {
@@ -32,10 +32,7 @@ class ArrowsMessageComponent implements MessageComponentInterface
             , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
 
         foreach ($this->clients as $client) {
-            if ($from !== $client) {
-                // The sender is not the receiver, send to each client connected
-                $client->send($msg);
-            }
+            $client->send($msg);
         }
     }
 

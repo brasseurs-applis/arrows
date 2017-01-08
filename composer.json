@@ -9,7 +9,11 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "cboden/ratchet": "^0.3.6"
+
+        "silex/silex": "^2.0",
+        "cboden/ratchet": "^0.3.6",
+        "twig/twig": "^1.30",
+        "beberlei/assert": "^2.7"
     },
     "require-dev": {
         "behat/behat": "^3.3",
@@ -21,7 +25,8 @@
     },
     "autoload": {
         "psr-4": {
-            "BrasseursDApplis\\Arrows\\": "src"
+            "BrasseursDApplis\\Arrows\\": "src",
+            "BrasseursDApplis\\Arrows\\App\\": "app"
         }
     },
     "autoload-dev": {

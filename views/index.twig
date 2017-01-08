@@ -7,14 +7,28 @@
     <meta name="viewport" content="width=device-width,user-scalable=0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
 </head>
 <body>
+    <h1>Coucou</h1>
+    <div id="chat"></div>
+    <form id="chatbox">
+        <input type="text" name="input" id="input" title="input" />
+        <input type="submit" />
+    </form>
     <script>
         var conn = new WebSocket('ws://localhost:8080/arrows/1234');
         conn.onerror = function(e) { console.log(e); };
         conn.onclose = function(e) { console.log(e); };
-        conn.onmessage = function(e) { console.log(e.data); };
+        conn.onmessage = function(e) {
+            console.log(e.data);
+            document.getElementById('chat').innerHTML += e.data + '<br/>';
+        };
         conn.onopen = function (e) {
             console.log(e);
-            conn.send('Hello Me!');
+        };
+
+        document.getElementById('chatbox').onsubmit = function (e) {
+            conn.send(document.getElementById('input').value);
+            document.getElementById('input').value = '';
+            e.preventDefault();
         };
     </script>
 </body>
