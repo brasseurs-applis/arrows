@@ -2,8 +2,6 @@
 
 namespace BrasseursDApplis\Arrows\VO;
 
-use Assert\Assertion;
-
 class Position
 {
     const TOP = 'top';
@@ -19,8 +17,6 @@ class Position
      */
     private function __construct($position)
     {
-        Assertion::choice($position, [ self::BOTTOM, self::TOP ]);
-
         $this->position = $position;
     }
 

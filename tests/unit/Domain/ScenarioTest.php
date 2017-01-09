@@ -3,6 +3,7 @@
 namespace BrasseursDApplis\Arrows\Test\Unit\Domain;
 
 use BrasseursDApplis\Arrows\Exception\ScenarioException;
+use BrasseursDApplis\Arrows\Id\ScenarioId;
 use BrasseursDApplis\Arrows\Scenario;
 use BrasseursDApplis\Arrows\VO\Orientation as O;
 use BrasseursDApplis\Arrows\VO\Position as P;
@@ -11,6 +12,9 @@ use Faker\Factory;
 
 class ScenarioTest extends \PHPUnit_Framework_TestCase
 {
+    /** @var ScenarioId */
+    private $id;
+
     /** @var string */
     private $name;
 
@@ -39,6 +43,7 @@ class ScenarioTest extends \PHPUnit_Framework_TestCase
     {
         $faker = Factory::create();
 
+        $this->id = new ScenarioId($faker->uuid);
         $this->name = $faker->userName;
         $this->nbSequences = 3;
 
@@ -47,7 +52,7 @@ class ScenarioTest extends \PHPUnit_Framework_TestCase
         $this->thirdSequence = new Sequence(P::top(), O::right(), O::right(), O::left());
         $this->fourthSequence = new Sequence(P::bottom(), O::left(), O::right(), O::right());
 
-        $this->serviceUnderTest = new Scenario($this->name, $this->nbSequences);
+        $this->serviceUnderTest = new Scenario($this->id, $this->name, $this->nbSequences);
     }
 
     /**
@@ -56,6 +61,14 @@ class ScenarioTest extends \PHPUnit_Framework_TestCase
     public function tearDown()
     {
         \Mockery::close();
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldHaveAnId()
+    {
+        $this->assertEquals($this->id, $this->serviceUnderTest->getId());
     }
 
     /**

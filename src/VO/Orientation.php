@@ -2,8 +2,6 @@
 
 namespace BrasseursDApplis\Arrows\VO;
 
-use Assert\Assertion;
-
 class Orientation
 {
     const RIGHT = 'right';
@@ -19,8 +17,6 @@ class Orientation
      */
     private function __construct($orientation)
     {
-        Assertion::choice($orientation, [ self::LEFT, self::RIGHT ]);
-
         $this->orientation = $orientation;
     }
 

@@ -4,10 +4,14 @@ namespace BrasseursDApplis\Arrows;
 
 use BrasseursDApplis\Arrows\Exception\ScenarioAssertion;
 use BrasseursDApplis\Arrows\Exception\ScenarioException;
+use BrasseursDApplis\Arrows\Id\ScenarioId;
 use BrasseursDApplis\Arrows\VO\Sequence;
 
 class Scenario
 {
+    /** @var ScenarioId */
+    private $id;
+
     /** @var string */
     private $name;
 
@@ -23,15 +27,25 @@ class Scenario
     /**
      * Scenario constructor.
      *
-     * @param string $name
-     * @param int    $nbSequences
+     * @param ScenarioId $id
+     * @param string     $name
+     * @param int        $nbSequences
      */
-    public function __construct($name, $nbSequences)
+    public function __construct(ScenarioId $id, $name, $nbSequences)
     {
+        $this->id = $id;
         $this->name = $name;
         $this->nbSequences = $nbSequences;
         $this->sequences = [];
         $this->currentPosition = null;
+    }
+
+    /**
+     * @return ScenarioId
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
