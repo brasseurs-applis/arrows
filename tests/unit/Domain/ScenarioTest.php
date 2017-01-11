@@ -82,6 +82,14 @@ class ScenarioTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function itShouldHaveANumberOfSequences()
+    {
+        $this->assertEquals($this->nbSequences, $this->serviceUnderTest->getNbSequences());
+    }
+
+    /**
+     * @test
+     */
     public function itShouldAllowToAddNoMoreThanTheSpecifiedNumberOfSequences()
     {
         $this->assertFalse($this->serviceUnderTest->isComplete());
@@ -132,14 +140,14 @@ class ScenarioTest extends \PHPUnit_Framework_TestCase
         $this->serviceUnderTest->addSequence($this->thirdSequence);
 
         $this->assertEquals($this->firstSequence, $this->serviceUnderTest->run());
-        $this->assertEquals($this->firstSequence, $this->serviceUnderTest->getCurrent());
-        $this->assertEquals($this->secondSequence, $this->serviceUnderTest->getNext());
-        $this->assertEquals($this->secondSequence, $this->serviceUnderTest->getCurrent());
-        $this->assertEquals($this->thirdSequence, $this->serviceUnderTest->getNext());
-        $this->assertEquals($this->thirdSequence, $this->serviceUnderTest->getCurrent());
+        $this->assertEquals($this->firstSequence, $this->serviceUnderTest->current());
+        $this->assertEquals($this->secondSequence, $this->serviceUnderTest->next());
+        $this->assertEquals($this->secondSequence, $this->serviceUnderTest->current());
+        $this->assertEquals($this->thirdSequence, $this->serviceUnderTest->next());
+        $this->assertEquals($this->thirdSequence, $this->serviceUnderTest->current());
 
         $this->setExpectedException(ScenarioException::class);
-        $this->serviceUnderTest->getNext();
+        $this->serviceUnderTest->next();
     }
 
     /**
@@ -164,7 +172,7 @@ class ScenarioTest extends \PHPUnit_Framework_TestCase
         $this->serviceUnderTest->addSequence($this->thirdSequence);
 
         $this->setExpectedException(ScenarioException::class);
-        $this->serviceUnderTest->getCurrent();
+        $this->serviceUnderTest->current();
     }
 
     /**
@@ -193,6 +201,6 @@ class ScenarioTest extends \PHPUnit_Framework_TestCase
         $this->serviceUnderTest->stop();
 
         $this->setExpectedException(ScenarioException::class);
-        $this->serviceUnderTest->getCurrent();
+        $this->serviceUnderTest->current();
     }
 }

@@ -57,7 +57,7 @@ class Session
      */
     public function start()
     {
-        Assertion::null($this->sequence, 'You cannot start an already started session.');
+        $this->ensureThereIsNoPendingSequence('You cannot start a session already started');
 
         $this->sequence = $this->scenario->run();
         $this->results = [];
@@ -66,21 +66,41 @@ class Session
     }
 
     /**
+     * @return Result[]
+     */
+    public function getResults()
+    {
+        return $this->results;
+    }
+
+    /**
      * @param Orientation $orientation
      * @param Duration    $duration
      *
-     * @return Result
+     * @return Sequence
      */
     public function result(Orientation $orientation, Duration $duration)
     {
-        Assertion::notNull($this->sequence, 'You cannot add a second result for the current sequence.');
+        $this->ensureThereIsACurrentSequence();
 
         $result = new Result($this->sequence, $orientation, $duration);
 
         $this->results[] = $result;
-        $this->sequence = null;
+        $this->sequence = $this->next();
 
-        return $result;
+        return $this->sequence;
+    }
+
+    /**
+     * @return Sequence
+     */
+    private function next()
+    {
+        if (!$this->scenario->hasNext()) {
+            return null;
+        }
+
+        return $this->scenario->next();
     }
 
     /**
@@ -91,5 +111,15 @@ class Session
         Assertion::true($scenario->isComplete(), 'You can only add a complete scenario.');
 
         $this->scenario = $scenario;
+    }
+
+    protected function ensureThereIsNoPendingSequence($message)
+    {
+        Assertion::null($this->sequence, $message);
+    }
+
+    protected function ensureThereIsACurrentSequence()
+    {
+        Assertion::notNull($this->sequence, 'You cannot add a second result for the current sequence.');
     }
 }

@@ -57,6 +57,14 @@ class Scenario
     }
 
     /**
+     * @return int
+     */
+    public function getNbSequences()
+    {
+        return $this->nbSequences;
+    }
+
+    /**
      * @param Sequence $sequence
      */
     public function addSequence(Sequence $sequence)
@@ -87,7 +95,7 @@ class Scenario
 
         $this->currentPosition = 0;
 
-        return $this->getCurrent();
+        return $this->current();
     }
 
     /**
@@ -101,7 +109,7 @@ class Scenario
     /**
      * @return Sequence
      */
-    public function getCurrent()
+    public function current()
     {
         $this->ensureScenarioIsRunning();
 
@@ -111,14 +119,22 @@ class Scenario
     /**
      * @return Sequence
      */
-    public function getNext()
+    public function next()
     {
         $this->ensureScenarioIsRunning();
         $this->ensureNextPositionIsInBounds();
 
         $this->currentPosition++;
 
-        return $this->getCurrent();
+        return $this->current();
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasNext()
+    {
+        return $this->currentPosition < $this->nbSequences - 1;
     }
 
     /**
@@ -160,7 +176,7 @@ class Scenario
      */
     private function ensureNextPositionIsInBounds()
     {
-        ScenarioAssertion::lessThan($this->currentPosition+1, $this->nbSequences, 'There is no next position.');
+        ScenarioAssertion::true($this->hasNext(), 'There is no next position.');
     }
 
     /**
