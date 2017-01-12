@@ -170,6 +170,7 @@ class ScenarioTest extends \PHPUnit_Framework_TestCase
         $this->serviceUnderTest->addSequence($this->firstSequence);
         $this->serviceUnderTest->addSequence($this->secondSequence);
         $this->serviceUnderTest->addSequence($this->thirdSequence);
+        $this->assertFalse($this->serviceUnderTest->isRunning());
 
         $this->setExpectedException(ScenarioException::class);
         $this->serviceUnderTest->current();
@@ -184,6 +185,7 @@ class ScenarioTest extends \PHPUnit_Framework_TestCase
         $this->serviceUnderTest->addSequence($this->secondSequence);
         $this->serviceUnderTest->addSequence($this->thirdSequence);
         $this->serviceUnderTest->run();
+        $this->assertTrue($this->serviceUnderTest->isRunning());
 
         $this->setExpectedException(ScenarioException::class);
         $this->serviceUnderTest->run();
@@ -198,7 +200,9 @@ class ScenarioTest extends \PHPUnit_Framework_TestCase
         $this->serviceUnderTest->addSequence($this->secondSequence);
         $this->serviceUnderTest->addSequence($this->thirdSequence);
         $this->serviceUnderTest->run();
+        $this->assertTrue($this->serviceUnderTest->isRunning());
         $this->serviceUnderTest->stop();
+        $this->assertFalse($this->serviceUnderTest->isRunning());
 
         $this->setExpectedException(ScenarioException::class);
         $this->serviceUnderTest->current();

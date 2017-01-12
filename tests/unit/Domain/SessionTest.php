@@ -127,7 +127,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     public function itShouldNotBePossibleToAddAResultIfThereIsNoCurrentSequence()
     {
         $this->givenScenarioIsComplete();
-        $this->givenScenarioCanRun();
+        $this->givenThereIsNoCurrentSequence();
         $this->givenASession();
 
         $this->setExpectedException(\InvalidArgumentException::class);
@@ -169,6 +169,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->givenScenarioCanRun();
         $this->givenScenarioHasNotANextSequence();
         $this->givenASession();
+        $this->assertScenarioWillBeStoped();
 
         $sequence = $this->serviceUnderTest->start();
         $nextSequence = $this->serviceUnderTest->result($this->orientation, $this->duration);
@@ -203,6 +204,13 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     private function givenScenarioCanRun()
     {
         $this->scenario->shouldReceive('run')->andReturn($this->sequence);
+        $this->scenario->shouldReceive('current')->andReturn($this->sequence);
+        $this->scenario->shouldReceive('isRunning')->andReturn(false, true);
+    }
+
+    private function givenThereIsNoCurrentSequence()
+    {
+        $this->scenario->shouldReceive('isRunning')->andReturn(false);
     }
 
     private function givenScenarioHasANextSequence()
@@ -214,5 +222,10 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     private function givenScenarioHasNotANextSequence()
     {
         $this->scenario->shouldReceive('hasNext')->andReturn(false);
+    }
+
+    private function assertScenarioWillBeStoped()
+    {
+        $this->scenario->shouldReceive('stop')->once();
     }
 }

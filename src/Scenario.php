@@ -132,6 +132,14 @@ class Scenario
     /**
      * @return bool
      */
+    public function isRunning()
+    {
+        return $this->currentPosition !== null;
+    }
+
+    /**
+     * @return bool
+     */
     public function hasNext()
     {
         return $this->currentPosition < $this->nbSequences - 1;
