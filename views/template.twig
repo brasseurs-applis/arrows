@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% block head %}
+    <meta charset="utf-8">
+    <title>{% block title %}Default title{% endblock %}</title>
+    <meta http-equiv="content-type" content="text/html">
+    <meta name="viewport" content="width=device-width,user-scalable=0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+    <style>
+    {% block style %}
+        * { -webkit-user-select:none; -webkit-tap-highlight-color:rgba(255, 255, 255, 0); -ms-touch-action:none;}
+    {% endblock %}
+    </style>
+{% endblock %}
+</head>
+<body>
+    <section>
+        {% block content %}
+        {% endblock %}
+    </section>
+</body>
+</html>

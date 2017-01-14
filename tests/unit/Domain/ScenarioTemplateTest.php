@@ -4,7 +4,7 @@ namespace BrasseursDApplis\Arrows\Test\Unit\Domain;
 
 use BrasseursDApplis\Arrows\Exception\ScenarioException;
 use BrasseursDApplis\Arrows\Id\ResearcherId;
-use BrasseursDApplis\Arrows\Id\ScenarioId;
+use BrasseursDApplis\Arrows\Id\ScenarioTemplateId;
 use BrasseursDApplis\Arrows\ScenarioTemplate;
 use BrasseursDApplis\Arrows\VO\Orientation as O;
 use BrasseursDApplis\Arrows\VO\Position as P;
@@ -13,7 +13,7 @@ use Faker\Factory;
 
 class ScenarioTemplateTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var ScenarioId */
+    /** @var ScenarioTemplateId */
     private $id;
 
     /** @var ResearcherId */
@@ -47,7 +47,7 @@ class ScenarioTemplateTest extends \PHPUnit_Framework_TestCase
     {
         $faker = Factory::create();
 
-        $this->id = new ScenarioId($faker->uuid);
+        $this->id = new ScenarioTemplateId($faker->uuid);
         $this->author = new ResearcherId($faker->uuid);
         $this->name = $faker->userName;
         $this->nbSequences = 3;

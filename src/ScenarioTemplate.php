@@ -5,14 +5,14 @@ namespace BrasseursDApplis\Arrows;
 use BrasseursDApplis\Arrows\Exception\ScenarioAssertion;
 use BrasseursDApplis\Arrows\Exception\ScenarioException;
 use BrasseursDApplis\Arrows\Id\ResearcherId;
-use BrasseursDApplis\Arrows\Id\ScenarioId;
+use BrasseursDApplis\Arrows\Id\ScenarioTemplateId;
 use BrasseursDApplis\Arrows\VO\Scenario;
 use BrasseursDApplis\Arrows\VO\Sequence;
 use BrasseursDApplis\Arrows\VO\SequenceCollection;
 
 class ScenarioTemplate
 {
-    /** @var ScenarioId */
+    /** @var ScenarioTemplateId */
     private $id;
 
     /** @var ResearcherId */
@@ -30,12 +30,12 @@ class ScenarioTemplate
     /**
      * ScenarioTemplate constructor.
      *
-     * @param ScenarioId   $id
-     * @param ResearcherId $author
-     * @param string       $name
-     * @param int          $nbSequences
+     * @param ScenarioTemplateId $id
+     * @param ResearcherId       $author
+     * @param string             $name
+     * @param int                $nbSequences
      */
-    public function __construct(ScenarioId $id, ResearcherId $author, $name, $nbSequences)
+    public function __construct(ScenarioTemplateId $id, ResearcherId $author, $name, $nbSequences)
     {
         $this->id = $id;
         $this->author = $author;
@@ -45,7 +45,7 @@ class ScenarioTemplate
     }
 
     /**
-     * @return ScenarioId
+     * @return ScenarioTemplateId
      */
     public function getId()
     {

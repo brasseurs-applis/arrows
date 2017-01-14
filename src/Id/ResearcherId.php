@@ -10,7 +10,7 @@ class ResearcherId
     private $id;
 
     /**
-     * ScenarioId constructor.
+     * ScenarioTemplateId constructor.
      *
      * @param string $id
      */

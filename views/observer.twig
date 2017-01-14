@@ -1,0 +1,45 @@
+{% extends "template.twig" %}
+
+{% block title %}Observer{% endblock %}
+
+{% block style %}
+    {{ parent() }}
+{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <form>
+        <input type="button" id="start" value="start" style="display:none" />
+    </form>
+    <script>
+        var conn = new WebSocket('ws://localhost:8080/arrows/{{ sessionId }}/observer');
+        conn.onopen = function (e) { console.log('open'); console.log(e); };
+        conn.onclose = function(e) { console.log('close'); console.log(e); };
+        conn.onerror = function(e) { console.log('error'); console.log(e); };
+
+        conn.onmessage = function(e) {
+            console.log('message');
+            console.log(e.data);
+
+            var message = JSON.parse(e.data);
+            var startButton = document.getElementById('start');
+
+            switch (message.type) {
+                case 'session.ready':
+                    startButton.style.display = 'inline';
+                    startButton.onclick = function () {
+                        conn.send(JSON.stringify({
+                            type: 'session.start'
+                        }));
+                    };
+                    break;
+                case 'session.sequence':
+                    startButton.style.display = 'none';
+                    break;
+            }
+        };
+    </script>
+{% endblock %}

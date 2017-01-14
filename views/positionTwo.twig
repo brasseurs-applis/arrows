@@ -1,0 +1,39 @@
+{% extends "template.twig" %}
+
+{% block title %}Position Two{% endblock %}
+
+{% block style %}
+    {{ parent() }}
+    #preview { display: block; width: 773px; height: 580px; margin:auto; }
+{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div id="preview">
+        <img src="/img/sm-left.png" id="preview-left" style="display:none" />
+        <img src="/img/sm-right.png" id="preview-right" style="display:none" />
+    </div>
+    <script>
+        var conn = new WebSocket('ws://localhost:8080/arrows/{{ sessionId }}/position2');
+        conn.onopen = function (e) { console.log('open'); console.log(e); };
+        conn.onclose = function(e) { console.log('close'); console.log(e); };
+        conn.onerror = function(e) { console.log('error'); console.log(e); };
+
+        conn.onmessage = function(e) {
+            console.log('message');
+            console.log(e.data);
+
+            var message = JSON.parse(e.data);
+
+            if (message.type == 'session.sequence') {
+                var arrow = document.getElementById('preview-' + message.previewOrientation);
+                arrow.style.display = 'block';
+
+                setTimeout(function(){ arrow.style.display = 'none'; }, 5000);
+            }
+        };
+    </script>
+{% endblock %}

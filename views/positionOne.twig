@@ -1,0 +1,73 @@
+{% extends "template.twig" %}
+
+{% block title %}Position One{% endblock %}
+
+{% block style %}
+    {{ parent() }}
+    body  { margin:0; padding:0; overflow:hidden; background-color:black; font-family:arial; }
+    #arrows { display:block; margin:auto; margin-top:50px; background-image:url("/img/background.png"); }
+{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    <script src="/js/Arrows.js" type="text/javascript" language="javascript"></script>
+    <script type="text/javascript" language="javascript">
+        //This code prevents users from dragging the page
+        document.addEventListener(
+            'touchmove',
+            function(event) {
+                event.preventDefault();
+                window.scroll(0,1);
+                return false;
+            },
+            false
+        );
+    </script>
+{% endblock %}
+
+{% block content %}
+    <canvas id="arrows" width="773" height="580" style></canvas>
+    <script>
+        var conn = new WebSocket('ws://localhost:8080/arrows/{{ sessionId }}/position1');
+        var canvas = document.getElementById("arrows");
+        var arrows = new Arrows(
+            canvas.getContext("2d"),
+            canvas.width,
+            canvas.height,
+            function (orientation, startingTime, endingTime) {
+                var response = {
+                    "type"         : 'session.result',
+                    "orientation"  : orientation,
+                    "startingTime" : startingTime,
+                    "endingTime"   : endingTime
+                };
+                conn.send(JSON.stringify(response));
+            }
+        );
+
+        conn.onopen = function (e) { console.log('open'); console.log(e); };
+        conn.onclose = function(e) { console.log('close'); console.log(e); };
+        conn.onerror = function(e) { console.log('error'); console.log(e); };
+
+        conn.onmessage = function(e) {
+            console.log('message');
+            console.log(e.data);
+
+            var message = JSON.parse(e.data);
+
+            if (message.type == 'session.sequence') {
+                setTimeout(function(){
+                    arrows.sequence(
+                        message.initiationOrientation,
+                        message.mainOrientation,
+                        700,
+                        17,
+                        67,
+                        150,
+                        message.position
+                    );
+                }, 5000);
+            }
+        };
+    </script>
+{% endblock %}

@@ -4,13 +4,13 @@ namespace BrasseursDApplis\Arrows\Id;
 
 use Assert\Assertion;
 
-class ScenarioId
+class ScenarioTemplateId
 {
     /** @var string */
     private $id;
 
     /**
-     * ScenarioId constructor.
+     * ScenarioTemplateId constructor.
      *
      * @param string $id
      */

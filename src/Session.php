@@ -113,6 +113,15 @@ class Session
     }
 
     /**
+     * @return void
+     */
+    public function cancel()
+    {
+        $this->scenario->stop();
+        $this->results = new ResultCollection();
+    }
+
+    /**
      * @return Result[] | Collection
      */
     public function getResults()

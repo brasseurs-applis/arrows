@@ -5,7 +5,7 @@ namespace BrasseursDApplis\Arrows\App\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class IndexController
+class PositionOneController
 {
     /** @var \Twig_Environment */
     private $twig;
@@ -21,16 +21,19 @@ class IndexController
     }
 
     /**
-     * @param Request $request
+     * @param string $sessionId
      *
      * @return Response
      */
-    public function indexAction(Request $request)
+    public function showAction($sessionId)
     {
         $response = new Response();
         $response->setContent(
             $this->twig->render(
-                'index.twig'
+                'positionOne.twig',
+                [
+                    'sessionId' => $sessionId
+                ]
             )
         );
 

@@ -2,10 +2,10 @@
 
 namespace BrasseursDApplis\Arrows\Test\Unit\Domain\Id;
 
-use BrasseursDApplis\Arrows\Id\ScenarioId;
+use BrasseursDApplis\Arrows\Id\ScenarioTemplateId;
 use Faker\Factory;
 
-class ScenarioIdTest extends \PHPUnit_Framework_TestCase
+class ScenarioTemplateIdTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
@@ -15,7 +15,7 @@ class ScenarioIdTest extends \PHPUnit_Framework_TestCase
         $faker = Factory::create();
 
         $uuid = $faker->uuid;
-        $id = new ScenarioId($uuid);
+        $id = new ScenarioTemplateId($uuid);
 
         $this->assertEquals($uuid, (string) $id);
     }
@@ -28,6 +28,6 @@ class ScenarioIdTest extends \PHPUnit_Framework_TestCase
         $faker = Factory::create();
 
         $this->setExpectedException(\InvalidArgumentException::class);
-        new ScenarioId($faker->randomNumber());
+        new ScenarioTemplateId($faker->randomNumber());
     }
 }
