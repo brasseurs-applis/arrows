@@ -2,13 +2,16 @@
 
 namespace BrasseursDApplis\Arrows\Test\Unit\Domain;
 
+use BrasseursDApplis\Arrows\Id\ResearcherId;
 use BrasseursDApplis\Arrows\Id\SessionId;
-use BrasseursDApplis\Arrows\Scenario;
+use BrasseursDApplis\Arrows\Id\SubjectId;
 use BrasseursDApplis\Arrows\Session;
 use BrasseursDApplis\Arrows\VO\Duration;
 use BrasseursDApplis\Arrows\VO\Orientation;
 use BrasseursDApplis\Arrows\VO\Result;
+use BrasseursDApplis\Arrows\VO\Scenario;
 use BrasseursDApplis\Arrows\VO\Sequence;
+use BrasseursDApplis\Arrows\VO\SubjectsCouple;
 use Faker\Factory;
 use Mockery\Mock;
 
@@ -17,8 +20,14 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     /** @var SessionId */
     private $sessionId;
 
-    /** @var Scenario | Mock */
+    /** @var \BrasseursDApplis\Arrows\VO\Scenario | Mock */
     private $scenario;
+
+    /** @var SubjectsCouple */
+    private $subjects;
+
+    /** @var ResearcherId */
+    private $observer;
 
     /** @var Sequence */
     private $sequence;
@@ -44,6 +53,9 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 
         $this->sessionId = new SessionId($faker->uuid);
         $this->scenario = \Mockery::mock(Scenario::class);
+        $this->subjects = new SubjectsCouple(new SubjectId($faker->uuid), new SubjectId($faker->uuid));
+        $this->observer = new ResearcherId($faker->uuid);
+
         $this->sequence = \Mockery::mock(Sequence::class);
         $this->nextSequence = \Mockery::mock(Sequence::class);
         $this->orientation = Orientation::left();
@@ -61,21 +73,8 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function itShouldFailBuildingWithAnIncompleteScenario()
-    {
-        $this->givenScenarioIsNotComplete();
-
-        $this->setExpectedException(\InvalidArgumentException::class);
-
-        $this->givenASession();
-    }
-
-    /**
-     * @test
-     */
     public function itShouldHaveAnId()
     {
-        $this->givenScenarioIsComplete();
         $this->givenASession();
 
         $this->assertEquals($this->sessionId, $this->serviceUnderTest->getId());
@@ -86,7 +85,6 @@ class SessionTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldFollowAScenario()
     {
-        $this->givenScenarioIsComplete();
         $this->givenASession();
 
         $this->assertEquals($this->scenario, $this->serviceUnderTest->getScenario());
@@ -95,9 +93,28 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function itShouldHaveTestSubjects()
+    {
+        $this->givenASession();
+
+        $this->assertEquals($this->subjects, $this->serviceUnderTest->getSubjects());
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldHaveAnObserver()
+    {
+        $this->givenASession();
+
+        $this->assertEquals($this->observer, $this->serviceUnderTest->getObserver());
+    }
+
+    /**
+     * @test
+     */
     public function itShouldRunTheFirstSequenceOfTheScenario()
     {
-        $this->givenScenarioIsComplete();
         $this->givenScenarioCanRun();
         $this->givenASession();
 
@@ -110,7 +127,6 @@ class SessionTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldNotBeAbleToStartTheSessionMoreThanOnce()
     {
-        $this->givenScenarioIsComplete();
         $this->givenScenarioCanRun();
         $this->givenASession();
 
@@ -126,7 +142,6 @@ class SessionTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldNotBePossibleToAddAResultIfThereIsNoCurrentSequence()
     {
-        $this->givenScenarioIsComplete();
         $this->givenThereIsNoCurrentSequence();
         $this->givenASession();
 
@@ -140,7 +155,6 @@ class SessionTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldAcceptAResult()
     {
-        $this->givenScenarioIsComplete();
         $this->givenScenarioCanRun();
         $this->givenScenarioHasANextSequence();
         $this->givenASession();
@@ -165,7 +179,6 @@ class SessionTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldAcceptALastResult()
     {
-        $this->givenScenarioIsComplete();
         $this->givenScenarioCanRun();
         $this->givenScenarioHasNotANextSequence();
         $this->givenASession();
@@ -177,9 +190,8 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->sequence, $sequence);
         $this->assertNull($nextSequence);
 
-        $results = $this->serviceUnderTest->getResults();
         /** @var Result $result */
-        $result = $results[0];
+        $result = $this->serviceUnderTest->getResults()->get(0);
 
         $this->assertEquals($sequence, $result->getSequence());
         $this->assertEquals($this->orientation, $result->getOrientation());
@@ -188,17 +200,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 
     private function givenASession()
     {
-        $this->serviceUnderTest = new Session($this->sessionId, $this->scenario);
-    }
-
-    private function givenScenarioIsNotComplete()
-    {
-        $this->scenario->shouldReceive('isComplete')->andReturn(false);
-    }
-
-    private function givenScenarioIsComplete()
-    {
-        $this->scenario->shouldReceive('isComplete')->andReturn(true);
+        $this->serviceUnderTest = new Session($this->sessionId, $this->scenario, $this->subjects, $this->observer);
     }
 
     private function givenScenarioCanRun()

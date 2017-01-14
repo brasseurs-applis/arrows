@@ -3,11 +3,16 @@
 namespace BrasseursDApplis\Arrows;
 
 use Assert\Assertion;
-use BrasseursDApplis\Arrows\VO\Duration;
+use BrasseursDApplis\Arrows\Id\ResearcherId;
 use BrasseursDApplis\Arrows\Id\SessionId;
+use BrasseursDApplis\Arrows\VO\Duration;
 use BrasseursDApplis\Arrows\VO\Orientation;
 use BrasseursDApplis\Arrows\VO\Result;
+use BrasseursDApplis\Arrows\VO\ResultCollection;
+use BrasseursDApplis\Arrows\VO\Scenario;
 use BrasseursDApplis\Arrows\VO\Sequence;
+use BrasseursDApplis\Arrows\VO\SubjectsCouple;
+use Doctrine\Common\Collections\Collection;
 
 class Session
 {
@@ -17,20 +22,33 @@ class Session
     /** @var Scenario */
     private $scenario;
 
-    /** @var Result[] */
+    /** @var SubjectsCouple */
+    private $subjects;
+
+    /** @var ResearcherId */
+    private $observer;
+
+    /** @var Result[] | Collection */
     private $results;
 
     /**
      * Session constructor.
      *
-     * @param SessionId $id
-     * @param Scenario  $scenario
+     * @param SessionId      $id
+     * @param Scenario       $scenario
+     * @param SubjectsCouple $subjects
+     * @param ResearcherId   $observer
      */
-    public function __construct(SessionId $id, Scenario $scenario)
-    {
+    public function __construct(
+        SessionId $id,
+        Scenario $scenario,
+        SubjectsCouple $subjects,
+        ResearcherId $observer
+    ) {
         $this->id = $id;
-        $this->setScenario($scenario);
-        $this->results = [];
+        $this->scenario = $scenario;
+        $this->subjects = $subjects;
+        $this->observer = $observer;
     }
 
     /**
@@ -50,13 +68,30 @@ class Session
     }
 
     /**
+     * @return SubjectsCouple
+     */
+    public function getSubjects()
+    {
+        return $this->subjects;
+    }
+
+    /**
+     * @return ResearcherId
+     */
+    public function getObserver()
+    {
+        return $this->observer;
+    }
+
+    /**
      * @return Sequence
      */
     public function start()
     {
         $this->ensureThereIsNoPendingSequence('You cannot start a session already started');
 
-        $this->results = [];
+        $this->results = new ResultCollection();
+
         return $this->scenario->run();
     }
 
@@ -72,13 +107,13 @@ class Session
 
         $result = new Result($this->scenario->current(), $orientation, $duration);
 
-        $this->results[] = $result;
+        $this->results->add($result);
 
         return $this->next();
     }
 
     /**
-     * @return Result[]
+     * @return Result[] | Collection
      */
     public function getResults()
     {
@@ -96,16 +131,6 @@ class Session
         }
 
         return $this->scenario->next();
-    }
-
-    /**
-     * @param $scenario
-     */
-    private function setScenario(Scenario $scenario)
-    {
-        Assertion::true($scenario->isComplete(), 'You can only add a complete scenario.');
-
-        $this->scenario = $scenario;
     }
 
     protected function ensureThereIsNoPendingSequence($message)

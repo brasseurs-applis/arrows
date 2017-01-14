@@ -3,17 +3,21 @@
 namespace BrasseursDApplis\Arrows\Test\Unit\Domain;
 
 use BrasseursDApplis\Arrows\Exception\ScenarioException;
+use BrasseursDApplis\Arrows\Id\ResearcherId;
 use BrasseursDApplis\Arrows\Id\ScenarioId;
-use BrasseursDApplis\Arrows\Scenario;
+use BrasseursDApplis\Arrows\ScenarioTemplate;
 use BrasseursDApplis\Arrows\VO\Orientation as O;
 use BrasseursDApplis\Arrows\VO\Position as P;
 use BrasseursDApplis\Arrows\VO\Sequence;
 use Faker\Factory;
 
-class ScenarioTest extends \PHPUnit_Framework_TestCase
+class ScenarioTemplateTest extends \PHPUnit_Framework_TestCase
 {
     /** @var ScenarioId */
     private $id;
+
+    /** @var ResearcherId */
+    private $author;
 
     /** @var string */
     private $name;
@@ -33,7 +37,7 @@ class ScenarioTest extends \PHPUnit_Framework_TestCase
     /** @var Sequence */
     private $fourthSequence;
 
-    /** @var Scenario */
+    /** @var ScenarioTemplate */
     private $serviceUnderTest;
 
     /**
@@ -44,6 +48,7 @@ class ScenarioTest extends \PHPUnit_Framework_TestCase
         $faker = Factory::create();
 
         $this->id = new ScenarioId($faker->uuid);
+        $this->author = new ResearcherId($faker->uuid);
         $this->name = $faker->userName;
         $this->nbSequences = 3;
 
@@ -52,7 +57,7 @@ class ScenarioTest extends \PHPUnit_Framework_TestCase
         $this->thirdSequence = new Sequence(P::top(), O::right(), O::right(), O::left());
         $this->fourthSequence = new Sequence(P::bottom(), O::left(), O::right(), O::right());
 
-        $this->serviceUnderTest = new Scenario($this->id, $this->name, $this->nbSequences);
+        $this->serviceUnderTest = new ScenarioTemplate($this->id, $this->author, $this->name, $this->nbSequences);
     }
 
     /**
@@ -69,6 +74,14 @@ class ScenarioTest extends \PHPUnit_Framework_TestCase
     public function itShouldHaveAnId()
     {
         $this->assertEquals($this->id, $this->serviceUnderTest->getId());
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldHaveAnAuthor()
+    {
+        $this->assertEquals($this->author, $this->serviceUnderTest->getAuthor());
     }
 
     /**
@@ -112,12 +125,10 @@ class ScenarioTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldAllowToReplaceASequence()
     {
-        $this->serviceUnderTest->addSequence($this->firstSequence);
-        $this->serviceUnderTest->addSequence($this->secondSequence);
-        $this->serviceUnderTest->addSequence($this->thirdSequence);
+        $this->givenACompleteScenarioTemplate();
 
         $this->serviceUnderTest->replaceSequence(0, $this->fourthSequence);
-        $this->assertEquals($this->fourthSequence, $this->serviceUnderTest->run());
+        $this->assertEquals($this->fourthSequence, $this->serviceUnderTest->getSequence(0));
     }
 
     /**
@@ -133,78 +144,30 @@ class ScenarioTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function itShouldAllowToRunScenarioIfComplete()
+    public function itShouldBePossibleToGetACompleteScenarioFromTheTemplate()
     {
-        $this->serviceUnderTest->addSequence($this->firstSequence);
-        $this->serviceUnderTest->addSequence($this->secondSequence);
-        $this->serviceUnderTest->addSequence($this->thirdSequence);
+        $this->givenACompleteScenarioTemplate();
 
-        $this->assertEquals($this->firstSequence, $this->serviceUnderTest->run());
-        $this->assertEquals($this->firstSequence, $this->serviceUnderTest->current());
-        $this->assertEquals($this->secondSequence, $this->serviceUnderTest->next());
-        $this->assertEquals($this->secondSequence, $this->serviceUnderTest->current());
-        $this->assertEquals($this->thirdSequence, $this->serviceUnderTest->next());
-        $this->assertEquals($this->thirdSequence, $this->serviceUnderTest->current());
-
-        $this->setExpectedException(ScenarioException::class);
-        $this->serviceUnderTest->next();
+        $scenario = $this->serviceUnderTest->getScenario();
+        $this->assertEquals($this->firstSequence, $scenario->run());
+        $this->assertEquals($this->secondSequence, $scenario->next());
+        $this->assertEquals($this->thirdSequence, $scenario->next());
     }
 
     /**
      * @test
      */
-    public function itShouldNotAllowToRunScenarioIfIncomplete()
+    public function itShouldNotBePossibleToGetAnIncompleteScenarioFromTheTemplate()
     {
-        $this->serviceUnderTest->addSequence($this->firstSequence);
-        $this->serviceUnderTest->addSequence($this->secondSequence);
-
         $this->setExpectedException(ScenarioException::class);
-        $this->serviceUnderTest->run();
+
+        $this->serviceUnderTest->getScenario();
     }
 
-    /**
-     * @test
-     */
-    public function itShouldNotBePossibleToGetTheCurrentSequenceOfANonRunningScenario()
+    protected function givenACompleteScenarioTemplate()
     {
         $this->serviceUnderTest->addSequence($this->firstSequence);
         $this->serviceUnderTest->addSequence($this->secondSequence);
         $this->serviceUnderTest->addSequence($this->thirdSequence);
-        $this->assertFalse($this->serviceUnderTest->isRunning());
-
-        $this->setExpectedException(ScenarioException::class);
-        $this->serviceUnderTest->current();
-    }
-
-    /**
-     * @test
-     */
-    public function itShouldNotAllowToRunScenarioMoreThanOnce()
-    {
-        $this->serviceUnderTest->addSequence($this->firstSequence);
-        $this->serviceUnderTest->addSequence($this->secondSequence);
-        $this->serviceUnderTest->addSequence($this->thirdSequence);
-        $this->serviceUnderTest->run();
-        $this->assertTrue($this->serviceUnderTest->isRunning());
-
-        $this->setExpectedException(ScenarioException::class);
-        $this->serviceUnderTest->run();
-    }
-
-    /**
-     * @test
-     */
-    public function itShouldBeAbleToStopTheScenario()
-    {
-        $this->serviceUnderTest->addSequence($this->firstSequence);
-        $this->serviceUnderTest->addSequence($this->secondSequence);
-        $this->serviceUnderTest->addSequence($this->thirdSequence);
-        $this->serviceUnderTest->run();
-        $this->assertTrue($this->serviceUnderTest->isRunning());
-        $this->serviceUnderTest->stop();
-        $this->assertFalse($this->serviceUnderTest->isRunning());
-
-        $this->setExpectedException(ScenarioException::class);
-        $this->serviceUnderTest->current();
     }
 }
