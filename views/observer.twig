@@ -14,18 +14,39 @@
     <form>
         <input type="button" id="start" value="start" style="display:none" />
     </form>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Preview</th>
+                <th>Init</th>
+                <th>Main</th>
+                <th>Result</th>
+                <th>Time (ms)</th>
+            </tr>
+        </thead>
+        <tbody id="sequences">
+        </tbody>
+    </table>
     <script>
+        var sequenceNumber;
+        var sequenceLine;
+        var sequenceTable = document.getElementById('sequences');
+
         var conn = new WebSocket('ws://localhost:8080/arrows/{{ sessionId }}/observer');
-        conn.onopen = function (e) { console.log('open'); console.log(e); };
-        conn.onclose = function(e) { console.log('close'); console.log(e); };
-        conn.onerror = function(e) { console.log('error'); console.log(e); };
+        conn.onclose = function() { console.log('close'); };
+        conn.onerror = function() { console.log('error'); };
+
+        conn.onopen = function (e) {
+            console.log('open');
+            sequenceNumber = 0;
+        };
 
         conn.onmessage = function(e) {
-            console.log('message');
-            console.log(e.data);
-
             var message = JSON.parse(e.data);
             var startButton = document.getElementById('start');
+
+            console.log(message);
 
             switch (message.type) {
                 case 'session.ready':
@@ -38,6 +59,21 @@
                     break;
                 case 'session.sequence':
                     startButton.style.display = 'none';
+                    sequenceNumber++;
+
+                    sequenceLine = document.createElement('tr');
+                    sequenceLine.id = 'session_'+sequenceNumber;
+                    sequenceLine.innerHTML  = '<td>'+sequenceNumber+'</td>';
+                    sequenceLine.innerHTML += '<td>'+message.previewOrientation+'</td>';
+                    sequenceLine.innerHTML += '<td>'+message.initiationOrientation+'</td>';
+                    sequenceLine.innerHTML += '<td>'+message.mainOrientation+'</td>';
+                    sequenceLine.innerHTML += '<td class="result"></td>';
+                    sequenceLine.innerHTML += '<td class="time"></td>';
+                    sequenceTable.appendChild(sequenceLine);
+                    break;
+                case 'session.result':
+                    sequenceLine.getElementsByClassName('result')[0].innerHTML = message.orientation;
+                    sequenceLine.getElementsByClassName('time')[0].innerHTML = message.endingTime-message.startingTime;
                     break;
             }
         };

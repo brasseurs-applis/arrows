@@ -45,15 +45,13 @@
             }
         );
 
-        conn.onopen = function (e) { console.log('open'); console.log(e); };
-        conn.onclose = function(e) { console.log('close'); console.log(e); };
-        conn.onerror = function(e) { console.log('error'); console.log(e); };
+        conn.onopen = function (e) { console.log('open'); };
+        conn.onclose = function(e) { console.log('close'); };
+        conn.onerror = function(e) { console.log('error'); };
 
         conn.onmessage = function(e) {
-            console.log('message');
-            console.log(e.data);
-
             var message = JSON.parse(e.data);
+            console.log(message);
 
             if (message.type == 'session.sequence') {
                 setTimeout(function(){

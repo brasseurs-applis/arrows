@@ -157,6 +157,7 @@ class ArrowsMessageComponent implements MessageComponentInterface
             if ($connectionInformation->getRole() !== SessionConnections::ROLE_POSITION_ONE) {
                 throw new \InvalidArgumentException('You must be in position 1 to send a result');
             }
+
             $sequence = $session->result($message->getOrientation(), $message->getDuration());
 
             $sessionConnections = $this->getSessionConnections($connectionInformation->getSessionId());
@@ -164,6 +165,7 @@ class ArrowsMessageComponent implements MessageComponentInterface
 
             // if last response : return end message
             if ($sequence === null) {
+                print_r($session->getResults()->getValues());
                 return new SessionEnded();
             }
 

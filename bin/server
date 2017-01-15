@@ -26,8 +26,26 @@ $session = new Session(
                 new Sequence(
                     Position::top(),
                     Orientation::left(),
-                    Orientation::left(),
+                    Orientation::right(),
                     Orientation::left()
+                ),
+                new Sequence(
+                    Position::top(),
+                    Orientation::right(),
+                    Orientation::right(),
+                    Orientation::left()
+                ),
+                new Sequence(
+                    Position::top(),
+                    Orientation::left(),
+                    Orientation::right(),
+                    Orientation::right()
+                ),
+                new Sequence(
+                    Position::top(),
+                    Orientation::left(),
+                    Orientation::left(),
+                    Orientation::right()
                 )
             ]
         )
