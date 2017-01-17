@@ -1,9 +1,9 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\Test\Unit\Domain;
+namespace BrasseursApplis\Arrows\Test\Unit\Domain;
 
-use BrasseursDApplis\Arrows\Id\ResearcherId;
-use BrasseursDApplis\Arrows\Researcher;
+use BrasseursApplis\Arrows\Id\ResearcherId;
+use BrasseursApplis\Arrows\Researcher;
 use Faker\Factory;
 
 class ResearcherTest extends \PHPUnit_Framework_TestCase

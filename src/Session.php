@@ -1,17 +1,17 @@
 <?php
 
-namespace BrasseursDApplis\Arrows;
+namespace BrasseursApplis\Arrows;
 
 use Assert\Assertion;
-use BrasseursDApplis\Arrows\Id\ResearcherId;
-use BrasseursDApplis\Arrows\Id\SessionId;
-use BrasseursDApplis\Arrows\VO\Duration;
-use BrasseursDApplis\Arrows\VO\Orientation;
-use BrasseursDApplis\Arrows\VO\Result;
-use BrasseursDApplis\Arrows\VO\ResultCollection;
-use BrasseursDApplis\Arrows\VO\Scenario;
-use BrasseursDApplis\Arrows\VO\Sequence;
-use BrasseursDApplis\Arrows\VO\SubjectsCouple;
+use BrasseursApplis\Arrows\Id\ResearcherId;
+use BrasseursApplis\Arrows\Id\SessionId;
+use BrasseursApplis\Arrows\VO\Duration;
+use BrasseursApplis\Arrows\VO\Orientation;
+use BrasseursApplis\Arrows\VO\Result;
+use BrasseursApplis\Arrows\VO\ResultCollection;
+use BrasseursApplis\Arrows\VO\Scenario;
+use BrasseursApplis\Arrows\VO\Sequence;
+use BrasseursApplis\Arrows\VO\SubjectsCouple;
 use Doctrine\Common\Collections\Collection;
 
 class Session

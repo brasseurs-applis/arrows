@@ -1,6 +1,6 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\Exception;
+namespace BrasseursApplis\Arrows\Exception;
 
 class ScenarioException extends ArrowsException
 {

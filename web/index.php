@@ -1,9 +1,9 @@
 <?php
 
-use BrasseursDApplis\Arrows\App\Controller\IndexController;
-use BrasseursDApplis\Arrows\App\Controller\ObserverController;
-use BrasseursDApplis\Arrows\App\Controller\PositionOneController;
-use BrasseursDApplis\Arrows\App\Controller\PositionTwoController;
+use BrasseursApplis\Arrows\App\Controller\IndexController;
+use BrasseursApplis\Arrows\App\Controller\ObserverController;
+use BrasseursApplis\Arrows\App\Controller\PositionOneController;
+use BrasseursApplis\Arrows\App\Controller\PositionTwoController;
 use Silex\Application;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\Provider\TwigServiceProvider;

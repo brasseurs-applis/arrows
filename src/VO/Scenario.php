@@ -1,9 +1,9 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\VO;
+namespace BrasseursApplis\Arrows\VO;
 
-use BrasseursDApplis\Arrows\Exception\ScenarioAssertion;
-use BrasseursDApplis\Arrows\Exception\ScenarioException;
+use BrasseursApplis\Arrows\Exception\ScenarioAssertion;
+use BrasseursApplis\Arrows\Exception\ScenarioException;
 
 class Scenario
 {

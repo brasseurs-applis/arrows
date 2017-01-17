@@ -1,18 +1,18 @@
 #!/usr/bin/env php
 <?php
 
-use BrasseursDApplis\Arrows\App\Message\ArrowsMessageComponent;
-use BrasseursDApplis\Arrows\App\Repository\InMemorySessionRepository;
-use BrasseursDApplis\Arrows\Id\ResearcherId;
-use BrasseursDApplis\Arrows\Id\SessionId;
-use BrasseursDApplis\Arrows\Id\SubjectId;
-use BrasseursDApplis\Arrows\Session;
-use BrasseursDApplis\Arrows\VO\Orientation;
-use BrasseursDApplis\Arrows\VO\Position;
-use BrasseursDApplis\Arrows\VO\Scenario;
-use BrasseursDApplis\Arrows\VO\Sequence;
-use BrasseursDApplis\Arrows\VO\SequenceCollection;
-use BrasseursDApplis\Arrows\VO\SubjectsCouple;
+use BrasseursApplis\Arrows\App\Message\ArrowsMessageComponent;
+use BrasseursApplis\Arrows\App\Repository\InMemorySessionRepository;
+use BrasseursApplis\Arrows\Id\ResearcherId;
+use BrasseursApplis\Arrows\Id\SessionId;
+use BrasseursApplis\Arrows\Id\SubjectId;
+use BrasseursApplis\Arrows\Session;
+use BrasseursApplis\Arrows\VO\Orientation;
+use BrasseursApplis\Arrows\VO\Position;
+use BrasseursApplis\Arrows\VO\Scenario;
+use BrasseursApplis\Arrows\VO\Sequence;
+use BrasseursApplis\Arrows\VO\SequenceCollection;
+use BrasseursApplis\Arrows\VO\SubjectsCouple;
 use Ramsey\Uuid\Uuid;
 use Ratchet\App;
 

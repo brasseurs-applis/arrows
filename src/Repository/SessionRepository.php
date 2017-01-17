@@ -1,9 +1,9 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\Repository;
+namespace BrasseursApplis\Arrows\Repository;
 
-use BrasseursDApplis\Arrows\Id\SessionId;
-use BrasseursDApplis\Arrows\Session;
+use BrasseursApplis\Arrows\Id\SessionId;
+use BrasseursApplis\Arrows\Session;
 
 interface SessionRepository
 {

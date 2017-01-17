@@ -1,8 +1,8 @@
 <?php
 
-namespace BrasseursDApplis\Arrows;
+namespace BrasseursApplis\Arrows;
 
-use BrasseursDApplis\Arrows\Id\SubjectId;
+use BrasseursApplis\Arrows\Id\SubjectId;
 
 class Subject
 {

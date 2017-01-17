@@ -1,8 +1,8 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\Test\Unit\Domain\VO;
+namespace BrasseursApplis\Arrows\Test\Unit\Domain\VO;
 
-use BrasseursDApplis\Arrows\VO\Orientation;
+use BrasseursApplis\Arrows\VO\Orientation;
 
 class OrientationTest extends \PHPUnit_Framework_TestCase
 {

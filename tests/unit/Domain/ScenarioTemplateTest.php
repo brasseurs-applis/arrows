@@ -1,14 +1,14 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\Test\Unit\Domain;
+namespace BrasseursApplis\Arrows\Test\Unit\Domain;
 
-use BrasseursDApplis\Arrows\Exception\ScenarioException;
-use BrasseursDApplis\Arrows\Id\ResearcherId;
-use BrasseursDApplis\Arrows\Id\ScenarioTemplateId;
-use BrasseursDApplis\Arrows\ScenarioTemplate;
-use BrasseursDApplis\Arrows\VO\Orientation as O;
-use BrasseursDApplis\Arrows\VO\Position as P;
-use BrasseursDApplis\Arrows\VO\Sequence;
+use BrasseursApplis\Arrows\Exception\ScenarioException;
+use BrasseursApplis\Arrows\Id\ResearcherId;
+use BrasseursApplis\Arrows\Id\ScenarioTemplateId;
+use BrasseursApplis\Arrows\ScenarioTemplate;
+use BrasseursApplis\Arrows\VO\Orientation as O;
+use BrasseursApplis\Arrows\VO\Position as P;
+use BrasseursApplis\Arrows\VO\Sequence;
 use Faker\Factory;
 
 class ScenarioTemplateTest extends \PHPUnit_Framework_TestCase

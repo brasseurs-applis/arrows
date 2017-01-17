@@ -3,4 +3,4 @@ default:
     default:
       paths: [ '%paths.base%/features' ]
       contexts:
-        - 'BrasseursDApplis\Arrows\Test\Context\DefaultContext'
+        - 'BrasseursApplis\Arrows\Test\Context\DefaultContext'

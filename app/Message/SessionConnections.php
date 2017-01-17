@@ -1,6 +1,6 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\App\Message;
+namespace BrasseursApplis\Arrows\App\Message;
 
 use Assert\Assertion;
 use Ratchet\ConnectionInterface;

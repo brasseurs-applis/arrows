@@ -1,9 +1,9 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\Test\Unit\Domain\VO;
+namespace BrasseursApplis\Arrows\Test\Unit\Domain\VO;
 
-use BrasseursDApplis\Arrows\Id\SubjectId;
-use BrasseursDApplis\Arrows\VO\SubjectsCouple;
+use BrasseursApplis\Arrows\Id\SubjectId;
+use BrasseursApplis\Arrows\VO\SubjectsCouple;
 use Faker\Factory;
 
 class SubjectsCoupleTest extends \PHPUnit_Framework_TestCase

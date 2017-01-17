@@ -1,13 +1,13 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\Test\Unit\Domain\VO;
+namespace BrasseursApplis\Arrows\Test\Unit\Domain\VO;
 
-use BrasseursDApplis\Arrows\Exception\ScenarioException;
-use BrasseursDApplis\Arrows\VO\Orientation as O;
-use BrasseursDApplis\Arrows\VO\Position as P;
-use BrasseursDApplis\Arrows\VO\Scenario;
-use BrasseursDApplis\Arrows\VO\Sequence;
-use BrasseursDApplis\Arrows\VO\SequenceCollection;
+use BrasseursApplis\Arrows\Exception\ScenarioException;
+use BrasseursApplis\Arrows\VO\Orientation as O;
+use BrasseursApplis\Arrows\VO\Position as P;
+use BrasseursApplis\Arrows\VO\Scenario;
+use BrasseursApplis\Arrows\VO\Sequence;
+use BrasseursApplis\Arrows\VO\SequenceCollection;
 use Mockery\Mock;
 
 class ScenarioTest extends \PHPUnit_Framework_TestCase
@@ -24,7 +24,7 @@ class ScenarioTest extends \PHPUnit_Framework_TestCase
     /** @var Sequence */
     private $thirdSequence;
 
-    /** @var \BrasseursDApplis\Arrows\VO\Scenario */
+    /** @var \BrasseursApplis\Arrows\VO\Scenario */
     private $serviceUnderTest;
 
     /**

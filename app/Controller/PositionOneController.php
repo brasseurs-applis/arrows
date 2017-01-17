@@ -1,6 +1,6 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\App\Controller;
+namespace BrasseursApplis\Arrows\App\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

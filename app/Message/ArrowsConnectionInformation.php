@@ -1,6 +1,6 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\App\Message;
+namespace BrasseursApplis\Arrows\App\Message;
 
 use Guzzle\Http\Message\EntityEnclosingRequest;
 use Ratchet\ConnectionInterface;

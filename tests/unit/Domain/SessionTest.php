@@ -1,17 +1,17 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\Test\Unit\Domain;
+namespace BrasseursApplis\Arrows\Test\Unit\Domain;
 
-use BrasseursDApplis\Arrows\Id\ResearcherId;
-use BrasseursDApplis\Arrows\Id\SessionId;
-use BrasseursDApplis\Arrows\Id\SubjectId;
-use BrasseursDApplis\Arrows\Session;
-use BrasseursDApplis\Arrows\VO\Duration;
-use BrasseursDApplis\Arrows\VO\Orientation;
-use BrasseursDApplis\Arrows\VO\Result;
-use BrasseursDApplis\Arrows\VO\Scenario;
-use BrasseursDApplis\Arrows\VO\Sequence;
-use BrasseursDApplis\Arrows\VO\SubjectsCouple;
+use BrasseursApplis\Arrows\Id\ResearcherId;
+use BrasseursApplis\Arrows\Id\SessionId;
+use BrasseursApplis\Arrows\Id\SubjectId;
+use BrasseursApplis\Arrows\Session;
+use BrasseursApplis\Arrows\VO\Duration;
+use BrasseursApplis\Arrows\VO\Orientation;
+use BrasseursApplis\Arrows\VO\Result;
+use BrasseursApplis\Arrows\VO\Scenario;
+use BrasseursApplis\Arrows\VO\Sequence;
+use BrasseursApplis\Arrows\VO\SubjectsCouple;
 use Faker\Factory;
 use Mockery\Mock;
 
@@ -20,7 +20,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     /** @var SessionId */
     private $sessionId;
 
-    /** @var \BrasseursDApplis\Arrows\VO\Scenario | Mock */
+    /** @var \BrasseursApplis\Arrows\VO\Scenario | Mock */
     private $scenario;
 
     /** @var SubjectsCouple */

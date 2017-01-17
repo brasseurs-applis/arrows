@@ -1,10 +1,10 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\App\Message;
+namespace BrasseursApplis\Arrows\App\Message;
 
-use BrasseursDApplis\Arrows\VO\Duration;
-use BrasseursDApplis\Arrows\VO\MillisecondTimestamp;
-use BrasseursDApplis\Arrows\VO\Orientation;
+use BrasseursApplis\Arrows\VO\Duration;
+use BrasseursApplis\Arrows\VO\MillisecondTimestamp;
+use BrasseursApplis\Arrows\VO\Orientation;
 
 class SessionResult implements Message, \JsonSerializable
 {

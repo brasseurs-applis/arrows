@@ -1,10 +1,10 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\App\Message;
+namespace BrasseursApplis\Arrows\App\Message;
 
-use BrasseursDApplis\Arrows\Id\SessionId;
-use BrasseursDApplis\Arrows\Repository\SessionRepository;
-use BrasseursDApplis\Arrows\Session;
+use BrasseursApplis\Arrows\Id\SessionId;
+use BrasseursApplis\Arrows\Repository\SessionRepository;
+use BrasseursApplis\Arrows\Session;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 

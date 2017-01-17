@@ -1,9 +1,9 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\Test\Unit\Domain\VO;
+namespace BrasseursApplis\Arrows\Test\Unit\Domain\VO;
 
-use BrasseursDApplis\Arrows\VO\Duration;
-use BrasseursDApplis\Arrows\VO\MillisecondTimestamp;
+use BrasseursApplis\Arrows\VO\Duration;
+use BrasseursApplis\Arrows\VO\MillisecondTimestamp;
 use Faker\Factory;
 
 class DurationTest extends \PHPUnit_Framework_TestCase

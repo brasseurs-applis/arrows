@@ -1,6 +1,6 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\Id;
+namespace BrasseursApplis\Arrows\Id;
 
 use Assert\Assertion;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\Test\Unit\Domain\VO;
+namespace BrasseursApplis\Arrows\Test\Unit\Domain\VO;
 
-use BrasseursDApplis\Arrows\VO\Position;
+use BrasseursApplis\Arrows\VO\Position;
 
 class PositionTest extends \PHPUnit_Framework_TestCase
 {

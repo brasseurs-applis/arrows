@@ -1,8 +1,8 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\Test\Unit\Domain\VO;
+namespace BrasseursApplis\Arrows\Test\Unit\Domain\VO;
 
-use BrasseursDApplis\Arrows\VO\MillisecondTimestamp;
+use BrasseursApplis\Arrows\VO\MillisecondTimestamp;
 use Faker\Factory;
 
 class MillisecondTimestampTest extends \PHPUnit_Framework_TestCase

@@ -1,9 +1,9 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\Repository;
+namespace BrasseursApplis\Arrows\Repository;
 
-use BrasseursDApplis\Arrows\Id\ScenarioTemplateId;
-use BrasseursDApplis\Arrows\ScenarioTemplate;
+use BrasseursApplis\Arrows\Id\ScenarioTemplateId;
+use BrasseursApplis\Arrows\ScenarioTemplate;
 
 interface ScenarioTemplateRepository
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\Test\Context;
+namespace BrasseursApplis\Arrows\Test\Context;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;

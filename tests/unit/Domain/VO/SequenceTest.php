@@ -1,10 +1,10 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\Test\Unit\Domain\VO;
+namespace BrasseursApplis\Arrows\Test\Unit\Domain\VO;
 
-use BrasseursDApplis\Arrows\VO\Orientation;
-use BrasseursDApplis\Arrows\VO\Position;
-use BrasseursDApplis\Arrows\VO\Sequence;
+use BrasseursApplis\Arrows\VO\Orientation;
+use BrasseursApplis\Arrows\VO\Position;
+use BrasseursApplis\Arrows\VO\Sequence;
 
 class SequenceTest extends \PHPUnit_Framework_TestCase
 {

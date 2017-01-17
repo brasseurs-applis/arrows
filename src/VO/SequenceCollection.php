@@ -1,6 +1,6 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\VO;
+namespace BrasseursApplis\Arrows\VO;
 
 use Assert\Assertion;
 use Doctrine\Common\Collections\ArrayCollection;

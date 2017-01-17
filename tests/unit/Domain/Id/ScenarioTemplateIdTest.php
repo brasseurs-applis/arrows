@@ -1,8 +1,8 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\Test\Unit\Domain\Id;
+namespace BrasseursApplis\Arrows\Test\Unit\Domain\Id;
 
-use BrasseursDApplis\Arrows\Id\ScenarioTemplateId;
+use BrasseursApplis\Arrows\Id\ScenarioTemplateId;
 use Faker\Factory;
 
 class ScenarioTemplateIdTest extends \PHPUnit_Framework_TestCase

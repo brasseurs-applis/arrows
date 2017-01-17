@@ -1,14 +1,14 @@
 <?php
 
-namespace BrasseursDApplis\Arrows;
+namespace BrasseursApplis\Arrows;
 
-use BrasseursDApplis\Arrows\Exception\ScenarioAssertion;
-use BrasseursDApplis\Arrows\Exception\ScenarioException;
-use BrasseursDApplis\Arrows\Id\ResearcherId;
-use BrasseursDApplis\Arrows\Id\ScenarioTemplateId;
-use BrasseursDApplis\Arrows\VO\Scenario;
-use BrasseursDApplis\Arrows\VO\Sequence;
-use BrasseursDApplis\Arrows\VO\SequenceCollection;
+use BrasseursApplis\Arrows\Exception\ScenarioAssertion;
+use BrasseursApplis\Arrows\Exception\ScenarioException;
+use BrasseursApplis\Arrows\Id\ResearcherId;
+use BrasseursApplis\Arrows\Id\ScenarioTemplateId;
+use BrasseursApplis\Arrows\VO\Scenario;
+use BrasseursApplis\Arrows\VO\Sequence;
+use BrasseursApplis\Arrows\VO\SequenceCollection;
 
 class ScenarioTemplate
 {

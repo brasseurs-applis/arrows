@@ -1,8 +1,8 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\VO;
+namespace BrasseursApplis\Arrows\VO;
 
-use BrasseursDApplis\Arrows\Id\SubjectId;
+use BrasseursApplis\Arrows\Id\SubjectId;
 
 class SubjectsCouple
 {

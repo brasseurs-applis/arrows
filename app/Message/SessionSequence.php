@@ -1,9 +1,9 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\App\Message;
+namespace BrasseursApplis\Arrows\App\Message;
 
-use BrasseursDApplis\Arrows\Session;
-use BrasseursDApplis\Arrows\VO\Sequence;
+use BrasseursApplis\Arrows\Session;
+use BrasseursApplis\Arrows\VO\Sequence;
 
 class SessionSequence implements \JsonSerializable
 {

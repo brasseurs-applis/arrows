@@ -1,8 +1,8 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\Test\Unit\Domain\Id;
+namespace BrasseursApplis\Arrows\Test\Unit\Domain\Id;
 
-use BrasseursDApplis\Arrows\Id\ResearcherId;
+use BrasseursApplis\Arrows\Id\ResearcherId;
 use Faker\Factory;
 
 class ResearcherIdTest extends \PHPUnit_Framework_TestCase

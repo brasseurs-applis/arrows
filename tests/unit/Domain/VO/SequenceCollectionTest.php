@@ -1,11 +1,11 @@
 <?php
 
-namespace BrasseursDApplis\Arrows\Test\Unit\Domain\VO;
+namespace BrasseursApplis\Arrows\Test\Unit\Domain\VO;
 
-use BrasseursDApplis\Arrows\VO\Orientation as O;
-use BrasseursDApplis\Arrows\VO\Position as P;
-use BrasseursDApplis\Arrows\VO\Sequence;
-use BrasseursDApplis\Arrows\VO\SequenceCollection;
+use BrasseursApplis\Arrows\VO\Orientation as O;
+use BrasseursApplis\Arrows\VO\Position as P;
+use BrasseursApplis\Arrows\VO\Sequence;
+use BrasseursApplis\Arrows\VO\SequenceCollection;
 
 class SequenceCollectionTest extends \PHPUnit_Framework_TestCase
 {

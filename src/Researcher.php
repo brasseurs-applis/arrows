@@ -1,8 +1,8 @@
 <?php
 
-namespace BrasseursDApplis\Arrows;
+namespace BrasseursApplis\Arrows;
 
-use BrasseursDApplis\Arrows\Id\ResearcherId;
+use BrasseursApplis\Arrows\Id\ResearcherId;
 
 class Researcher
 {
