@@ -2,7 +2,9 @@
 
 namespace BrasseursApplis\Arrows\VO;
 
-class Position
+use Assert\Assertion;
+
+class Position implements \JsonSerializable
 {
     const TOP = 'top';
     const BOTTOM = 'bottom';
@@ -15,8 +17,10 @@ class Position
      *
      * @param string $position
      */
-    private function __construct($position)
+    public function __construct($position)
     {
+        Assertion::inArray($position, [self::TOP, self::BOTTOM]);
+
         $this->position = $position;
     }
 
@@ -39,7 +43,20 @@ class Position
     /**
      * @return string
      */
-    function __toString()
+    public function __toString()
+    {
+        return $this->position;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @link  http://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     *        which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
     {
         return $this->position;
     }

@@ -5,7 +5,7 @@ namespace BrasseursApplis\Arrows\VO;
 use BrasseursApplis\Arrows\Exception\ScenarioAssertion;
 use BrasseursApplis\Arrows\Exception\ScenarioException;
 
-class Scenario
+class Scenario implements \JsonSerializable
 {
     /** @var SequenceCollection */
     private $sequences;
@@ -105,5 +105,34 @@ class Scenario
     private function ensureScenarioIsRunning()
     {
         ScenarioAssertion::notNull($this->currentPosition, 'ScenarioTemplate is not running.');
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @link  http://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     *        which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'sequences' => $this->sequences,
+            'currentPosition' => $this->currentPosition
+        ];
+    }
+
+    /**
+     * @param array $array
+     *
+     * @return Scenario
+     */
+    public static function fromJsonArray(array $array)
+    {
+        $scenario = new self(SequenceCollection::fromJsonArray($array['sequences']));
+        $scenario->currentPosition = $array['currentPosition'];
+
+        return $scenario;
     }
 }

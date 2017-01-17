@@ -2,7 +2,9 @@
 
 namespace BrasseursApplis\Arrows\VO;
 
-class Orientation
+use Assert\Assertion;
+
+class Orientation implements \JsonSerializable
 {
     const RIGHT = 'right';
     const LEFT = 'left';
@@ -15,8 +17,10 @@ class Orientation
      *
      * @param string $orientation
      */
-    private function __construct($orientation)
+    public function __construct($orientation)
     {
+        Assertion::inArray($orientation, [self::LEFT, self::RIGHT]);
+
         $this->orientation = $orientation;
     }
 
@@ -39,7 +43,20 @@ class Orientation
     /**
      * @return string
      */
-    function __toString()
+    public function __toString()
+    {
+        return $this->orientation;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @link  http://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     *        which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
     {
         return $this->orientation;
     }

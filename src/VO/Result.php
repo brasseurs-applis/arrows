@@ -2,7 +2,7 @@
 
 namespace BrasseursApplis\Arrows\VO;
 
-class Result
+class Result implements \JsonSerializable
 {
     /** @var Sequence */
     private $sequence;
@@ -49,5 +49,36 @@ class Result
     public function getDuration()
     {
         return $this->duration;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @link  http://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     *        which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'sequence' => $this->sequence,
+            'orientation' => $this->orientation,
+            'duration' => $this->duration
+        ];
+    }
+
+    /**
+     * @param array $array
+     *
+     * @return Result
+     */
+    public static function fromJsonArray(array $array)
+    {
+        return new Result(
+            Sequence::fromJsonArray($array['sequence']),
+            new Orientation($array['orientation']),
+            Duration::fromJsonArray($array['duration'])
+        );
     }
 }

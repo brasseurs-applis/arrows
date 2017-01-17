@@ -37,7 +37,7 @@ class SessionSequence implements \JsonSerializable
     /**
      * @return array
      */
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return [
             'type' => self::TYPE,

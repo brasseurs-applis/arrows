@@ -2,7 +2,7 @@
 
 namespace BrasseursApplis\Arrows\VO;
 
-class Sequence
+class Sequence implements \JsonSerializable
 {
     /** @var Position */
     private $position;
@@ -82,5 +82,38 @@ class Sequence
     public function isCongruentWithInitiation()
     {
         return $this->initiationOrientation == $this->mainOrientation;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @link  http://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     *        which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'position' => $this->position,
+            'previewOrientation' => $this->previewOrientation,
+            'initiationOrientation' => $this->initiationOrientation,
+            'mainOrientation' => $this->mainOrientation
+        ];
+    }
+
+    /**
+     * @param array $array
+     *
+     * @return Sequence
+     */
+    public static function fromJsonArray(array $array)
+    {
+        return new Sequence(
+            new Position($array['position']),
+            new Orientation($array['previewOrientation']),
+            new Orientation($array['initiationOrientation']),
+            new Orientation($array['mainOrientation'])
+        );
     }
 }

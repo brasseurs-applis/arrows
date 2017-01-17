@@ -4,7 +4,7 @@ namespace BrasseursApplis\Arrows\VO;
 
 use Assert\Assertion;
 
-class MillisecondTimestamp
+class MillisecondTimestamp implements \JsonSerializable
 {
     /** @var int */
     private $timestamp;
@@ -38,5 +38,18 @@ class MillisecondTimestamp
     {
         Assertion::integer($this->timestamp, 'Timestamp must be an integer');
         Assertion::greaterOrEqualThan($this->timestamp, 0, 'Timestamp must be greater than zero.');
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @link  http://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     *        which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return $this->timestamp;
     }
 }

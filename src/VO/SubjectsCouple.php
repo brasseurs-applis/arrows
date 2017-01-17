@@ -4,7 +4,7 @@ namespace BrasseursApplis\Arrows\VO;
 
 use BrasseursApplis\Arrows\Id\SubjectId;
 
-class SubjectsCouple
+class SubjectsCouple implements \JsonSerializable
 {
     /** @var SubjectId */
     private $positionOne;
@@ -40,5 +40,31 @@ class SubjectsCouple
     public function getPositionTwo()
     {
         return $this->positionTwo;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @link  http://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     *        which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'positionOne' => $this->positionOne,
+            'positionTwo' => $this->positionTwo
+        ];
+    }
+
+    /**
+     * @param array $array
+     *
+     * @return SubjectsCouple
+     */
+    public static function fromJsonArray(array $array)
+    {
+        return new self(new SubjectId($array['positionOne']), new SubjectId($array['positionTwo']));
     }
 }
