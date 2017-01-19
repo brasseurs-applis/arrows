@@ -7,11 +7,10 @@ use BrasseursApplis\Arrows\Id\ResearcherId;
 use BrasseursApplis\Arrows\Id\SessionId;
 use BrasseursApplis\Arrows\VO\Duration;
 use BrasseursApplis\Arrows\VO\Orientation;
-use BrasseursApplis\Arrows\VO\Result;
-use BrasseursApplis\Arrows\VO\ResultCollection;
 use BrasseursApplis\Arrows\VO\Scenario;
 use BrasseursApplis\Arrows\VO\Sequence;
 use BrasseursApplis\Arrows\VO\SubjectsCouple;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 class Session
@@ -90,7 +89,7 @@ class Session
     {
         $this->ensureThereIsNoPendingSequence('You cannot start a session already started');
 
-        $this->results = new ResultCollection();
+        $this->results = new ArrayCollection();
 
         return $this->scenario->run();
     }
@@ -105,7 +104,7 @@ class Session
     {
         $this->ensureThereIsACurrentSequence();
 
-        $result = new Result($this->scenario->current(), $orientation, $duration);
+        $result = new Result($this, $this->scenario->current(), $orientation, $duration);
 
         $this->results->add($result);
 
@@ -118,15 +117,15 @@ class Session
     public function cancel()
     {
         $this->scenario->stop();
-        $this->results = new ResultCollection();
+        $this->results = new ArrayCollection();
     }
 
     /**
-     * @return Result[] | Collection
+     * @return Result[]
      */
     public function getResults()
     {
-        return $this->results;
+        return $this->results->getValues();
     }
 
     /**

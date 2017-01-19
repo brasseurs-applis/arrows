@@ -5,10 +5,10 @@ namespace BrasseursApplis\Arrows\Test\Unit\Domain;
 use BrasseursApplis\Arrows\Id\ResearcherId;
 use BrasseursApplis\Arrows\Id\SessionId;
 use BrasseursApplis\Arrows\Id\SubjectId;
+use BrasseursApplis\Arrows\Result;
 use BrasseursApplis\Arrows\Session;
 use BrasseursApplis\Arrows\VO\Duration;
 use BrasseursApplis\Arrows\VO\Orientation;
-use BrasseursApplis\Arrows\VO\Result;
 use BrasseursApplis\Arrows\VO\Scenario;
 use BrasseursApplis\Arrows\VO\Sequence;
 use BrasseursApplis\Arrows\VO\SubjectsCouple;
@@ -191,7 +191,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($nextSequence);
 
         /** @var Result $result */
-        $result = $this->serviceUnderTest->getResults()->get(0);
+        $result = $this->serviceUnderTest->getResults()[0];
 
         $this->assertEquals($sequence, $result->getSequence());
         $this->assertEquals($this->orientation, $result->getOrientation());

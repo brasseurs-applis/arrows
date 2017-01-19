@@ -2,5 +2,14 @@
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <entity name="BrasseursApplis\Arrows\Session" table="session" schema="arrows">
         <id name="id" column="id" type="session_id" />
+        <field name="observer" type="researcher_id" column="observer_id" nullable="false" />
+        <embedded name="scenario" class="BrasseursApplis\Arrows\VO\Scenario" use-column-prefix="false" />
+        <embedded name="subjects" class="BrasseursApplis\Arrows\VO\SubjectsCouple" use-column-prefix="false" />
+        <one-to-many field="results" target-entity="BrasseursApplis\Arrows\Result" mapped-by="session" fetch="LAZY">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
     </entity>
 </doctrine-mapping>

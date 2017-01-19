@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-    <entity name="BrasseursApplis\Arrows\ScenarioTemplate" table="scenario_template" schema="arrows">
-        <id name="id" column="id" type="scenario_template_id" />
-        <field name="author" type="researcher_id" nullable="false" />
-        <field name="name" type="string" length="255" nullable="false" />
-        <field name="nbSequences" type="integer" nullable="false" />
+    <embeddable name="BrasseursApplis\Arrows\VO\Scenario">
+        <field name="currentPosition" type="integer" column="scenario_current_position" nullable="true" />
         <field name="sequences" type="sequence_collection" column="scenario_sequences" nullable="false" />
-    </entity>
+    </embeddable>
 </doctrine-mapping>

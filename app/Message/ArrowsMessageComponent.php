@@ -165,7 +165,7 @@ class ArrowsMessageComponent implements MessageComponentInterface
 
             // if last response : return end message
             if ($sequence === null) {
-                print_r($session->getResults()->getValues());
+                print_r($session->getResults());
                 return new SessionEnded();
             }
 

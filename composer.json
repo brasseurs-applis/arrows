@@ -18,7 +18,11 @@
         "doctrine/orm": "^2.5",
         "ramsey/uuid": "^3.5",
         "symfony/security": "^3.2",
-        "firebase/php-jwt": "^4.0"
+        "firebase/php-jwt": "^4.0",
+        "remi-san/doctrine-tools": "^0.2.0",
+        "dflydev/doctrine-orm-service-provider": "^2.0",
+        "monolog/monolog": "^1.22",
+        "doctrine/migrations": "^1.5"
     },
     "require-dev": {
         "behat/behat": "^3.3",
