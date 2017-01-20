@@ -1,6 +1,6 @@
 <?php
 
-namespace BrasseursApplis\Arrows\App\Repository;
+namespace BrasseursApplis\Arrows\App\Repository\InMemory;
 
 use BrasseursApplis\Arrows\Id\SessionId;
 use BrasseursApplis\Arrows\Repository\SessionRepository;
@@ -26,26 +26,26 @@ class InMemorySessionRepository implements SessionRepository
     }
 
     /**
-     * @param Session $scenarioTemplate
+     * @param Session $session
      *
      * @return void
      */
-    public function persist(Session $scenarioTemplate)
+    public function persist(Session $session)
     {
-        $this->sessions[(string) $scenarioTemplate->getId()] = $scenarioTemplate;
+        $this->sessions[(string) $session->getId()] = $session;
     }
 
     /**
-     * @param Session $scenarioTemplate
+     * @param Session $session
      *
      * @return void
      */
-    public function delete(Session $scenarioTemplate)
+    public function delete(Session $session)
     {
-        if (! isset($this->sessions[(string) $scenarioTemplate->getId()])) {
+        if (! isset($this->sessions[(string) $session->getId()])) {
             return;
         }
 
-        unset($this->sessions[(string) $scenarioTemplate->getId()]);
+        unset($this->sessions[(string) $session->getId()]);
     }
 }

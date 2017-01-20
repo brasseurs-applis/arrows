@@ -1,62 +1,9 @@
 #!/usr/bin/env php
 <?php
 
-use BrasseursApplis\Arrows\App\Message\ArrowsMessageComponent;
-use BrasseursApplis\Arrows\App\Repository\InMemorySessionRepository;
-use BrasseursApplis\Arrows\Id\ResearcherId;
-use BrasseursApplis\Arrows\Id\SessionId;
-use BrasseursApplis\Arrows\Id\SubjectId;
-use BrasseursApplis\Arrows\Session;
-use BrasseursApplis\Arrows\VO\Orientation;
-use BrasseursApplis\Arrows\VO\Position;
-use BrasseursApplis\Arrows\VO\Scenario;
-use BrasseursApplis\Arrows\VO\Sequence;
-use BrasseursApplis\Arrows\VO\SequenceCollection;
-use BrasseursApplis\Arrows\VO\SubjectsCouple;
-use Ramsey\Uuid\Uuid;
-use Ratchet\App;
+use BrasseursApplis\Arrows\App\ApplicationBuilder;
+use BrasseursApplis\Arrows\App\ApplicationConfig;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-$session = new Session(
-    new SessionId('ddf5ddfa-0990-4c30-9c4c-db2214ed06c1'),
-    new Scenario(
-        new SequenceCollection(
-            [
-                new Sequence(
-                    Position::top(),
-                    Orientation::left(),
-                    Orientation::right(),
-                    Orientation::left()
-                ),
-                new Sequence(
-                    Position::top(),
-                    Orientation::right(),
-                    Orientation::right(),
-                    Orientation::left()
-                ),
-                new Sequence(
-                    Position::top(),
-                    Orientation::left(),
-                    Orientation::right(),
-                    Orientation::right()
-                ),
-                new Sequence(
-                    Position::top(),
-                    Orientation::left(),
-                    Orientation::left(),
-                    Orientation::right()
-                )
-            ]
-        )
-    ),
-    new SubjectsCouple(new SubjectId(Uuid::uuid4()), new SubjectId(Uuid::uuid4())),
-    new ResearcherId(Uuid::uuid4())
-);
-$sessionRepository = new InMemorySessionRepository();
-$sessionRepository->persist($session);
-$messageComponent = new ArrowsMessageComponent($sessionRepository);
-
-$app = new App('localhost', 8080);
-$app->route('/arrows/{sessionId}/{role}', $messageComponent, ['*']);
-$app->run();
+(new ApplicationBuilder(new ApplicationConfig(true)))->webSocketServer()->run();

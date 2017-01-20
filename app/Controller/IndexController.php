@@ -2,7 +2,6 @@
 
 namespace BrasseursApplis\Arrows\App\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class IndexController
@@ -21,11 +20,9 @@ class IndexController
     }
 
     /**
-     * @param Request $request
-     *
      * @return Response
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
         $response = new Response();
         $response->setContent(
