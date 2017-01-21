@@ -2,7 +2,9 @@
 
 namespace BrasseursApplis\Arrows\App\Message;
 
+use BrasseursApplis\Arrows\App\ServiceProvider\JwtAuthenticator;
 use Guzzle\Http\Message\EntityEnclosingRequest;
+use Guzzle\Http\Message\RequestInterface;
 use Ratchet\ConnectionInterface;
 
 class ArrowsConnectionInformation
@@ -10,7 +12,7 @@ class ArrowsConnectionInformation
     /** @var ConnectionInterface */
     private $connection;
 
-    /** @var EntityEnclosingRequest */
+    /** @var RequestInterface */
     private $request;
 
     /**
@@ -64,5 +66,13 @@ class ArrowsConnectionInformation
         $serializedMessage = json_encode($message);
 
         $this->connection->send($serializedMessage);
+    }
+
+    /**
+     * @param JwtAuthenticator $authenticator
+     */
+    public function authenticate(JwtAuthenticator $authenticator)
+    {
+        $authenticator->authenticate($this->request);
     }
 }

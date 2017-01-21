@@ -1,0 +1,22 @@
+{% extends "template.twig" %}
+
+{% block title %}Login{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <form action="{{ path('login_check') }}" method="post">
+        {{ error }}
+        <label>
+            Username:
+            <input type="text" name="_username" value="{{ last_username }}"/>
+        </label>
+        <label>
+            Password:
+            <input type="password" name="_password" value=""/>
+        </label>
+        <input type="submit" />
+    </form>
+{% endblock %}

@@ -17,7 +17,7 @@
         <img src="/img/sm-right.png" id="preview-right" style="display:none" />
     </div>
     <script>
-        var conn = new WebSocket('ws://localhost:8080/arrows/{{ sessionId }}/position2');
+        var conn = new WebSocket('ws://localhost:8080/socket/{{ sessionId }}/position2?jwt={{ app.user.jwt }}');
         conn.onopen = function (e) { console.log('open'); };
         conn.onclose = function(e) { console.log('close'); };
         conn.onerror = function(e) { console.log('error'); };

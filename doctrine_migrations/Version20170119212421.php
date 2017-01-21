@@ -27,6 +27,8 @@ class Version20170119212421 extends AbstractMigration
 
             'CREATE INDEX IDX_19F5F4E3613FECDF ON arrows.result (session_id)',
 
+            'CREATE UNIQUE INDEX UNIQ_A9A0FD0F586CA949 ON arrows."user" (userName)',
+
             'ALTER TABLE arrows.result ADD CONSTRAINT FK_19F5F4E3613FECDF FOREIGN KEY (session_id) REFERENCES arrows.session (id) NOT DEFERRABLE INITIALLY IMMEDIATE'
         ]);
 

@@ -3,6 +3,7 @@
 namespace BrasseursApplis\Arrows\App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class IndexController
 {
@@ -12,7 +13,7 @@ class IndexController
     /**
      * IndexController constructor.
      *
-     * @param \Twig_Environment $twig
+     * @param \Twig_Environment     $twig
      */
     public function __construct(\Twig_Environment $twig)
     {

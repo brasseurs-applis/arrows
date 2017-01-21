@@ -2,6 +2,7 @@
 
 namespace BrasseursApplis\Arrows\App\Security;
 
+use BrasseursApplis\Arrows\Id\UserId;
 use BrasseursApplis\Arrows\User;
 use Firebase\JWT\JWT;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
@@ -23,7 +24,22 @@ class AuthorizationUser implements AdvancedUserInterface
     public function __construct(User $user, $jwtKey)
     {
         $this->user = $user;
-        $this->jwt = JWT::encode([ 'sub' => (string) $user->getId() ], $jwtKey);
+        $this->jwt = JWT::encode(
+            [
+                'sub' => (string) $user->getId(),
+                'username' => $user->getUserName(),
+                'roles' => $user->getRoles()
+            ],
+            $jwtKey
+        );
+    }
+
+    /**
+     * @return UserId
+     */
+    public function getId()
+    {
+        return $this->user->getId();
     }
 
     /**

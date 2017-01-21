@@ -12,10 +12,14 @@ use BrasseursApplis\Arrows\App\Doctrine\SubjectIdType;
 use BrasseursApplis\Arrows\App\Doctrine\UserIdType;
 use BrasseursApplis\Arrows\App\Message\ArrowsMessageComponent;
 use BrasseursApplis\Arrows\App\Repository\InMemory\InMemorySessionRepository;
+use BrasseursApplis\Arrows\App\Security\SessionVoter;
+use BrasseursApplis\Arrows\App\Security\UserProvider;
+use BrasseursApplis\Arrows\App\ServiceProvider\JwtServiceProvider;
 use BrasseursApplis\Arrows\Id\ResearcherId;
 use BrasseursApplis\Arrows\Id\SessionId;
 use BrasseursApplis\Arrows\Id\SubjectId;
 use BrasseursApplis\Arrows\Session;
+use BrasseursApplis\Arrows\User;
 use BrasseursApplis\Arrows\VO\Orientation;
 use BrasseursApplis\Arrows\VO\Position;
 use BrasseursApplis\Arrows\VO\Scenario;
@@ -33,8 +37,12 @@ use Ratchet\App;
 use Silex\Application;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\MonologServiceProvider;
+use Silex\Provider\RoutingServiceProvider;
+use Silex\Provider\SecurityServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
+use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\TwigServiceProvider;
+use Symfony\Component\HttpFoundation\Request;
 
 class ApplicationBuilder
 {
@@ -70,6 +78,7 @@ class ApplicationBuilder
         );
 
         $this->domain();
+        $this->security();
     }
 
     /**
@@ -87,7 +96,9 @@ class ApplicationBuilder
      */
     public function webSocketServer()
     {
-        $this->socket($this->config->getSocketHost(), $this->config->getSocketHost());
+        $this->socket($this->config->getSocketHost(), $this->config->getSocketPort());
+
+        $this->application->boot();
 
         return $this->application['socket.application'];
     }
@@ -228,6 +239,26 @@ class ApplicationBuilder
         $this->application['arrows.session.repository'] = function () use ($sessionRepository) {
             return $sessionRepository;
         };
+
+        $this->application['arrows.user.repository'] = function () use ($sessionRepository) {
+            return $this->application['orm.em']->getRepository(User::class);
+        };
+    }
+
+    private function security()
+    {
+        $this->application->register(new SecurityServiceProvider());
+        $this->application->register(new JwtServiceProvider());
+        $this->application->register(new SessionServiceProvider());
+
+        $this->application['security.voter.session'] = function () {
+            return new SessionVoter();
+        };
+
+        $this->application['security.voters'] = $this->application->extend('security.voters', function ($voters) {
+            $voters[] = $this->application['security.voter.session'];
+            return $voters;
+        });
     }
 
     /**
@@ -237,6 +268,7 @@ class ApplicationBuilder
     {
         $this->application->register(new ServiceControllerServiceProvider());
         $this->application->register(new TwigServiceProvider(), [ 'twig.path' => $twigPath ]);
+        $this->application->register(new RoutingServiceProvider());
 
         $this->application['index.controller'] = function() {
             return new IndexController($this->application['twig']);
@@ -246,10 +278,40 @@ class ApplicationBuilder
             return new ArrowsController($this->application['twig']);
         };
 
+        $this->application['security.firewalls'] = [
+            'login' => [
+                'pattern' => '^/login$',
+                'anonymous' => true
+            ],
+            'secured' => [
+                'pattern' => '^.*$',
+                'form' => [ 'login_path' => '/login', 'check_path' => '/login_check' ],
+                'logout' => [ 'logout_path' => '/logout', 'invalidate_session' => true ],
+                'users' => function () {
+                    return new UserProvider(
+                        $this->application['arrows.user.repository'],
+                        $this->config->getJwtKey()
+                    );
+                }
+            ]
+        ];
+
+        $this->application->get('/login', function(Request $request) {
+            return $this->application['twig']->render('login.twig', [
+                'error'         => $this->application['security.last_error']($request),
+                'last_username' => $this->application['session']->get('_security.last_username')
+            ]);
+        });
+
         $this->application->get('/', 'index.controller:indexAction');
         $this->application->get('/session/{sessionId}/observer', 'arrows.controller:observerAction');
         $this->application->get('/session/{sessionId}/one', 'arrows.controller:positionOneAction');
         $this->application->get('/session/{sessionId}/two', 'arrows.controller:positionTwoAction');
+
+        $this->application['security.access_rules'] = [
+            [ '^/session/.*/observer$', User::ROLE_RESEARCHER ],
+            [ '^/session/.*/(one|two)$', User::ROLE_ADMIN ]
+        ];
     }
 
     /**
@@ -258,15 +320,30 @@ class ApplicationBuilder
      */
     private function socket($httpHost, $port)
     {
+        $this->application['security.firewalls'] = [
+            'socket' => [
+                'stateless' => true,
+                'pattern' => '^/socket/',
+                'jwt' => [
+                    'secret_key' => $this->config->getJwtKey(),
+                    'allowed_algorithms' => [ 'HS256' ]
+                ]
+            ]
+        ];
+
         $this->application['socket.arrows.message.component'] = function() {
-            return new ArrowsMessageComponent($this->application['arrows.session.repository']);
+            return new ArrowsMessageComponent(
+                $this->application['arrows.session.repository'],
+                $this->application['security.jwt.authenticator'],
+                $this->application['security.authorization_checker']
+            );
         };
 
         $this->application['socket.application'] = function () use ($httpHost, $port) {
             $application = new App($httpHost, $port);
 
             $application->route(
-                '/arrows/{sessionId}/{role}',
+                '/socket/{sessionId}/{role}',
                 $this->application['socket.arrows.message.component'],
                 ['*']
             );

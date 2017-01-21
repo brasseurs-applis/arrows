@@ -2,11 +2,14 @@
 
 namespace BrasseursApplis\Arrows\App\Message;
 
+use BrasseursApplis\Arrows\App\Security\SessionVoter;
+use BrasseursApplis\Arrows\App\ServiceProvider\JwtAuthenticator;
 use BrasseursApplis\Arrows\Id\SessionId;
 use BrasseursApplis\Arrows\Repository\SessionRepository;
 use BrasseursApplis\Arrows\Session;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ArrowsMessageComponent implements MessageComponentInterface
 {
@@ -16,14 +19,28 @@ class ArrowsMessageComponent implements MessageComponentInterface
     /** @var SessionRepository */
     protected $sessionRepository;
 
+    /** @var JwtAuthenticator */
+    protected $jwtAuthenticator;
+
+    /** @var AuthorizationCheckerInterface */
+    protected $authorizationChecker;
+
     /**
      * ArrowsMessageComponent constructor.
      *
-     * @param SessionRepository $sessionRepository
+     * @param SessionRepository             $sessionRepository
+     * @param JwtAuthenticator              $jwtAuthenticator
+     * @param AuthorizationCheckerInterface $authorizationChecker
      */
-    public function __construct(SessionRepository $sessionRepository)
-    {
+    public function __construct(
+        SessionRepository $sessionRepository,
+        JwtAuthenticator $jwtAuthenticator,
+        AuthorizationCheckerInterface $authorizationChecker
+    ) {
         $this->sessionRepository = $sessionRepository;
+        $this->jwtAuthenticator = $jwtAuthenticator;
+        $this->authorizationChecker = $authorizationChecker;
+
         $this->sessionClients = [];
     }
 
@@ -35,10 +52,12 @@ class ArrowsMessageComponent implements MessageComponentInterface
         $connectionInformation = new ArrowsConnectionInformation($conn);
 
         try {
-            // TODO add security based on cookies : var_dump($request->getCookies());
-            // TODO check user can join session
+            $connectionInformation->authenticate($this->jwtAuthenticator);
 
             $session = $this->sessionRepository->get(new SessionId($connectionInformation->getSessionId()));
+
+            // check user can join session
+            $this->authorizationChecker->isGranted(SessionVoter::ACCESS, $session);
 
             if ($session === null) {
                 throw new \InvalidArgumentException('Session not found');
@@ -64,13 +83,15 @@ class ArrowsMessageComponent implements MessageComponentInterface
         $connectionInformation = new ArrowsConnectionInformation($from);
 
         try {
+            $connectionInformation->authenticate($this->jwtAuthenticator);
+
             $session = $this->sessionRepository->get(new SessionId($connectionInformation->getSessionId()));
 
             if ($session === null) {
                 throw new \InvalidArgumentException('Session not found');
             }
 
-            // TODO check user is in session
+            // TODO check user is in session with voters
 
             $sessionConnections = $this->getSessionConnections($connectionInformation->getSessionId());
 
@@ -90,8 +111,11 @@ class ArrowsMessageComponent implements MessageComponentInterface
      */
     public function onClose(ConnectionInterface $conn)
     {
+        $connectionInformation = new ArrowsConnectionInformation($conn);
+
         try {
-            $connectionInformation = new ArrowsConnectionInformation($conn);
+            $connectionInformation->authenticate($this->jwtAuthenticator);
+
             $sessionConnections = $this->getSessionConnections($connectionInformation->getSessionId());
             $sessionConnections->unregister($connectionInformation);
 
@@ -165,7 +189,6 @@ class ArrowsMessageComponent implements MessageComponentInterface
 
             // if last response : return end message
             if ($sequence === null) {
-                print_r($session->getResults());
                 return new SessionEnded();
             }
 

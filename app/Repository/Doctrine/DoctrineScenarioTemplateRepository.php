@@ -30,6 +30,7 @@ class DoctrineScenarioTemplateRepository extends EntityRepository implements Sce
     public function persist(ScenarioTemplate $scenarioTemplate)
     {
         $this->getEntityManager()->persist($scenarioTemplate);
+        $this->getEntityManager()->flush();
     }
 
     /**
@@ -40,5 +41,6 @@ class DoctrineScenarioTemplateRepository extends EntityRepository implements Sce
     public function delete(ScenarioTemplate $scenarioTemplate)
     {
         $this->getEntityManager()->remove($scenarioTemplate);
+        $this->getEntityManager()->flush();
     }
 }

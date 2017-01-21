@@ -30,6 +30,7 @@ class DoctrineSessionRepository extends EntityRepository implements SessionRepos
     public function persist(Session $session)
     {
         $this->getEntityManager()->persist($session);
+        $this->getEntityManager()->flush();
     }
 
     /**
@@ -40,5 +41,6 @@ class DoctrineSessionRepository extends EntityRepository implements SessionRepos
     public function delete(Session $session)
     {
         $this->getEntityManager()->remove($session);
+        $this->getEntityManager()->flush();
     }
 }

@@ -31,6 +31,10 @@ class ApplicationConfig
 
 
     /** @var string */
+    private $jwtKey;
+
+
+    /** @var string */
     private $viewsFilePath;
 
 
@@ -63,6 +67,8 @@ class ApplicationConfig
         ];
         $this->ormMappingsFilePath = dirname(__DIR__) . '/config/doctrine';
         $this->ormCacheFilePath = dirname(__DIR__) . '/cache/orm';
+
+        $this->jwtKey = 'myKey';
 
         $this->viewsFilePath = dirname(__DIR__) . '/views';
 
@@ -124,6 +130,14 @@ class ApplicationConfig
     public function getOrmCacheFilePath()
     {
         return $this->ormCacheFilePath;
+    }
+
+    /**
+     * @return string
+     */
+    public function getJwtKey()
+    {
+        return $this->jwtKey;
     }
 
     /**
