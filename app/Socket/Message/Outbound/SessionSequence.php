@@ -1,11 +1,11 @@
 <?php
 
-namespace BrasseursApplis\Arrows\App\Message;
+namespace BrasseursApplis\Arrows\App\Socket\Message\Outbound;
 
-use BrasseursApplis\Arrows\Session;
+use BrasseursApplis\Arrows\App\Message\Message;
 use BrasseursApplis\Arrows\VO\Sequence;
 
-class SessionSequence implements \JsonSerializable
+class SessionSequence implements Message, \JsonSerializable
 {
     const TYPE = 'session.sequence';
 
@@ -33,6 +33,13 @@ class SessionSequence implements \JsonSerializable
         $this->mainOrientation = (string) $sequence->getMainOrientation();
     }
 
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return self::TYPE;
+    }
 
     /**
      * @return array

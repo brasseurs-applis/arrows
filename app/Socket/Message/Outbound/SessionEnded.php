@@ -1,10 +1,20 @@
 <?php
 
-namespace BrasseursApplis\Arrows\App\Message;
+namespace BrasseursApplis\Arrows\App\Socket\Message\Outbound;
 
-class SessionEnded implements \JsonSerializable
+use BrasseursApplis\Arrows\App\Message\Message;
+
+class SessionEnded implements Message, \JsonSerializable
 {
     const TYPE = 'session.ended';
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return self::TYPE;
+    }
 
     /**
      * Specify data which should be serialized to JSON

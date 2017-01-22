@@ -3,6 +3,7 @@
 namespace BrasseursApplis\Arrows\App;
 
 use BrasseursApplis\Arrows\App\Controller\IndexController;
+use BrasseursApplis\Arrows\App\Controller\Security\UserController;
 use BrasseursApplis\Arrows\App\Controller\Session\ArrowsController;
 use BrasseursApplis\Arrows\App\Doctrine\ResearcherIdType;
 use BrasseursApplis\Arrows\App\Doctrine\ScenarioTemplateIdType;
@@ -10,11 +11,11 @@ use BrasseursApplis\Arrows\App\Doctrine\SequenceCollectionType;
 use BrasseursApplis\Arrows\App\Doctrine\SessionIdType;
 use BrasseursApplis\Arrows\App\Doctrine\SubjectIdType;
 use BrasseursApplis\Arrows\App\Doctrine\UserIdType;
-use BrasseursApplis\Arrows\App\Message\ArrowsMessageComponent;
 use BrasseursApplis\Arrows\App\Repository\InMemory\InMemorySessionRepository;
+use BrasseursApplis\Arrows\App\Security\ArrowsJwtUserBuilder;
 use BrasseursApplis\Arrows\App\Security\SessionVoter;
 use BrasseursApplis\Arrows\App\Security\UserProvider;
-use BrasseursApplis\Arrows\App\ServiceProvider\JwtServiceProvider;
+use BrasseursApplis\Arrows\App\Socket\ArrowsMessageComponent;
 use BrasseursApplis\Arrows\Id\ResearcherId;
 use BrasseursApplis\Arrows\Id\SessionId;
 use BrasseursApplis\Arrows\Id\SubjectId;
@@ -34,14 +35,18 @@ use Monolog\Logger;
 use Pimple\Container;
 use Ramsey\Uuid\Uuid;
 use Ratchet\App;
+use RemiSan\Silex\JWT\ServiceProvider\JwtServiceProvider;
 use Silex\Application;
 use Silex\Provider\DoctrineServiceProvider;
+use Silex\Provider\FormServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\RoutingServiceProvider;
 use Silex\Provider\SecurityServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\Provider\SessionServiceProvider;
+use Silex\Provider\TranslationServiceProvider;
 use Silex\Provider\TwigServiceProvider;
+use Silex\Provider\ValidatorServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 
 class ApplicationBuilder
@@ -267,11 +272,24 @@ class ApplicationBuilder
     private function web($twigPath)
     {
         $this->application->register(new ServiceControllerServiceProvider());
-        $this->application->register(new TwigServiceProvider(), [ 'twig.path' => $twigPath ]);
+        $this->application->register(new TwigServiceProvider(), ['twig.path' => $twigPath]);
         $this->application->register(new RoutingServiceProvider());
+        $this->application->register(new FormServiceProvider());
+        $this->application->register(new TranslationServiceProvider(), ['locale' => 'fr', 'translator.domains' => []]);
+        $this->application->register(new ValidatorServiceProvider());
 
         $this->application['index.controller'] = function() {
             return new IndexController($this->application['twig']);
+        };
+
+        $this->application['user.controller'] = function() {
+            return new UserController(
+                $this->application['security.default_encoder'],
+                $this->application['arrows.user.repository'],
+                $this->application['form.factory'],
+                $this->application['twig'],
+                $this->application['url_generator']
+            );
         };
 
         $this->application['arrows.controller'] = function() {
@@ -297,16 +315,29 @@ class ApplicationBuilder
         ];
 
         $this->application->get('/login', function(Request $request) {
-            return $this->application['twig']->render('login.twig', [
+            return $this->application['twig']->render('security/login.twig', [
                 'error'         => $this->application['security.last_error']($request),
                 'last_username' => $this->application['session']->get('_security.last_username')
             ]);
-        });
+        })->bind('login');
 
-        $this->application->get('/', 'index.controller:indexAction');
-        $this->application->get('/session/{sessionId}/observer', 'arrows.controller:observerAction');
-        $this->application->get('/session/{sessionId}/one', 'arrows.controller:positionOneAction');
-        $this->application->get('/session/{sessionId}/two', 'arrows.controller:positionTwoAction');
+        $this->application->get('/', 'index.controller:indexAction')
+            ->bind('index');
+
+        $this->application->match('/user/new', 'user.controller:createAction')
+            ->bind('user_create');
+        $this->application->match('/user/{userId}/edit', 'user.controller:editAction')
+            ->method('GET|POST')
+            ->bind('user_edit');
+        $this->application->get('/user/', 'user.controller:listAction')
+            ->bind('user_list');
+
+        $this->application->get('/session/{sessionId}/observer', 'arrows.controller:observerAction')
+            ->bind('observer');
+        $this->application->get('/session/{sessionId}/one', 'arrows.controller:positionOneAction')
+            ->bind('position_one');
+        $this->application->get('/session/{sessionId}/two', 'arrows.controller:positionTwoAction')
+            ->bind('position_two');
 
         $this->application['security.access_rules'] = [
             [ '^/session/.*/observer$', User::ROLE_RESEARCHER ],
@@ -326,7 +357,8 @@ class ApplicationBuilder
                 'pattern' => '^/socket/',
                 'jwt' => [
                     'secret_key' => $this->config->getJwtKey(),
-                    'allowed_algorithms' => [ 'HS256' ]
+                    'allowed_algorithms' => [ 'HS256' ],
+                    'user_builder_class' => ArrowsJwtUserBuilder::class
                 ]
             ]
         ];

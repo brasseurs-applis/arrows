@@ -1,6 +1,6 @@
 <?php
 
-namespace BrasseursApplis\Arrows\App\Message;
+namespace BrasseursApplis\Arrows\App\Socket\Connection;
 
 use Assert\Assertion;
 use Ratchet\ConnectionInterface;
@@ -140,7 +140,10 @@ class SessionConnections
      */
     protected function assertValidRole($role)
     {
-        Assertion::choice($role, [self::ROLE_OBSERVER, self::ROLE_POSITION_ONE, self::ROLE_POSITION_TWO],
-                          'Role unknown');
+        Assertion::choice(
+            $role,
+            [self::ROLE_OBSERVER, self::ROLE_POSITION_ONE, self::ROLE_POSITION_TWO],
+            'Role unknown'
+        );
     }
 }

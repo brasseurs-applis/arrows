@@ -1,19 +1,28 @@
 <?php
 
-namespace BrasseursApplis\Arrows\App\Message;
+namespace BrasseursApplis\Arrows\App\Socket;
 
+use BrasseursApplis\Arrows\App\Message\Message;
 use BrasseursApplis\Arrows\App\Security\SessionVoter;
-use BrasseursApplis\Arrows\App\ServiceProvider\JwtAuthenticator;
+use BrasseursApplis\Arrows\App\Socket\Connection\ArrowsConnectionInformation;
+use BrasseursApplis\Arrows\App\Socket\Connection\SessionConnections;
+use BrasseursApplis\Arrows\App\Socket\Message\Inbound\SessionResult;
+use BrasseursApplis\Arrows\App\Socket\Message\Inbound\StartSession;
+use BrasseursApplis\Arrows\App\Socket\Message\Outbound\Error;
+use BrasseursApplis\Arrows\App\Socket\Message\Outbound\SessionEnded;
+use BrasseursApplis\Arrows\App\Socket\Message\Outbound\SessionReady;
+use BrasseursApplis\Arrows\App\Socket\Message\Outbound\SessionSequence;
 use BrasseursApplis\Arrows\Id\SessionId;
 use BrasseursApplis\Arrows\Repository\SessionRepository;
 use BrasseursApplis\Arrows\Session;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
+use RemiSan\Silex\JWT\Security\JwtAuthenticator;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ArrowsMessageComponent implements MessageComponentInterface
 {
-    /** @var SessionConnections */
+    /** @var SessionConnections[] */
     protected $sessionClients;
 
     /** @var SessionRepository */
@@ -56,12 +65,14 @@ class ArrowsMessageComponent implements MessageComponentInterface
 
             $session = $this->sessionRepository->get(new SessionId($connectionInformation->getSessionId()));
 
-            // check user can join session
-            $this->authorizationChecker->isGranted(SessionVoter::ACCESS, $session);
-
             if ($session === null) {
                 throw new \InvalidArgumentException('Session not found');
             }
+
+            // check user can join session
+            $this->authorizationChecker->isGranted(SessionVoter::ACCESS, $session);
+
+            // TODO work on role te remove role name from url
 
             $sessionConnections = $this->getSessionConnections($connectionInformation->getSessionId());
             $sessionConnections->register($connectionInformation);
@@ -168,17 +179,17 @@ class ArrowsMessageComponent implements MessageComponentInterface
         Session $session,
         Message $message
     ) {
-        // Start message (check source) : run session & return first sequence
+        // Start message: run session & return first sequence
         if ($message instanceof StartSession) {
-            if ($connectionInformation->getRole() !== SessionConnections::ROLE_OBSERVER) {
+            if (! $this->authorizationChecker->isGranted(SessionVoter::OBSERVE, $session)) {
                 throw new \InvalidArgumentException('You must be the observer to launch the test');
             }
             return new SessionSequence($session->start());
         }
 
-        // Response message (check source) : send response & return next sequence
+        // Response message: send response & return next sequence
         if ($message instanceof SessionResult) {
-            if ($connectionInformation->getRole() !== SessionConnections::ROLE_POSITION_ONE) {
+            if (! $this->authorizationChecker->isGranted(SessionVoter::RESPOND, $session)) {
                 throw new \InvalidArgumentException('You must be in position 1 to send a result');
             }
 

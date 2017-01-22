@@ -11,6 +11,7 @@ class SessionVoter extends Voter
     const ACCESS = 'access';
     const OBSERVE = 'observe';
     const RESPOND = 'respond';
+    const PREVIEW = 'preview';
 
     /**
      * Determines if the attribute and subject are supported by this voter.
@@ -66,6 +67,8 @@ class SessionVoter extends Voter
                 return $this->canObserve($subject, $user);
             case self::RESPOND:
                 return $this->canRespond($subject, $user);
+            case self::PREVIEW:
+                return $this->canPreview($subject, $user);
         }
 
         throw new \LogicException('This code should not be reached!');
@@ -100,6 +103,17 @@ class SessionVoter extends Voter
      * @return bool
      */
     private function canRespond(Session $subject, AuthorizationUser $user)
+    {
+        return true;
+    }
+
+    /**
+     * @param Session           $subject
+     * @param AuthorizationUser $user
+     *
+     * @return bool
+     */
+    private function canPreview(Session $subject, AuthorizationUser $user)
     {
         return true;
     }

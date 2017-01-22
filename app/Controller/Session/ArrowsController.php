@@ -29,7 +29,7 @@ class ArrowsController
         $response = new Response();
         $response->setContent(
             $this->twig->render(
-                'observer.twig',
+                'arrows/observer.twig',
                 [
                     'sessionId' => $sessionId
                 ]
@@ -49,7 +49,7 @@ class ArrowsController
         $response = new Response();
         $response->setContent(
             $this->twig->render(
-                'positionOne.twig',
+                'arrows/positionOne.twig',
                 [
                     'sessionId' => $sessionId
                 ]
@@ -69,7 +69,7 @@ class ArrowsController
         $response = new Response();
         $response->setContent(
             $this->twig->render(
-                'positionTwo.twig',
+                'arrows/positionTwo.twig',
                 [
                     'sessionId' => $sessionId
                 ]

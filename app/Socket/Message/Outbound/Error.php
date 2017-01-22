@@ -1,8 +1,10 @@
 <?php
 
-namespace BrasseursApplis\Arrows\App\Message;
+namespace BrasseursApplis\Arrows\App\Socket\Message\Outbound;
 
-class Error implements \JsonSerializable
+use BrasseursApplis\Arrows\App\Message\Message;
+
+class Error implements Message, \JsonSerializable
 {
     const TYPE = 'error';
 
@@ -17,6 +19,14 @@ class Error implements \JsonSerializable
     public function __construct($message)
     {
         $this->message = $message;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return self::TYPE;
     }
 
     /**

@@ -1,7 +1,8 @@
 <?php
 
-namespace BrasseursApplis\Arrows\App\Message;
+namespace BrasseursApplis\Arrows\App\Socket\Message\Inbound;
 
+use BrasseursApplis\Arrows\App\Message\Message;
 use BrasseursApplis\Arrows\VO\Duration;
 use BrasseursApplis\Arrows\VO\MillisecondTimestamp;
 use BrasseursApplis\Arrows\VO\Orientation;

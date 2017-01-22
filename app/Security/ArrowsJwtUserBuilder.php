@@ -1,14 +1,14 @@
 <?php
 
-namespace BrasseursApplis\Arrows\App\ServiceProvider;
+namespace BrasseursApplis\Arrows\App\Security;
 
-use BrasseursApplis\Arrows\App\Security\AuthorizationUser;
 use BrasseursApplis\Arrows\Id\UserId;
 use BrasseursApplis\Arrows\User;
 use Firebase\JWT\JWT;
+use RemiSan\Silex\JWT\Security\JwtUserBuilder;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
-class JwtUserBuilder
+class ArrowsJwtUserBuilder implements JwtUserBuilder
 {
     /** @var string */
     private $jwtKey;
@@ -17,14 +17,22 @@ class JwtUserBuilder
     private $allowedAlgorithms;
 
     /**
-     * JwtUserBuilder constructor.
+     * @param string $jwtKey
      *
-     * @param string   $jwtKey
-     * @param string[] $allowedAlgorithms
+     * @return void
      */
-    public function __construct($jwtKey, array $allowedAlgorithms)
+    public function setJwtKey($jwtKey)
     {
         $this->jwtKey = $jwtKey;
+    }
+
+    /**
+     * @param string[] $allowedAlgorithms
+     *
+     * @return void
+     */
+    public function setAllowedAlgorithms(array $allowedAlgorithms)
+    {
         $this->allowedAlgorithms = $allowedAlgorithms;
     }
 

@@ -1,11 +1,10 @@
 <?php
 
-namespace BrasseursApplis\Arrows\App\Message;
+namespace BrasseursApplis\Arrows\App\Socket\Connection;
 
-use BrasseursApplis\Arrows\App\ServiceProvider\JwtAuthenticator;
-use Guzzle\Http\Message\EntityEnclosingRequest;
 use Guzzle\Http\Message\RequestInterface;
 use Ratchet\ConnectionInterface;
+use RemiSan\Silex\JWT\Security\JwtAuthenticator;
 
 class ArrowsConnectionInformation
 {
