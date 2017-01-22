@@ -23,19 +23,6 @@ class DoctrineUserRepository extends EntityRepository implements UserRepository
     }
 
     /**
-     * @param string $userName
-     *
-     * @return User
-     */
-    public function getByUserName($userName)
-    {
-        /** @var User $user */
-        $user = $this->findOneBy(['userName' => $userName]);
-
-        return $user;
-    }
-
-    /**
      * @param User $user
      *
      * @return void

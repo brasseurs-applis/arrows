@@ -2,14 +2,13 @@
 
 namespace BrasseursApplis\Arrows\App\Security;
 
-use BrasseursApplis\Arrows\Id\UserId;
-use BrasseursApplis\Arrows\User;
+use BrasseursApplis\Arrows\App\DTO\UserDTO;
 use Firebase\JWT\JWT;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 class AuthorizationUser implements AdvancedUserInterface
 {
-    /** @var User */
+    /** @var UserDTO */
     private $user;
 
     /** @var string */
@@ -18,10 +17,10 @@ class AuthorizationUser implements AdvancedUserInterface
     /**
      * User constructor.
      *
-     * @param User   $user
-     * @param string $jwtKey
+     * @param UserDTO $user
+     * @param string  $jwtKey
      */
-    public function __construct(User $user, $jwtKey)
+    public function __construct(UserDTO $user, $jwtKey)
     {
         $this->user = $user;
         $this->jwt = JWT::encode(
@@ -35,7 +34,7 @@ class AuthorizationUser implements AdvancedUserInterface
     }
 
     /**
-     * @return UserId
+     * @return string
      */
     public function getId()
     {

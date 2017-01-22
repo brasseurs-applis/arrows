@@ -11,6 +11,7 @@ use BrasseursApplis\Arrows\App\Doctrine\SequenceCollectionType;
 use BrasseursApplis\Arrows\App\Doctrine\SessionIdType;
 use BrasseursApplis\Arrows\App\Doctrine\SubjectIdType;
 use BrasseursApplis\Arrows\App\Doctrine\UserIdType;
+use BrasseursApplis\Arrows\App\DTO\UserDTO;
 use BrasseursApplis\Arrows\App\Repository\InMemory\InMemorySessionRepository;
 use BrasseursApplis\Arrows\App\Security\ArrowsJwtUserBuilder;
 use BrasseursApplis\Arrows\App\Security\SessionVoter;
@@ -19,6 +20,7 @@ use BrasseursApplis\Arrows\App\Socket\ArrowsMessageComponent;
 use BrasseursApplis\Arrows\Id\ResearcherId;
 use BrasseursApplis\Arrows\Id\SessionId;
 use BrasseursApplis\Arrows\Id\SubjectId;
+use BrasseursApplis\Arrows\Service\UserService;
 use BrasseursApplis\Arrows\Session;
 use BrasseursApplis\Arrows\User;
 use BrasseursApplis\Arrows\VO\Orientation;
@@ -162,6 +164,11 @@ class ApplicationBuilder
                         [
                             [
                                 'type' => 'xml',
+                                'namespace' => 'BrasseursApplis\Arrows\App\DTO',
+                                'path' => $mappingPath . '/dto'
+                            ],
+                            [
+                                'type' => 'xml',
                                 'namespace' => 'BrasseursApplis\Arrows\VO',
                                 'path' => $mappingPath . '/embed'
                             ],
@@ -245,8 +252,20 @@ class ApplicationBuilder
             return $sessionRepository;
         };
 
-        $this->application['arrows.user.repository'] = function () use ($sessionRepository) {
+        $this->application['arrows.user.repository'] = function () {
             return $this->application['orm.em']->getRepository(User::class);
+        };
+
+        $this->application['arrows.user.finder'] = function () {
+            return $this->application['orm.em']->getRepository(UserDTO::class);
+        };
+
+
+        $this->application['arrows.user.service'] = function () {
+            return new UserService(
+                $this->application['arrows.user.repository'],
+                $this->application['security.default_encoder']
+            );
         };
     }
 
@@ -284,9 +303,9 @@ class ApplicationBuilder
 
         $this->application['user.controller'] = function() {
             return new UserController(
-                $this->application['security.default_encoder'],
-                $this->application['arrows.user.repository'],
+                $this->application['arrows.user.finder'],
                 $this->application['form.factory'],
+                $this->application['arrows.user.service'],
                 $this->application['twig'],
                 $this->application['url_generator']
             );
@@ -307,7 +326,7 @@ class ApplicationBuilder
                 'logout' => [ 'logout_path' => '/logout', 'invalidate_session' => true ],
                 'users' => function () {
                     return new UserProvider(
-                        $this->application['arrows.user.repository'],
+                        $this->application['arrows.user.finder'],
                         $this->config->getJwtKey()
                     );
                 }

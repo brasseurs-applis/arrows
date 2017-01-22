@@ -2,6 +2,7 @@
 
 namespace BrasseursApplis\Arrows\App\Security;
 
+use BrasseursApplis\Arrows\App\DTO\UserDTO;
 use BrasseursApplis\Arrows\Id\UserId;
 use BrasseursApplis\Arrows\User;
 use Firebase\JWT\JWT;
@@ -46,11 +47,11 @@ class ArrowsJwtUserBuilder implements JwtUserBuilder
         $decodedJwt = JWT::decode($jwtString, $this->jwtKey, $this->allowedAlgorithms);
 
         return new AuthorizationUser(
-            new User(
+            new UserDTO(
                 new UserId($decodedJwt->sub),
                 $decodedJwt->username,
-                '',
-                '',
+                null,
+                null,
                 $decodedJwt->roles
             ),
             $this->jwtKey

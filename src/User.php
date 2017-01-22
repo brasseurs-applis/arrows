@@ -4,6 +4,7 @@ namespace BrasseursApplis\Arrows;
 
 use Assert\Assertion;
 use BrasseursApplis\Arrows\Id\UserId;
+use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 class User
 {
@@ -31,25 +32,38 @@ class User
      *
      * @param UserId   $id
      * @param string   $userName
-     * @param string   $password
-     * @param string   $salt
-     * @param string[] $roles
      */
-    public function __construct(UserId $id, $userName, $password, $salt, array $roles = [])
+    public function __construct(UserId $id, $userName)
     {
         $this->id = $id;
         $this->userName = $userName;
-        $this->password = $password;
-        $this->roles = $roles;
-        $this->salt = $salt;
+        $this->roles = [];
+        $this->salt = base64_encode(random_bytes(10));
     }
 
     /**
-     * @param string $password
+     * @param string                   $password
+     * @param PasswordEncoderInterface $passwordEncoder
      */
-    public function changePassword($password)
+    public function changePassword($password, PasswordEncoderInterface $passwordEncoder)
     {
-        $this->password = $password;
+        $this->password = $passwordEncoder->encodePassword($password, $this->salt);
+    }
+
+    /**
+     * @param string[] $roles
+     */
+    public function updateRoles(array $roles)
+    {
+        $removeRoles = array_diff($this->roles, $roles);
+        foreach ($removeRoles as $role) {
+            $this->removeRole($role);
+        }
+
+        $addRoles = array_diff($roles, $this->roles);
+        foreach ($addRoles as $role) {
+            $this->addRole($role);
+        }
     }
 
     /**

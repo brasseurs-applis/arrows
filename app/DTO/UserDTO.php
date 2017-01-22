@@ -1,13 +1,12 @@
 <?php
 
-namespace BrasseursApplis\Arrows\App\Form;
+namespace BrasseursApplis\Arrows\App\DTO;
 
-use BrasseursApplis\Arrows\User;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-class UserForm
+class UserDTO
 {
     /** @var string */
     private $id;
@@ -18,21 +17,26 @@ class UserForm
     /** @var string */
     private $password;
 
+    /** @var string */
+    private $salt;
+
     /** @var string[] */
     private $roles;
 
     /**
-     * UserForm constructor.
+     * UserDTO constructor.
      *
      * @param string   $id
      * @param string   $userName
      * @param string   $password
+     * @param null     $salt
      * @param string[] $roles
      */
     public function __construct(
         $id,
         $userName = null,
         $password = null,
+        $salt = null,
         array $roles = []
     ) {
         $this->id = $id;
@@ -90,6 +94,22 @@ class UserForm
     }
 
     /**
+     * @return string
+     */
+    public function getSalt()
+    {
+        return $this->salt;
+    }
+
+    /**
+     * @param string $salt
+     */
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+    }
+
+    /**
      * @return string[]
      */
     public function getRoles()
@@ -108,26 +128,11 @@ class UserForm
     /**
      * @param ClassMetadata $metadata
      */
-    static public function loadValidatorMetadata(ClassMetadata $metadata)
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('userName', new NotBlank());
         $metadata->addPropertyConstraint('password', new NotBlank());
         $metadata->addPropertyConstraint('password', new Length(['min' => 5]));
         $metadata->addPropertyConstraint('roles', new NotBlank());
-    }
-
-    /**
-     * @param User $user
-     *
-     * @return UserForm
-     */
-    public static function fromEntity($user)
-    {
-        return new self(
-            (string) $user->getId(),
-            $user->getUserName(),
-            null,
-            $user->getRoles()
-        );
     }
 }

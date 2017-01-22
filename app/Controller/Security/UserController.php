@@ -2,29 +2,30 @@
 
 namespace BrasseursApplis\Arrows\App\Controller\Security;
 
-use BrasseursApplis\Arrows\App\Form\Type\UserType;
-use BrasseursApplis\Arrows\App\Form\UserForm;
+use BrasseursApplis\Arrows\App\DTO\UserDTO;
+use BrasseursApplis\Arrows\App\Finder\UserFinder;
+use BrasseursApplis\Arrows\App\Form\UserType;
 use BrasseursApplis\Arrows\Id\UserId;
-use BrasseursApplis\Arrows\Repository\UserRepository;
+use BrasseursApplis\Arrows\Service\UserService;
 use BrasseursApplis\Arrows\User;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGenerator;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 class UserController
 {
-    /** @var PasswordEncoderInterface */
-    private $passwordEncoder;
-
-    /** @var UserRepository */
-    private $userRepository;
+    /** @var UserFinder */
+    private $userFinder;
 
     /** @var FormFactoryInterface */
     private $formFactory;
+
+    /** @var UserService */
+    private $userService;
 
     /** @var \Twig_Environment */
     private $twig;
@@ -35,43 +36,24 @@ class UserController
     /**
      * UserController constructor.
      *
-     * @param PasswordEncoderInterface $passwordEncoder
-     * @param UserRepository           $userRepository
-     * @param FormFactoryInterface     $formFactory
-     * @param \Twig_Environment        $twig
-     * @param UrlGenerator             $urlGenerator
+     * @param UserFinder           $userFinder
+     * @param FormFactoryInterface $formFactory
+     * @param UserService          $userService
+     * @param \Twig_Environment    $twig
+     * @param UrlGenerator         $urlGenerator
      */
     public function __construct(
-        PasswordEncoderInterface $passwordEncoder,
-        UserRepository $userRepository,
+        UserFinder $userFinder,
         FormFactoryInterface $formFactory,
+        UserService $userService,
         \Twig_Environment $twig,
         UrlGenerator $urlGenerator
     ) {
-        $this->passwordEncoder = $passwordEncoder;
-        $this->userRepository = $userRepository;
+        $this->userFinder = $userFinder;
         $this->formFactory = $formFactory;
         $this->twig = $twig;
         $this->urlGenerator = $urlGenerator;
-    }
-
-    public function createUser()
-    {
-        $userName = 'toto';
-        $rawPassword = 'toto';
-
-        $salt = base64_encode(random_bytes(10));
-        $password = $this->passwordEncoder->encodePassword($rawPassword, $salt);
-
-        $user = new User(
-            new UserId(Uuid::uuid4()),
-            $userName,
-            $password,
-            $salt,
-            []
-        );
-
-        $this->userRepository->persist($user);
+        $this->userService = $userService;
     }
 
     /**
@@ -90,14 +72,17 @@ class UserController
      */
     public function editAction(Request $request, $userId)
     {
-        $userId = new UserId($userId);
-        $user = $this->userRepository->get($userId);
+        $user = $this->userFinder->find($userId);
+        $new = false;
 
-        // Pre-fill the user
-        $userForm = ($user === null) ? new UserForm($userId) : UserForm::fromEntity($user);
-        $form = $this->formFactory->create(UserType::class, $userForm);
+        if ($user == null) {
+            $user = new UserDTO($userId);
+            $new = true;
+        };
 
+        $form = $this->formFactory->create(UserType::class, $user);
         $form->handleRequest($request);
+
         if (!$form->isSubmitted() || ! $form->isValid()) {
             $response = new Response();
             $response->setContent(
@@ -110,37 +95,68 @@ class UserController
             return $response;
         }
 
-        // Save the new user information
+        /** @var User $user */
+        $user = $form->getData();
+        $userId = new UserId($user->getId());
 
-        /** @var UserForm $userForm */
-        $userForm = $form->getData();
-
-        if ($user === null) {
-            $salt = base64_encode(random_bytes(10));
-            $user = new User($userId, $userForm->getUserName(), null, $salt, []);
+        if ($new) {
+            $this->userService->createUser($userId, $user->getUserName(), $user->getPassword(), $user->getRoles());
+        } else {
+            $this->userService->updateUser($userId, $user->getPassword(), $user->getRoles());
         }
-
-        $user->changePassword($this->passwordEncoder->encodePassword($userForm->getPassword(), $user->getSalt()));
-
-        $removeRoles = array_diff($user->getRoles(), $userForm->getRoles());
-        foreach ($removeRoles as $role) {
-            $user->removeRole($role);
-        }
-
-        $addRoles = array_diff($userForm->getRoles(), $user->getRoles());
-        foreach ($addRoles as $role) {
-            $user->addRole($role);
-        }
-
-        $this->userRepository->persist($user);
 
         return new RedirectResponse($this->urlGenerator->generate('user_list'));
     }
 
-    public function listAction()
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function listAction(Request $request)
     {
+        $page = $request->get('page') ? : 1;
+        $elementsPerPage = $request->get('elements') ? : 20;
+        $sortParamString = $request->get('sort') ? : '';
+        $sort = array_reduce(explode(',', $sortParamString), function ($sortArray, $sortString) {
+            if ($sortString === '') {
+                return $sortArray;
+            }
+
+            $sortParameters = explode(':', $sortString);
+            $orientation = isset($sortParameters[1]) ? strtoupper($sortParameters[1]) : 'ASC';
+            if (! in_array($orientation, [ 'ASC', 'DESC' ])) {
+                $orientation = 'ASC';
+            }
+            $sortArray[$sortParameters[0]] = $orientation;
+
+            return $sortArray;
+        }, []);
+
+        try {
+            $paginatedUsers = $this->userFinder->getPaginatedUsers($sort, $page, $elementsPerPage);
+        } catch (\OutOfBoundsException $e) {
+            throw new NotFoundHttpException();
+        }
+
+        $totalElements = $paginatedUsers->count();
+
         $response = new Response();
-        $response->setContent($this->twig->render('user/list.twig'));
+        $response->setContent(
+            $this->twig->render(
+                'user/list.twig',
+                [
+                    'users' => $paginatedUsers->getIterator()->getArrayCopy(),
+                    'pagination' => [
+                        'page' => $page,
+                        'elements' => $elementsPerPage,
+                        'sort' => $sortParamString,
+                        'totalElements' => $totalElements,
+                        'totalPages' => ceil($totalElements / $elementsPerPage)
+                    ]
+                ]
+            )
+        );
 
         return $response;
     }

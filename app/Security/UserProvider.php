@@ -2,7 +2,7 @@
 
 namespace BrasseursApplis\Arrows\App\Security;
 
-use BrasseursApplis\Arrows\Repository\UserRepository;
+use BrasseursApplis\Arrows\App\Finder\UserFinder;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -10,8 +10,8 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class UserProvider implements UserProviderInterface
 {
-    /** @var UserRepository */
-    private $userRepository;
+    /** @var UserFinder */
+    private $userFinder;
 
     /** @var string */
     private $jwtKey;
@@ -19,12 +19,12 @@ class UserProvider implements UserProviderInterface
     /**
      * UserProvider constructor.
      *
-     * @param UserRepository $userRepository
+     * @param UserFinder $userFinder
      * @param string         $jwtKey
      */
-    public function __construct(UserRepository $userRepository, $jwtKey)
+    public function __construct(UserFinder $userFinder, $jwtKey)
     {
-        $this->userRepository = $userRepository;
+        $this->userFinder = $userFinder;
         $this->jwtKey = $jwtKey;
     }
 
@@ -42,7 +42,7 @@ class UserProvider implements UserProviderInterface
      */
     public function loadUserByUsername($username)
     {
-        $user = $this->userRepository->getByUserName($username);
+        $user = $this->userFinder->findByUserName($username);
 
         if ($user === null) {
             throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $username));

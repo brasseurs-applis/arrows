@@ -1,8 +1,8 @@
 <?php
 
-namespace BrasseursApplis\Arrows\App\Form\Type;
+namespace BrasseursApplis\Arrows\App\Form;
 
-use BrasseursApplis\Arrows\App\Form\UserForm;
+use BrasseursApplis\Arrows\App\DTO\UserDTO;
 use BrasseursApplis\Arrows\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -40,6 +40,6 @@ class UserType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults( [ 'data_class' => UserForm::class ] );
+        $resolver->setDefaults( [ 'data_class' => UserDTO::class ] );
     }
 }
