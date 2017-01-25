@@ -2,7 +2,7 @@
 
 namespace BrasseursApplis\Arrows\App\Socket\Message\Inbound;
 
-use BrasseursApplis\Arrows\App\Message\Message;
+use BrasseursApplis\Arrows\App\Socket\Message;
 use BrasseursApplis\Arrows\VO\Duration;
 use BrasseursApplis\Arrows\VO\MillisecondTimestamp;
 use BrasseursApplis\Arrows\VO\Orientation;

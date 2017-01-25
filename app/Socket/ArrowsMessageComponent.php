@@ -2,8 +2,8 @@
 
 namespace BrasseursApplis\Arrows\App\Socket;
 
-use BrasseursApplis\Arrows\App\Message\Message;
 use BrasseursApplis\Arrows\App\Security\SessionVoter;
+use BrasseursApplis\Arrows\App\Security\UnauthorizedException;
 use BrasseursApplis\Arrows\App\Socket\Connection\ArrowsConnectionInformation;
 use BrasseursApplis\Arrows\App\Socket\Connection\SessionConnections;
 use BrasseursApplis\Arrows\App\Socket\Message\Inbound\SessionResult;
@@ -58,63 +58,40 @@ class ArrowsMessageComponent implements MessageComponentInterface
      */
     public function onOpen(ConnectionInterface $conn)
     {
-        $connectionInformation = new ArrowsConnectionInformation($conn);
+        $this->protect(
+            $conn,
+            function (ArrowsConnectionInformation $connectionInformation) {
+                // TODO work on role to remove role name from url
 
-        try {
-            $connectionInformation->authenticate($this->jwtAuthenticator);
+                $sessionConnections = $this->getSessionConnections($connectionInformation->getSessionId());
+                $sessionConnections->register($connectionInformation);
 
-            $session = $this->sessionRepository->get(new SessionId($connectionInformation->getSessionId()));
-
-            if ($session === null) {
-                throw new \InvalidArgumentException('Session not found');
+                if ($sessionConnections->isComplete()) {
+                    $sessionConnections->broadcast(new SessionReady());
+                }
             }
-
-            // check user can join session
-            $this->authorizationChecker->isGranted(SessionVoter::ACCESS, $session);
-
-            // TODO work on role te remove role name from url
-
-            $sessionConnections = $this->getSessionConnections($connectionInformation->getSessionId());
-            $sessionConnections->register($connectionInformation);
-
-            if ($sessionConnections->isComplete()) {
-                $sessionConnections->broadcast(new SessionReady());
-            }
-        } catch (\Exception $e) {
-            $connectionInformation->send(new Error($e->getMessage()));
-        }
+        );
     }
 
     /**
-     * @param ConnectionInterface $from
+     * @param ConnectionInterface $conn
      * @param string              $msg
      */
-    public function onMessage(ConnectionInterface $from, $msg)
+    public function onMessage(ConnectionInterface $conn, $msg)
     {
-        $connectionInformation = new ArrowsConnectionInformation($from);
+        $this->protect(
+            $conn,
+            function (ArrowsConnectionInformation $connectionInformation, Session $session) use ($msg) {
+                $sessionConnections = $this->getSessionConnections($connectionInformation->getSessionId());
 
-        try {
-            $connectionInformation->authenticate($this->jwtAuthenticator);
+                $message = self::parseMessage($msg);
+                $response = $this->handleMessage($connectionInformation, $session, $message);
 
-            $session = $this->sessionRepository->get(new SessionId($connectionInformation->getSessionId()));
+                $this->sessionRepository->persist($session);
 
-            if ($session === null) {
-                throw new \InvalidArgumentException('Session not found');
+                $sessionConnections->broadcast($response);
             }
-
-            // TODO check user is in session with voters
-
-            $sessionConnections = $this->getSessionConnections($connectionInformation->getSessionId());
-
-            $message = self::parseMessage($msg);
-            $response = $this->handleMessage($connectionInformation, $session, $message);
-
-            $this->sessionRepository->persist($session);
-
-            $sessionConnections->broadcast($response);
-        } catch (\Exception $e) {
-            $connectionInformation->send(new Error($e->getMessage()));
-        }
+        );
     }
 
     /**
@@ -122,26 +99,19 @@ class ArrowsMessageComponent implements MessageComponentInterface
      */
     public function onClose(ConnectionInterface $conn)
     {
-        $connectionInformation = new ArrowsConnectionInformation($conn);
+        $this->protect(
+            $conn,
+            function (ArrowsConnectionInformation $connectionInformation, Session $session) {
+                $sessionConnections = $this->getSessionConnections($connectionInformation->getSessionId());
+                $sessionConnections->unregister($connectionInformation);
 
-        try {
-            $connectionInformation->authenticate($this->jwtAuthenticator);
+                $session->cancel();
 
-            $sessionConnections = $this->getSessionConnections($connectionInformation->getSessionId());
-            $sessionConnections->unregister($connectionInformation);
+                $this->sessionRepository->persist($session);
 
-            $session = $this->sessionRepository->get(new SessionId($connectionInformation->getSessionId()));
-            if ($session === null) {
-                return;
+                $sessionConnections->broadcast(new SessionEnded());
             }
-
-            $session->cancel();
-            $this->sessionRepository->persist($session);
-
-            $sessionConnections->broadcast(new SessionEnded());
-        } catch (\Exception $e) {
-            $connectionInformation->send(new Error($e->getMessage()));
-        }
+        );
     }
 
     /**
@@ -151,6 +121,34 @@ class ArrowsMessageComponent implements MessageComponentInterface
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
         $conn->close();
+    }
+
+    /**
+     * @param ConnectionInterface $conn
+     * @param \Closure            $protected
+     */
+    private function protect(ConnectionInterface $conn, \Closure $protected)
+    {
+        $connectionInformation = new ArrowsConnectionInformation($conn);
+        $connectionInformation->authenticate($this->jwtAuthenticator);
+
+        $session = $this->sessionRepository->get(new SessionId($connectionInformation->getSessionId()));
+
+        if ($session === null) {
+            throw new \InvalidArgumentException('Session not found');
+        }
+
+        if (! $this->authorizationChecker->isGranted(SessionVoter::ACCESS, $session)) {
+            throw new UnauthorizedException();
+        }
+
+        try {
+            $protected($connectionInformation, $session);
+        } catch (UnauthorizedException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            $connectionInformation->send(new Error($e->getMessage()));
+        }
     }
 
     /**
@@ -182,7 +180,7 @@ class ArrowsMessageComponent implements MessageComponentInterface
         // Start message: run session & return first sequence
         if ($message instanceof StartSession) {
             if (! $this->authorizationChecker->isGranted(SessionVoter::OBSERVE, $session)) {
-                throw new \InvalidArgumentException('You must be the observer to launch the test');
+                throw new UnauthorizedException('You must be the observer to launch the test');
             }
             return new SessionSequence($session->start());
         }
@@ -190,7 +188,7 @@ class ArrowsMessageComponent implements MessageComponentInterface
         // Response message: send response & return next sequence
         if ($message instanceof SessionResult) {
             if (! $this->authorizationChecker->isGranted(SessionVoter::RESPOND, $session)) {
-                throw new \InvalidArgumentException('You must be in position 1 to send a result');
+                throw new UnauthorizedException('You must be in position 1 to send a result');
             }
 
             $sequence = $session->result($message->getOrientation(), $message->getDuration());

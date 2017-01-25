@@ -360,7 +360,7 @@ class ApplicationBuilder
 
         $this->application['security.access_rules'] = [
             [ '^/session/.*/observer$', User::ROLE_RESEARCHER ],
-            [ '^/session/.*/(one|two)$', User::ROLE_ADMIN ]
+            [ '^/session/.*/(one|two)$', User::ROLE_RESEARCHER ]
         ];
     }
 

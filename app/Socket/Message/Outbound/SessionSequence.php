@@ -2,7 +2,7 @@
 
 namespace BrasseursApplis\Arrows\App\Socket\Message\Outbound;
 
-use BrasseursApplis\Arrows\App\Message\Message;
+use BrasseursApplis\Arrows\App\Socket\Message;
 use BrasseursApplis\Arrows\VO\Sequence;
 
 class SessionSequence implements Message, \JsonSerializable

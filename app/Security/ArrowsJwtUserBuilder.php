@@ -4,7 +4,6 @@ namespace BrasseursApplis\Arrows\App\Security;
 
 use BrasseursApplis\Arrows\App\DTO\UserDTO;
 use BrasseursApplis\Arrows\Id\UserId;
-use BrasseursApplis\Arrows\User;
 use Firebase\JWT\JWT;
 use RemiSan\Silex\JWT\Security\JwtUserBuilder;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;

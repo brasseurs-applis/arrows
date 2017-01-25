@@ -2,7 +2,7 @@
 
 namespace BrasseursApplis\Arrows\App\Socket\Message\Inbound;
 
-use BrasseursApplis\Arrows\App\Message\Message;
+use BrasseursApplis\Arrows\App\Socket\Message;
 
 class StartSession implements Message, \JsonSerializable
 {

@@ -64,6 +64,8 @@ class User
         foreach ($addRoles as $role) {
             $this->addRole($role);
         }
+
+        $this->keepRolesClean();
     }
 
     /**
@@ -78,6 +80,8 @@ class User
         }
 
         $this->roles[] = $role;
+
+        $this->keepRolesClean();
     }
 
     /**
@@ -94,6 +98,8 @@ class User
         }
 
         unset($this->roles[$position]);
+
+        $this->keepRolesClean();
     }
 
     /**
@@ -125,7 +131,7 @@ class User
      */
     public function getRoles()
     {
-        return $this->roles;
+        return array_values($this->roles);
     }
 
     /**
@@ -134,5 +140,13 @@ class User
     public function getSalt()
     {
         return $this->salt;
+    }
+
+    /**
+     *
+     */
+    private function keepRolesClean()
+    {
+        $this->roles = array_values($this->roles);
     }
 }

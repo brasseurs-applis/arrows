@@ -1,6 +1,6 @@
 <?php
 
-namespace BrasseursApplis\Arrows\App\Message;
+namespace BrasseursApplis\Arrows\App\Socket;
 
 interface Message
 {

@@ -2,7 +2,7 @@
 
 namespace BrasseursApplis\Arrows\App\Socket\Message\Outbound;
 
-use BrasseursApplis\Arrows\App\Message\Message;
+use BrasseursApplis\Arrows\App\Socket\Message;
 
 class SessionEnded implements Message, \JsonSerializable
 {
