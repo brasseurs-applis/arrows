@@ -75,10 +75,10 @@ class UserController
         $user = $this->userFinder->find($userId);
         $new = false;
 
-        if ($user == null) {
+        if ($user === null) {
             $user = new UserDTO($userId);
             $new = true;
-        };
+        }
 
         $form = $this->formFactory->create(UserType::class, $user);
         $form->handleRequest($request);
