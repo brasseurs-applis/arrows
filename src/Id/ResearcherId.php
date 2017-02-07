@@ -3,6 +3,7 @@
 namespace BrasseursApplis\Arrows\Id;
 
 use Assert\Assertion;
+use Assert\AssertionFailedException;
 
 class ResearcherId implements \JsonSerializable
 {
@@ -13,6 +14,8 @@ class ResearcherId implements \JsonSerializable
      * ScenarioTemplateId constructor.
      *
      * @param string $id
+     *
+     * @throws AssertionFailedException
      */
     public function __construct($id)
     {

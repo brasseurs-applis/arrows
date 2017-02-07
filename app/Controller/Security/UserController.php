@@ -2,18 +2,23 @@
 
 namespace BrasseursApplis\Arrows\App\Controller\Security;
 
+use Assert\AssertionFailedException;
 use BrasseursApplis\Arrows\App\DTO\UserDTO;
 use BrasseursApplis\Arrows\App\Finder\UserFinder;
 use BrasseursApplis\Arrows\App\Form\UserType;
 use BrasseursApplis\Arrows\Id\UserId;
 use BrasseursApplis\Arrows\Service\UserService;
-use BrasseursApplis\Arrows\User;
+use Doctrine\ORM\ORMInvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
+use Symfony\Component\Routing\Exception\InvalidParameterException;
+use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class UserController
@@ -58,6 +63,8 @@ class UserController
 
     /**
      * @return RedirectResponse
+     *
+     * @throws \InvalidArgumentException
      */
     public function createAction()
     {
@@ -69,6 +76,18 @@ class UserController
      * @param string  $userId
      *
      * @return Response
+     *
+     * @throws ORMInvalidArgumentException
+     * @throws AssertionFailedException
+     * @throws InvalidOptionsException
+     * @throws RouteNotFoundException
+     * @throws MissingMandatoryParametersException
+     * @throws InvalidParameterException
+     * @throws \InvalidArgumentException
+     * @throws \UnexpectedValueException
+     * @throws \Twig_Error_Syntax
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Loader
      */
     public function editAction(Request $request, $userId)
     {
@@ -95,7 +114,7 @@ class UserController
             return $response;
         }
 
-        /** @var User $user */
+        /** @var UserDTO $user */
         $user = $form->getData();
         $userId = new UserId($user->getId());
 
@@ -112,6 +131,13 @@ class UserController
      * @param Request $request
      *
      * @return Response
+     *
+     * @throws NotFoundHttpException
+     * @throws \InvalidArgumentException
+     * @throws \UnexpectedValueException
+     * @throws \Twig_Error_Syntax
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Loader
      */
     public function listAction(Request $request)
     {
@@ -125,7 +151,7 @@ class UserController
 
             $sortParameters = explode(':', $sortString);
             $orientation = isset($sortParameters[1]) ? strtoupper($sortParameters[1]) : 'ASC';
-            if (! in_array($orientation, [ 'ASC', 'DESC' ])) {
+            if (! in_array($orientation, [ 'ASC', 'DESC' ], true)) {
                 $orientation = 'ASC';
             }
             $sortArray[$sortParameters[0]] = $orientation;

@@ -6,6 +6,8 @@ use BrasseursApplis\Arrows\Id\ScenarioTemplateId;
 use BrasseursApplis\Arrows\Repository\ScenarioTemplateRepository;
 use BrasseursApplis\Arrows\ScenarioTemplate;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMInvalidArgumentException;
 
 class DoctrineScenarioTemplateRepository extends EntityRepository implements ScenarioTemplateRepository
 {
@@ -26,6 +28,9 @@ class DoctrineScenarioTemplateRepository extends EntityRepository implements Sce
      * @param ScenarioTemplate $scenarioTemplate
      *
      * @return void
+     *
+     * @throws OptimisticLockException
+     * @throws ORMInvalidArgumentException
      */
     public function persist(ScenarioTemplate $scenarioTemplate)
     {
@@ -37,6 +42,9 @@ class DoctrineScenarioTemplateRepository extends EntityRepository implements Sce
      * @param ScenarioTemplate $scenarioTemplate
      *
      * @return void
+     *
+     * @throws OptimisticLockException
+     * @throws ORMInvalidArgumentException
      */
     public function delete(ScenarioTemplate $scenarioTemplate)
     {

@@ -2,6 +2,7 @@
 
 namespace BrasseursApplis\Arrows\VO;
 
+use Assert\AssertionFailedException;
 use BrasseursApplis\Arrows\Exception\ScenarioAssertion;
 use BrasseursApplis\Arrows\Exception\ScenarioException;
 
@@ -26,6 +27,9 @@ class Scenario implements \JsonSerializable
 
     /**
      * @return Sequence
+     *
+     * @throws ScenarioException
+     * @throws AssertionFailedException
      */
     public function run()
     {
@@ -46,6 +50,9 @@ class Scenario implements \JsonSerializable
 
     /**
      * @return Sequence
+     *
+     * @throws ScenarioException
+     * @throws AssertionFailedException
      */
     public function current()
     {
@@ -56,6 +63,9 @@ class Scenario implements \JsonSerializable
 
     /**
      * @return Sequence
+     *
+     * @throws ScenarioException
+     * @throws AssertionFailedException
      */
     public function next()
     {
@@ -85,6 +95,7 @@ class Scenario implements \JsonSerializable
 
     /**
      * @throws ScenarioException
+     * @throws AssertionFailedException
      */
     private function ensureNextPositionIsInBounds()
     {
@@ -93,6 +104,7 @@ class Scenario implements \JsonSerializable
 
     /**
      * @throws ScenarioException
+     * @throws AssertionFailedException
      */
     private function ensureScenarioIsNotAlreadyRunning()
     {
@@ -101,6 +113,7 @@ class Scenario implements \JsonSerializable
 
     /**
      * @throws ScenarioException
+     * @throws AssertionFailedException
      */
     private function ensureScenarioIsRunning()
     {
@@ -127,6 +140,8 @@ class Scenario implements \JsonSerializable
      * @param array $array
      *
      * @return Scenario
+     *
+     * @throws AssertionFailedException
      */
     public static function fromJsonArray(array $array)
     {

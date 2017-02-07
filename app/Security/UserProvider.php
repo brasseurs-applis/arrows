@@ -3,6 +3,7 @@
 namespace BrasseursApplis\Arrows\App\Security;
 
 use BrasseursApplis\Arrows\App\Finder\UserFinder;
+use Doctrine\ORM\ORMInvalidArgumentException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -38,7 +39,8 @@ class UserProvider implements UserProviderInterface
      *
      * @return UserInterface
      *
-     * @throws UsernameNotFoundException if the user is not found
+     * @throws ORMInvalidArgumentException
+     * @throws UsernameNotFoundException
      */
     public function loadUserByUsername($username)
     {
@@ -63,7 +65,9 @@ class UserProvider implements UserProviderInterface
      *
      * @return UserInterface
      *
-     * @throws UnsupportedUserException if the account is not supported
+     * @throws ORMInvalidArgumentException
+     * @throws UsernameNotFoundException
+     * @throws UnsupportedUserException
      */
     public function refreshUser(UserInterface $user)
     {

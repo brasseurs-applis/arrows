@@ -3,6 +3,7 @@
 namespace BrasseursApplis\Arrows;
 
 use Assert\Assertion;
+use Assert\AssertionFailedException;
 use BrasseursApplis\Arrows\Id\ResearcherId;
 use BrasseursApplis\Arrows\Id\SessionId;
 use BrasseursApplis\Arrows\VO\Duration;
@@ -84,6 +85,9 @@ class Session
 
     /**
      * @return Sequence
+     *
+     * @throws Exception\ScenarioException
+     * @throws AssertionFailedException
      */
     public function start()
     {
@@ -99,6 +103,9 @@ class Session
      * @param Duration    $duration
      *
      * @return Sequence
+     *
+     * @throws Exception\ScenarioException
+     * @throws AssertionFailedException
      */
     public function result(Orientation $orientation, Duration $duration)
     {
@@ -130,6 +137,9 @@ class Session
 
     /**
      * @return Sequence
+     *
+     * @throws Exception\ScenarioException
+     * @throws AssertionFailedException
      */
     private function next()
     {

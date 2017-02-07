@@ -2,6 +2,7 @@
 
 namespace BrasseursApplis\Arrows;
 
+use Assert\AssertionFailedException;
 use BrasseursApplis\Arrows\Exception\ScenarioAssertion;
 use BrasseursApplis\Arrows\Exception\ScenarioException;
 use BrasseursApplis\Arrows\Id\ResearcherId;
@@ -34,6 +35,8 @@ class ScenarioTemplate
      * @param ResearcherId       $author
      * @param string             $name
      * @param int                $nbSequences
+     *
+     * @throws AssertionFailedException
      */
     public function __construct(ScenarioTemplateId $id, ResearcherId $author, $name, $nbSequences)
     {
@@ -78,6 +81,9 @@ class ScenarioTemplate
 
     /**
      * @param Sequence $sequence
+     *
+     * @throws ScenarioException
+     * @throws AssertionFailedException
      */
     public function addSequence(Sequence $sequence)
     {
@@ -89,6 +95,9 @@ class ScenarioTemplate
     /**
      * @param int      $position
      * @param Sequence $sequence
+     *
+     * @throws AssertionFailedException
+     * @throws ScenarioException
      */
     public function replaceSequence($position, Sequence $sequence)
     {
@@ -101,6 +110,9 @@ class ScenarioTemplate
      * @param int $position
      *
      * @return Sequence
+     *
+     * @throws ScenarioException
+     * @throws AssertionFailedException
      */
     public function getSequence($position)
     {
@@ -111,6 +123,9 @@ class ScenarioTemplate
 
     /**
      * @return Scenario
+     *
+     * @throws ScenarioException
+     * @throws AssertionFailedException
      */
     public function getScenario()
     {
@@ -141,6 +156,7 @@ class ScenarioTemplate
 
     /**
      * @throws ScenarioException
+     * @throws AssertionFailedException
      */
     private function ensureScenarioIsComplete()
     {
@@ -151,6 +167,7 @@ class ScenarioTemplate
      * @param $position
      *
      * @throws ScenarioException
+     * @throws AssertionFailedException
      */
     private function ensureSequenceExistsAtPosition($position)
     {

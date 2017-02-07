@@ -6,6 +6,8 @@ use BrasseursApplis\Arrows\Id\SessionId;
 use BrasseursApplis\Arrows\Repository\SessionRepository;
 use BrasseursApplis\Arrows\Session;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMInvalidArgumentException;
 
 class DoctrineSessionRepository extends EntityRepository implements SessionRepository
 {
@@ -26,6 +28,9 @@ class DoctrineSessionRepository extends EntityRepository implements SessionRepos
      * @param Session $session
      *
      * @return void
+     *
+     * @throws OptimisticLockException
+     * @throws ORMInvalidArgumentException
      */
     public function persist(Session $session)
     {
@@ -37,6 +42,9 @@ class DoctrineSessionRepository extends EntityRepository implements SessionRepos
      * @param Session $session
      *
      * @return void
+     *
+     * @throws OptimisticLockException
+     * @throws ORMInvalidArgumentException
      */
     public function delete(Session $session)
     {

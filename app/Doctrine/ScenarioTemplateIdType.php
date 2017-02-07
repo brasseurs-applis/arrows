@@ -2,6 +2,7 @@
 
 namespace BrasseursApplis\Arrows\App\Doctrine;
 
+use Assert\AssertionFailedException;
 use BrasseursApplis\Arrows\Id\ScenarioTemplateId;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\GuidType;
@@ -23,7 +24,10 @@ class ScenarioTemplateIdType extends GuidType
     /**
      * @param  string           $value
      * @param  AbstractPlatform $platform
+     *
      * @return ScenarioTemplateId
+     *
+     * @throws AssertionFailedException
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {

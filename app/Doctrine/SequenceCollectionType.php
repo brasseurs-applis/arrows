@@ -2,6 +2,7 @@
 
 namespace BrasseursApplis\Arrows\App\Doctrine;
 
+use Assert\AssertionFailedException;
 use BrasseursApplis\Arrows\VO\SequenceCollection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\JsonArrayType;
@@ -21,7 +22,12 @@ class SequenceCollectionType extends JsonArrayType
     }
 
     /**
-     * {@inheritdoc}
+     * @param mixed            $value
+     * @param AbstractPlatform $platform
+     *
+     * @return SequenceCollection
+     *
+     * @throws AssertionFailedException
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {

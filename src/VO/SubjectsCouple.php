@@ -2,6 +2,7 @@
 
 namespace BrasseursApplis\Arrows\VO;
 
+use Assert\AssertionFailedException;
 use BrasseursApplis\Arrows\Id\SubjectId;
 
 class SubjectsCouple implements \JsonSerializable
@@ -62,6 +63,8 @@ class SubjectsCouple implements \JsonSerializable
      * @param array $array
      *
      * @return SubjectsCouple
+     *
+     * @throws AssertionFailedException
      */
     public static function fromJsonArray(array $array)
     {

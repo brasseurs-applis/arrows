@@ -46,7 +46,7 @@ class AuthorizationUser implements AdvancedUserInterface
      */
     public function getUsername()
     {
-        return $this->user->getUsername();
+        return $this->user->getUserName();
     }
 
     /**

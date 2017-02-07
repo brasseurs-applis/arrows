@@ -2,6 +2,7 @@
 
 namespace BrasseursApplis\Arrows\App\Socket\Message\Inbound;
 
+use Assert\AssertionFailedException;
 use BrasseursApplis\Arrows\App\Socket\Message;
 use BrasseursApplis\Arrows\VO\Duration;
 use BrasseursApplis\Arrows\VO\MillisecondTimestamp;
@@ -44,6 +45,8 @@ class SessionResult implements Message, \JsonSerializable
 
     /**
      * @return Orientation
+     *
+     * @throws \InvalidArgumentException
      */
     public function getOrientation()
     {
@@ -59,6 +62,8 @@ class SessionResult implements Message, \JsonSerializable
 
     /**
      * @return Duration
+     *
+     * @throws AssertionFailedException
      */
     public function getDuration()
     {

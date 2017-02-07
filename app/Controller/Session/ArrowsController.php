@@ -23,6 +23,12 @@ class ArrowsController
      * @param string $sessionId
      *
      * @return Response
+     *
+     * @throws \UnexpectedValueException
+     * @throws \InvalidArgumentException
+     * @throws \Twig_Error_Syntax
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Loader
      */
     public function observerAction($sessionId)
     {
@@ -43,6 +49,12 @@ class ArrowsController
      * @param string $sessionId
      *
      * @return Response
+     *
+     * @throws \UnexpectedValueException
+     * @throws \InvalidArgumentException
+     * @throws \Twig_Error_Syntax
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Loader
      */
     public function positionOneAction($sessionId)
     {
@@ -63,6 +75,12 @@ class ArrowsController
      * @param string $sessionId
      *
      * @return Response
+     *
+     * @throws \UnexpectedValueException
+     * @throws \InvalidArgumentException
+     * @throws \Twig_Error_Syntax
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Loader
      */
     public function positionTwoAction($sessionId)
     {

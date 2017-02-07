@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserType extends AbstractType
@@ -37,6 +38,8 @@ class UserType extends AbstractType
 
     /**
      * @param OptionsResolver $resolver
+     *
+     * @throws AccessException
      */
     public function configureOptions(OptionsResolver $resolver)
     {

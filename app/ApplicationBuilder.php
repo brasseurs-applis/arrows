@@ -31,6 +31,7 @@ use BrasseursApplis\Arrows\VO\SequenceCollection;
 use BrasseursApplis\Arrows\VO\SubjectsCouple;
 use Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use Doctrine\DBAL\Configuration;
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Tools\Psr3SqlLogger;
 use Monolog\Logger;
@@ -64,7 +65,8 @@ class ApplicationBuilder
      *
      * @param ApplicationConfig $config
      *
-     * @internal param bool $debug
+     * @throws DBALException
+     * @throws \InvalidArgumentException
      */
     public function __construct(ApplicationConfig $config)
     {
@@ -139,6 +141,9 @@ class ApplicationBuilder
      * @param array  $databaseOptions
      * @param string $mappingPath
      * @param string $proxyPath
+     *
+     * @throws DBALException
+     * @throws \InvalidArgumentException
      */
     private function orm(array $databaseOptions, $mappingPath, $proxyPath)
     {

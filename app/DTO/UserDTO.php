@@ -4,6 +4,9 @@ namespace BrasseursApplis\Arrows\App\DTO;
 
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
+use Symfony\Component\Validator\Exception\InvalidOptionsException;
+use Symfony\Component\Validator\Exception\MissingOptionsException;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class UserDTO
@@ -127,6 +130,10 @@ class UserDTO
 
     /**
      * @param ClassMetadata $metadata
+     *
+     * @throws ConstraintDefinitionException
+     * @throws InvalidOptionsException
+     * @throws MissingOptionsException
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {

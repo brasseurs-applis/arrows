@@ -4,6 +4,7 @@ namespace BrasseursApplis\Arrows\App\Finder;
 
 use BrasseursApplis\Arrows\App\DTO\UserDTO;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\ORMInvalidArgumentException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class UserFinder extends EntityRepository
@@ -14,6 +15,8 @@ class UserFinder extends EntityRepository
      * @param int   $lockVersion
      *
      * @return UserDTO
+     *
+     * @throws ORMInvalidArgumentException
      */
     public function find($id, $lockMode = null, $lockVersion = null)
     {
@@ -28,6 +31,8 @@ class UserFinder extends EntityRepository
      * @param string $userName
      *
      * @return UserDTO
+     *
+     * @throws ORMInvalidArgumentException
      */
     public function findByUserName($userName)
     {
@@ -44,6 +49,8 @@ class UserFinder extends EntityRepository
      * @param int   $numberByPage
      *
      * @return Paginator
+     *
+     * @throws \OutOfBoundsException
      */
     public function getPaginatedUsers(array $sortBy = [], $pageNumber = 1, $numberByPage = 20)
     {
@@ -55,7 +62,7 @@ class UserFinder extends EntityRepository
             ->setMaxResults($numberByPage);
 
         foreach($sortBy as $field => $direction) {
-            if (!in_array($direction, ['ASC', 'DESC'])) {
+            if (!in_array($direction, ['ASC', 'DESC'], true)) {
                 $direction = 'ASC';
             }
             $queryBuilder->addOrderBy($alias.'.'.$field, $direction);
@@ -63,7 +70,7 @@ class UserFinder extends EntityRepository
 
         $paginator = new Paginator($queryBuilder);
 
-        if ($paginator->getIterator()->count() === 0 && $pageNumber !== 1) {
+        if ($pageNumber !== 1 && $paginator->getIterator()->count() === 0) {
             throw new \OutOfBoundsException();
         }
 
@@ -72,6 +79,8 @@ class UserFinder extends EntityRepository
 
     /**
      * @param UserDTO $user
+     *
+     * @throws ORMInvalidArgumentException
      */
     private function detach($user = null)
     {

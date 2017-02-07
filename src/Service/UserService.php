@@ -33,6 +33,8 @@ class UserService
      * @param UserId   $userId
      * @param string   $password
      * @param string[] $roles
+     *
+     * @throws \InvalidArgumentException
      */
     public function updateUser(UserId $userId, $password, array $roles)
     {

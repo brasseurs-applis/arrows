@@ -3,6 +3,7 @@
 namespace BrasseursApplis\Arrows\VO;
 
 use Assert\Assertion;
+use Assert\AssertionFailedException;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class SequenceCollection extends ArrayCollection implements \JsonSerializable
@@ -11,6 +12,8 @@ class SequenceCollection extends ArrayCollection implements \JsonSerializable
      * SequenceCollection constructor.
      *
      * @param Sequence[] $sequences
+     *
+     * @throws AssertionFailedException
      */
     public function __construct(array $sequences = [])
     {
@@ -25,6 +28,8 @@ class SequenceCollection extends ArrayCollection implements \JsonSerializable
      * @param Sequence $value
      *
      * @return bool
+     *
+     * @throws AssertionFailedException
      */
     public function add($value)
     {
@@ -36,6 +41,8 @@ class SequenceCollection extends ArrayCollection implements \JsonSerializable
     /**
      * @param int|string $key
      * @param Sequence   $value
+     *
+     * @throws AssertionFailedException
      */
     public function set($key, $value)
     {
@@ -71,6 +78,8 @@ class SequenceCollection extends ArrayCollection implements \JsonSerializable
      * @param array $array
      *
      * @return SequenceCollection
+     *
+     * @throws AssertionFailedException
      */
     public static function fromJsonArray(array $array)
     {

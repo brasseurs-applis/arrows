@@ -6,6 +6,8 @@ use BrasseursApplis\Arrows\Id\UserId;
 use BrasseursApplis\Arrows\Repository\UserRepository;
 use BrasseursApplis\Arrows\User;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMInvalidArgumentException;
 
 class DoctrineUserRepository extends EntityRepository implements UserRepository
 {
@@ -26,6 +28,9 @@ class DoctrineUserRepository extends EntityRepository implements UserRepository
      * @param User $user
      *
      * @return void
+     *
+     * @throws OptimisticLockException
+     * @throws ORMInvalidArgumentException
      */
     public function persist(User $user)
     {
@@ -37,6 +42,9 @@ class DoctrineUserRepository extends EntityRepository implements UserRepository
      * @param User $user
      *
      * @return void
+     *
+     * @throws OptimisticLockException
+     * @throws ORMInvalidArgumentException
      */
     public function delete(User $user)
     {

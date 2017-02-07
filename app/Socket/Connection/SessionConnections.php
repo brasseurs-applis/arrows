@@ -3,6 +3,7 @@
 namespace BrasseursApplis\Arrows\App\Socket\Connection;
 
 use Assert\Assertion;
+use Assert\AssertionFailedException;
 use Ratchet\ConnectionInterface;
 
 class SessionConnections
@@ -35,6 +36,8 @@ class SessionConnections
 
     /**
      * @param ArrowsConnectionInformation $connectionInformation
+     *
+     * @throws AssertionFailedException
      */
     public function register(ArrowsConnectionInformation $connectionInformation)
     {
@@ -55,6 +58,8 @@ class SessionConnections
 
     /**
      * @param ArrowsConnectionInformation $connectionInformation
+     *
+     * @throws AssertionFailedException
      */
     public function unregister(ArrowsConnectionInformation $connectionInformation)
     {
@@ -137,6 +142,8 @@ class SessionConnections
 
     /**
      * @param $role
+     *
+     * @throws AssertionFailedException
      */
     protected function assertValidRole($role)
     {

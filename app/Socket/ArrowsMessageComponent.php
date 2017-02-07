@@ -2,6 +2,7 @@
 
 namespace BrasseursApplis\Arrows\App\Socket;
 
+use Assert\AssertionFailedException;
 use BrasseursApplis\Arrows\App\Security\SessionVoter;
 use BrasseursApplis\Arrows\App\Security\UnauthorizedException;
 use BrasseursApplis\Arrows\App\Socket\Connection\ArrowsConnectionInformation;
@@ -12,6 +13,7 @@ use BrasseursApplis\Arrows\App\Socket\Message\Outbound\Error;
 use BrasseursApplis\Arrows\App\Socket\Message\Outbound\SessionEnded;
 use BrasseursApplis\Arrows\App\Socket\Message\Outbound\SessionReady;
 use BrasseursApplis\Arrows\App\Socket\Message\Outbound\SessionSequence;
+use BrasseursApplis\Arrows\Exception\ScenarioException;
 use BrasseursApplis\Arrows\Id\SessionId;
 use BrasseursApplis\Arrows\Repository\SessionRepository;
 use BrasseursApplis\Arrows\Session;
@@ -55,6 +57,10 @@ class ArrowsMessageComponent implements MessageComponentInterface
 
     /**
      * @param ConnectionInterface $conn
+     *
+     * @throws AssertionFailedException
+     * @throws UnauthorizedException
+     * @throws \InvalidArgumentException
      */
     public function onOpen(ConnectionInterface $conn)
     {
@@ -76,6 +82,11 @@ class ArrowsMessageComponent implements MessageComponentInterface
     /**
      * @param ConnectionInterface $conn
      * @param string              $msg
+     *
+     * @throws \InvalidArgumentException
+     * @throws AssertionFailedException
+     * @throws UnauthorizedException
+     * @throws ScenarioException
      */
     public function onMessage(ConnectionInterface $conn, $msg)
     {
@@ -96,6 +107,10 @@ class ArrowsMessageComponent implements MessageComponentInterface
 
     /**
      * @param ConnectionInterface $conn
+     *
+     * @throws AssertionFailedException
+     * @throws UnauthorizedException
+     * @throws \InvalidArgumentException
      */
     public function onClose(ConnectionInterface $conn)
     {
@@ -126,6 +141,10 @@ class ArrowsMessageComponent implements MessageComponentInterface
     /**
      * @param ConnectionInterface $conn
      * @param \Closure            $protected
+     *
+     * @throws \InvalidArgumentException
+     * @throws AssertionFailedException
+     * @throws UnauthorizedException
      */
     private function protect(ConnectionInterface $conn, \Closure $protected)
     {
@@ -171,6 +190,10 @@ class ArrowsMessageComponent implements MessageComponentInterface
      * @param Message                     $message
      *
      * @return \JsonSerializable
+     * @throws \InvalidArgumentException
+     * @throws ScenarioException
+     * @throws AssertionFailedException
+     * @throws UnauthorizedException
      */
     private function handleMessage(
         ArrowsConnectionInformation $connectionInformation,
@@ -211,6 +234,8 @@ class ArrowsMessageComponent implements MessageComponentInterface
      * @param string $msg
      *
      * @return Message
+     *
+     * @throws \InvalidArgumentException
      */
     private static function parseMessage($msg)
     {

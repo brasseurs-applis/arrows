@@ -21,6 +21,12 @@ class IndexController
 
     /**
      * @return Response
+     *
+     * @throws \UnexpectedValueException
+     * @throws \InvalidArgumentException
+     * @throws \Twig_Error_Syntax
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Loader
      */
     public function indexAction()
     {

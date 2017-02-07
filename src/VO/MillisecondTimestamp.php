@@ -3,6 +3,7 @@
 namespace BrasseursApplis\Arrows\VO;
 
 use Assert\Assertion;
+use Assert\AssertionFailedException;
 
 class MillisecondTimestamp implements \JsonSerializable
 {
@@ -13,6 +14,8 @@ class MillisecondTimestamp implements \JsonSerializable
      * MillisecondTimestamp constructor.
      *
      * @param int $timestamp
+     *
+     * @throws AssertionFailedException
      */
     public function __construct($timestamp)
     {
@@ -32,7 +35,7 @@ class MillisecondTimestamp implements \JsonSerializable
     }
 
     /**
-     * @throws  \InvalidArgumentException
+     * @throws AssertionFailedException
      */
     private function guardTimestamp()
     {

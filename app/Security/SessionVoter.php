@@ -24,12 +24,7 @@ class SessionVoter extends Voter
     protected function supports($attribute, $subject)
     {
         // if the attribute isn't one we support, return false
-        if (
-            !in_array(
-                $attribute,
-                [ self::ACCESS, self::OBSERVE, self::RESPOND ]
-            )
-        ) {
+        if (!in_array($attribute, [ self::ACCESS, self::OBSERVE, self::RESPOND ], true)) {
             return false;
         }
 
@@ -50,6 +45,8 @@ class SessionVoter extends Voter
      * @param TokenInterface $token
      *
      * @return bool
+     *
+     * @throws \LogicException
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {

@@ -75,7 +75,7 @@ class User
     {
         Assertion::inArray($role, [ self::ROLE_ADMIN, self::ROLE_SUBJECT, self::ROLE_RESEARCHER ]);
 
-        if (in_array($role, $this->roles)) {
+        if (in_array($role, $this->roles, true)) {
             return;
         }
 
@@ -91,7 +91,7 @@ class User
     {
         Assertion::inArray($role, [ self::ROLE_ADMIN, self::ROLE_SUBJECT, self::ROLE_RESEARCHER ]);
 
-        $position = array_search($role, $this->roles);
+        $position = array_search($role, $this->roles, true);
 
         if ($position === null) {
             return;
