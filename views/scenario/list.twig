@@ -1,0 +1,23 @@
+{% extends "template.twig" %}
+
+{% block title %}Scenario - List{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <h1>Scenario</h1>
+
+    <a href="{{ path('scenario_create') }}">New</a>
+
+    {% if elements is not empty %}
+    <ul>
+        {% for scenario in elements %}
+        <li>{{ scenario.name }} <a href="{{ path('scenario_edit', { scenarioId : scenario.id }) }}">edit</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>No scenario here.</p>
+    {% endif %}
+{% endblock %}

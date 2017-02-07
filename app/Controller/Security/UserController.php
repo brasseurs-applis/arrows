@@ -3,6 +3,7 @@
 namespace BrasseursApplis\Arrows\App\Controller\Security;
 
 use Assert\AssertionFailedException;
+use BrasseursApplis\Arrows\App\Controller\Util\Paginator;
 use BrasseursApplis\Arrows\App\DTO\UserDTO;
 use BrasseursApplis\Arrows\App\Finder\UserFinder;
 use BrasseursApplis\Arrows\App\Form\UserType;
@@ -141,46 +142,20 @@ class UserController
      */
     public function listAction(Request $request)
     {
-        $page = $request->get('page') ? : 1;
-        $elementsPerPage = $request->get('elements') ? : 20;
-        $sortParamString = $request->get('sort') ? : '';
-        $sort = array_reduce(explode(',', $sortParamString), function ($sortArray, $sortString) {
-            if ($sortString === '') {
-                return $sortArray;
+        $paginator = new Paginator($request);
+        $pagination = $paginator->getPaginatedArray(function ($sort, $page, $elementsPerPage) {
+            try {
+                return $this->userFinder->getPaginatedUsers($sort, $page, $elementsPerPage);
+            } catch (\OutOfBoundsException $e) {
+                throw new NotFoundHttpException();
             }
-
-            $sortParameters = explode(':', $sortString);
-            $orientation = isset($sortParameters[1]) ? strtoupper($sortParameters[1]) : 'ASC';
-            if (! in_array($orientation, [ 'ASC', 'DESC' ], true)) {
-                $orientation = 'ASC';
-            }
-            $sortArray[$sortParameters[0]] = $orientation;
-
-            return $sortArray;
-        }, []);
-
-        try {
-            $paginatedUsers = $this->userFinder->getPaginatedUsers($sort, $page, $elementsPerPage);
-        } catch (\OutOfBoundsException $e) {
-            throw new NotFoundHttpException();
-        }
-
-        $totalElements = $paginatedUsers->count();
+        });
 
         $response = new Response();
         $response->setContent(
             $this->twig->render(
                 'user/list.twig',
-                [
-                    'users' => $paginatedUsers->getIterator()->getArrayCopy(),
-                    'pagination' => [
-                        'page' => $page,
-                        'elements' => $elementsPerPage,
-                        'sort' => $sortParamString,
-                        'totalElements' => $totalElements,
-                        'totalPages' => ceil($totalElements / $elementsPerPage)
-                    ]
-                ]
+                $pagination->toArray()
             )
         );
 
