@@ -1,0 +1,27 @@
+{% extends "template.twig" %}
+
+{% block title %}Session - List{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block header %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <h1>Sessions</h1>
+
+    <a href="{{ path('session_create') }}">New</a>
+
+    {% if elements is not empty %}
+    <ul>
+        {% for session in elements %}
+        <li>{{ session.id }} <a href="{{ path('session_edit', { sessionId : session.id }) }}">edit</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>No session here.</p>
+    {% endif %}
+{% endblock %}

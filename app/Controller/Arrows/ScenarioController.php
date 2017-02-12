@@ -110,7 +110,7 @@ class ScenarioController
 
         /** @var ScenarioDTO $scenario */
         $scenario = $form->getData();
-        $scenarioTemplateId = new ScenarioTemplateId($scenario->getId());
+        $domainScenarioTemplateId = new ScenarioTemplateId($scenario->getId());
 
         if ($new) {
             // Create scenario

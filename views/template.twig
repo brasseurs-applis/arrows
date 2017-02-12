@@ -13,6 +13,14 @@
 {% endblock %}
 </head>
 <body>
+    <header>
+    {%  block header %}
+        <ul>
+            <li><a href="{{ path('index') }}">Index</a></li>
+            <li><a href="{{ path('logout') }}">Logout</a></li>
+        </ul>
+    {% endblock %}
+    </header>
     <section>
         {% block content %}
         {% endblock %}

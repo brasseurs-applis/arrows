@@ -1,14 +1,13 @@
 <?php
 
-namespace BrasseursApplis\Arrows\App\Controller\Security;
+namespace BrasseursApplis\Arrows\App\Controller\Arrows;
 
 use Assert\AssertionFailedException;
 use BrasseursApplis\Arrows\App\Controller\Util\Paginator;
-use BrasseursApplis\Arrows\App\DTO\UserDTO;
-use BrasseursApplis\Arrows\App\Finder\UserFinder;
-use BrasseursApplis\Arrows\App\Form\UserType;
-use BrasseursApplis\Arrows\Id\UserId;
-use BrasseursApplis\Arrows\Service\UserService;
+use BrasseursApplis\Arrows\App\DTO\SessionDTO;
+use BrasseursApplis\Arrows\App\Finder\SessionFinder;
+use BrasseursApplis\Arrows\App\Form\SessionType;
+use BrasseursApplis\Arrows\Id\SessionId;
 use Doctrine\ORM\ORMInvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -22,16 +21,13 @@ use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
-class UserController
+class SessionController
 {
-    /** @var UserFinder */
-    private $userFinder;
+    /** @var SessionFinder */
+    private $sessionFinder;
 
     /** @var FormFactoryInterface */
     private $formFactory;
-
-    /** @var UserService */
-    private $userService;
 
     /** @var \Twig_Environment */
     private $twig;
@@ -40,26 +36,23 @@ class UserController
     private $urlGenerator;
 
     /**
-     * UserController constructor.
+     * SessionController constructor.
      *
-     * @param UserFinder           $userFinder
+     * @param SessionFinder       $sessionFinder
      * @param FormFactoryInterface $formFactory
-     * @param UserService          $userService
      * @param \Twig_Environment    $twig
      * @param UrlGenerator         $urlGenerator
      */
     public function __construct(
-        UserFinder $userFinder,
+        SessionFinder $sessionFinder,
         FormFactoryInterface $formFactory,
-        UserService $userService,
         \Twig_Environment $twig,
         UrlGenerator $urlGenerator
     ) {
-        $this->userFinder = $userFinder;
+        $this->sessionFinder = $sessionFinder;
         $this->formFactory = $formFactory;
         $this->twig = $twig;
         $this->urlGenerator = $urlGenerator;
-        $this->userService = $userService;
     }
 
     /**
@@ -69,12 +62,12 @@ class UserController
      */
     public function createAction()
     {
-        return new RedirectResponse($this->urlGenerator->generate('user_edit', [ 'userId' => Uuid::uuid4() ]));
+        return new RedirectResponse($this->urlGenerator->generate('session_edit', [ 'sessionId' => Uuid::uuid4() ]));
     }
 
     /**
      * @param Request $request
-     * @param string  $userId
+     * @param string  $sessionId
      *
      * @return Response
      *
@@ -90,42 +83,42 @@ class UserController
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Loader
      */
-    public function editAction(Request $request, $userId)
+    public function editAction(Request $request, $sessionId)
     {
-        $user = $this->userFinder->find($userId);
+        $session = $this->sessionFinder->find($sessionId);
         $new = false;
 
-        if ($user === null) {
-            $user = new UserDTO($userId);
+        if ($session === null) {
+            $session = new SessionDTO($sessionId);
             $new = true;
         }
 
-        $form = $this->formFactory->create(UserType::class, $user);
+        $form = $this->formFactory->create(SessionType::class, $session);
         $form->handleRequest($request);
 
         if (!$form->isSubmitted() || ! $form->isValid()) {
             $response = new Response();
             $response->setContent(
                 $this->twig->render(
-                    'user/edit.twig',
-                    [ 'form' => $form->createView(), 'userId' => (string) $userId ]
+                    'session/edit.twig',
+                    [ 'form' => $form->createView(), 'sessionId' => (string) $sessionId ]
                 )
             );
 
             return $response;
         }
 
-        /** @var UserDTO $user */
-        $user = $form->getData();
-        $domainUserId = new UserId($user->getId());
+        /** @var SessionDTO $session */
+        $session = $form->getData();
+        $domainSessionId = new SessionId($session->getId());
 
         if ($new) {
-            $this->userService->createUser($domainUserId, $user->getUserName(), $user->getPassword(), $user->getRoles());
+            // Create session
         } else {
-            $this->userService->updateUser($domainUserId, $user->getPassword(), $user->getRoles());
+            // Update Session
         }
 
-        return new RedirectResponse($this->urlGenerator->generate('user_list'));
+        return new RedirectResponse($this->urlGenerator->generate('session_list'));
     }
 
     /**
@@ -145,7 +138,7 @@ class UserController
         $paginator = new Paginator($request);
         $pagination = $paginator->getPaginatedArray(function ($sort, $page, $elementsPerPage) {
             try {
-                return $this->userFinder->getPaginatedUsers($sort, $page, $elementsPerPage);
+                return $this->sessionFinder->getPaginatedSessions($sort, $page, $elementsPerPage);
             } catch (\OutOfBoundsException $e) {
                 throw new NotFoundHttpException();
             }
@@ -154,7 +147,7 @@ class UserController
         $response = new Response();
         $response->setContent(
             $this->twig->render(
-                'user/list.twig',
+                'session/list.twig',
                 $pagination->toArray()
             )
         );

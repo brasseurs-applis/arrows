@@ -3,6 +3,7 @@
 namespace BrasseursApplis\Arrows\App;
 
 use BrasseursApplis\Arrows\App\Controller\Arrows\ScenarioController;
+use BrasseursApplis\Arrows\App\Controller\Arrows\SessionController;
 use BrasseursApplis\Arrows\App\Controller\IndexController;
 use BrasseursApplis\Arrows\App\Controller\Security\UserController;
 use BrasseursApplis\Arrows\App\Controller\Session\ArrowsController;
@@ -13,6 +14,7 @@ use BrasseursApplis\Arrows\App\Doctrine\SessionIdType;
 use BrasseursApplis\Arrows\App\Doctrine\SubjectIdType;
 use BrasseursApplis\Arrows\App\Doctrine\UserIdType;
 use BrasseursApplis\Arrows\App\DTO\ScenarioDTO;
+use BrasseursApplis\Arrows\App\DTO\SessionDTO;
 use BrasseursApplis\Arrows\App\DTO\UserDTO;
 use BrasseursApplis\Arrows\App\Repository\InMemory\InMemorySessionRepository;
 use BrasseursApplis\Arrows\App\Security\ArrowsJwtUserBuilder;
@@ -272,6 +274,10 @@ class ApplicationBuilder
             return $this->application['orm.em']->getRepository(ScenarioDTO::class);
         };
 
+        $this->application['arrows.session.finder'] = function () {
+            return $this->application['orm.em']->getRepository(SessionDTO::class);
+        };
+
 
         $this->application['arrows.user.service'] = function () {
             return new UserService(
@@ -332,6 +338,15 @@ class ApplicationBuilder
             );
         };
 
+        $this->application['session.controller'] = function() {
+            return new SessionController(
+                $this->application['arrows.session.finder'],
+                $this->application['form.factory'],
+                $this->application['twig'],
+                $this->application['url_generator']
+            );
+        };
+
         $this->application['arrows.controller'] = function() {
             return new ArrowsController($this->application['twig']);
         };
@@ -380,6 +395,14 @@ class ApplicationBuilder
         $this->application->get('/scenario/', 'scenario.controller:listAction')
             ->bind('scenario_list');
 
+        $this->application->get('/session/new', 'session.controller:createAction')
+            ->bind('session_create');
+        $this->application->match('/session/{sessionId}/edit', 'session.controller:editAction')
+            ->method('GET|POST')
+            ->bind('session_edit');
+        $this->application->get('/session/', 'session.controller:listAction')
+            ->bind('session_list');
+
         $this->application->get('/session/{sessionId}/observer', 'arrows.controller:observerAction')
             ->bind('observer');
         $this->application->get('/session/{sessionId}/one', 'arrows.controller:positionOneAction')
@@ -388,8 +411,10 @@ class ApplicationBuilder
             ->bind('position_two');
 
         $this->application['security.access_rules'] = [
+            [ '^/login$', 'IS_AUTHENTICATED_ANONYMOUSLY' ],
             [ '^/session/.*/observer$', User::ROLE_RESEARCHER ],
-            [ '^/session/.*/(one|two)$', User::ROLE_RESEARCHER ]
+            [ '^/session/.*/(one|two)$', User::ROLE_RESEARCHER ],
+            [ '^/.*$', User::ROLE_ADMIN ],
         ];
     }
 

@@ -6,12 +6,17 @@
     {{ parent() }}
 {% endblock %}
 
+{% block header %}
+{% endblock %}
+
 {% block content %}
     <h1>Index</h1>
     <p>
-        Welcome to my awesome homepage.
+        Access & modify stuff.
     </p>
     <ul>
         <li><a href="{{ path('user_list') }}">Users</a></li>
+        <li><a href="{{ path('scenario_list') }}">Scenarios</a></li>
+        <li><a href="{{ path('session_list') }}">Sessions</a></li>
     </ul>
 {% endblock %}
