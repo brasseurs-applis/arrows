@@ -2,8 +2,6 @@
 
 namespace BrasseursApplis\Arrows\App\Finder;
 
-use BrasseursApplis\Arrows\App\DTO\ScenarioDTO;
-use BrasseursApplis\Arrows\App\DTO\UserDTO;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMInvalidArgumentException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -36,7 +34,7 @@ class BaseFinder extends EntityRepository
      *
      * @throws \OutOfBoundsException
      */
-    public function getPaginatedScenarios(array $sortBy = [], $pageNumber = 1, $numberByPage = 20)
+    public function getPaginatedEntities(array $sortBy = [], $pageNumber = 1, $numberByPage = 20)
     {
         $alias = 'e';
 

@@ -2,6 +2,7 @@
 
 namespace BrasseursApplis\Arrows\App;
 
+use BrasseursApplis\Arrows\App\Controller\Arrows\ScenarioController;
 use BrasseursApplis\Arrows\App\Controller\IndexController;
 use BrasseursApplis\Arrows\App\Controller\Security\UserController;
 use BrasseursApplis\Arrows\App\Controller\Session\ArrowsController;
@@ -11,6 +12,7 @@ use BrasseursApplis\Arrows\App\Doctrine\SequenceCollectionType;
 use BrasseursApplis\Arrows\App\Doctrine\SessionIdType;
 use BrasseursApplis\Arrows\App\Doctrine\SubjectIdType;
 use BrasseursApplis\Arrows\App\Doctrine\UserIdType;
+use BrasseursApplis\Arrows\App\DTO\ScenarioDTO;
 use BrasseursApplis\Arrows\App\DTO\UserDTO;
 use BrasseursApplis\Arrows\App\Repository\InMemory\InMemorySessionRepository;
 use BrasseursApplis\Arrows\App\Security\ArrowsJwtUserBuilder;
@@ -261,8 +263,13 @@ class ApplicationBuilder
             return $this->application['orm.em']->getRepository(User::class);
         };
 
+
         $this->application['arrows.user.finder'] = function () {
             return $this->application['orm.em']->getRepository(UserDTO::class);
+        };
+
+        $this->application['arrows.scenario.finder'] = function () {
+            return $this->application['orm.em']->getRepository(ScenarioDTO::class);
         };
 
 
@@ -316,6 +323,15 @@ class ApplicationBuilder
             );
         };
 
+        $this->application['scenario.controller'] = function() {
+            return new ScenarioController(
+                $this->application['arrows.scenario.finder'],
+                $this->application['form.factory'],
+                $this->application['twig'],
+                $this->application['url_generator']
+            );
+        };
+
         $this->application['arrows.controller'] = function() {
             return new ArrowsController($this->application['twig']);
         };
@@ -348,13 +364,21 @@ class ApplicationBuilder
         $this->application->get('/', 'index.controller:indexAction')
             ->bind('index');
 
-        $this->application->match('/user/new', 'user.controller:createAction')
+        $this->application->get('/user/new', 'user.controller:createAction')
             ->bind('user_create');
         $this->application->match('/user/{userId}/edit', 'user.controller:editAction')
             ->method('GET|POST')
             ->bind('user_edit');
         $this->application->get('/user/', 'user.controller:listAction')
             ->bind('user_list');
+
+        $this->application->get('/scenario/new', 'scenario.controller:createAction')
+            ->bind('scenario_create');
+        $this->application->match('/scenario/{scenarioId}/edit', 'scenario.controller:editAction')
+            ->method('GET|POST')
+            ->bind('scenario_edit');
+        $this->application->get('/scenario/', 'scenario.controller:listAction')
+            ->bind('scenario_list');
 
         $this->application->get('/session/{sessionId}/observer', 'arrows.controller:observerAction')
             ->bind('observer');

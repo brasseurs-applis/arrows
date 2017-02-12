@@ -9,20 +9,6 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 class UserFinder extends BaseFinder
 {
     /**
-     * @param mixed $id
-     * @param int   $lockMode
-     * @param int   $lockVersion
-     *
-     * @return UserDTO
-     *
-     * @throws ORMInvalidArgumentException
-     */
-    public function find($id, $lockMode = null, $lockVersion = null)
-    {
-        return parent::find($id, $lockMode, $lockVersion);
-    }
-
-    /**
      * @param string $userName
      *
      * @return UserDTO
@@ -49,6 +35,6 @@ class UserFinder extends BaseFinder
      */
     public function getPaginatedUsers(array $sortBy = [], $pageNumber = 1, $numberByPage = 20)
     {
-        return parent::getPaginatedScenarios($sortBy, $pageNumber, $numberByPage);
+        return parent::getPaginatedEntities($sortBy, $pageNumber, $numberByPage);
     }
 }
