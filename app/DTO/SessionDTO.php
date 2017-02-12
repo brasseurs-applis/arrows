@@ -31,13 +31,10 @@ class SessionDTO
     }
 
     /**
-     * @param ClassMetadata $metadata
-     *
-     * @throws ConstraintDefinitionException
-     * @throws InvalidOptionsException
-     * @throws MissingOptionsException
+     * @param string $id
      */
-    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    public function setId($id)
     {
+        $this->id = $id;
     }
 }

@@ -4,10 +4,66 @@
 
 {% block head %}
     {{ parent() }}
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+            integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc="
+            crossorigin="anonymous"></script>
 {% endblock %}
 
 {% block content %}
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+
+        {{ form_row(form.name) }}
+
+        <div>
+            {{ form_label(form.sequences) }}
+            <ul class="sequences"
+                data-prototype="{{ form_widget(form.sequences.vars.prototype)|e('html_attr') }}">
+                {% for sequence in form.sequences %}
+                    <li>{{ form_widget(sequence) }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        {{ form_widget(form.sequences) }}
+
+        <input type="submit" />
+
     {{ form_end(form) }}
+    <script type="application/javascript">
+
+        var $addSequenceLink = $('<a href="#" class="add_sequence_link">Add a sequence</a>');
+        var $newLinkLi = $('<li></li>').append($addSequenceLink);
+
+        $(document).ready(function() {
+            var $collectionHolder = $('ul.sequences');
+
+            $collectionHolder.append($newLinkLi);
+            $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+            $addSequenceLink.on('click', function(e) {
+                e.preventDefault();
+                addSequenceForm($collectionHolder, $newLinkLi);
+            });
+        });
+
+        function addSequenceForm($collectionHolder, $newLinkLi) {
+            var prototype = $collectionHolder.data('prototype');
+            var index = $collectionHolder.data('index');
+            var newForm = prototype.replace(/__name__/g, index);
+
+            $collectionHolder.data('index', index + 1);
+
+            var $newFormLi = $('<li></li>').append(newForm);
+
+            $newFormLi.append('<a href="#" class="remove-sequence">x</a>');
+            $newLinkLi.before($newFormLi);
+
+            $('.remove-sequence').click(function(e) {
+                e.preventDefault();
+                $(this).parent().remove();
+                return false;
+            });
+        }
+
+    </script>
 {% endblock %}

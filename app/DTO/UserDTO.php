@@ -137,9 +137,10 @@ class UserDTO
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
-        $metadata->addPropertyConstraint('userName', new NotBlank());
-        $metadata->addPropertyConstraint('password', new NotBlank());
-        $metadata->addPropertyConstraint('password', new Length(['min' => 5]));
-        $metadata->addPropertyConstraint('roles', new NotBlank());
+        $metadata
+            ->addPropertyConstraint('userName', new NotBlank())
+            ->addPropertyConstraint('password', new NotBlank())
+            ->addPropertyConstraint('password', new Length(['min' => 5]))
+            ->addPropertyConstraint('roles', new NotBlank());
     }
 }
