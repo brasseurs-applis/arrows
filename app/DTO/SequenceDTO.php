@@ -2,7 +2,6 @@
 
 namespace BrasseursApplis\Arrows\App\DTO;
 
-use Ramsey\Uuid\Uuid;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Exception\InvalidOptionsException;
 use Symfony\Component\Validator\Exception\MissingOptionsException;
@@ -10,9 +9,6 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class SequenceDTO
 {
-    /** @var string */
-    private $id;
-
     /** @var string */
     private $position;
 
@@ -28,40 +24,21 @@ class SequenceDTO
     /**
      * ScenarioDTO constructor.
      *
-     * @param string $id
      * @param string $position
      * @param string $previewOrientation
      * @param string $initiationOrientation
      * @param string $mainOrientation
      */
     public function __construct(
-        $id = null,
         $position = null,
         $previewOrientation = null,
         $initiationOrientation = null,
         $mainOrientation = null
     ) {
-        $this->id = ($id === null) ? (string) Uuid::uuid4() : $id;
         $this->position = $position;
         $this->previewOrientation = $previewOrientation;
         $this->initiationOrientation = $initiationOrientation;
         $this->mainOrientation = $mainOrientation;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param string $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
     }
 
     /**

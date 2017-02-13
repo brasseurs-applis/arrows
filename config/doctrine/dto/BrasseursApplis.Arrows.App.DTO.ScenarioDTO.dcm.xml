@@ -2,5 +2,7 @@
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <entity name="BrasseursApplis\Arrows\App\DTO\ScenarioDTO" repository-class="BrasseursApplis\Arrows\App\Finder\ScenarioFinder" table="scenario_template" schema="arrows">
         <id name="id" column="id" type="guid" />
+        <field name="name" type="string" length="255" nullable="false" />
+        <field name="sequences" type="sequences" column="scenario_sequences" nullable="false" />
     </entity>
 </doctrine-mapping>

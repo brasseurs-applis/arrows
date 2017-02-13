@@ -22,9 +22,6 @@ class ScenarioTemplate
     /** @var string */
     private $name;
 
-    /** @var int */
-    private $nbSequences;
-
     /** @var SequenceCollection */
     private $sequences;
 
@@ -34,16 +31,14 @@ class ScenarioTemplate
      * @param ScenarioTemplateId $id
      * @param ResearcherId       $author
      * @param string             $name
-     * @param int                $nbSequences
      *
      * @throws AssertionFailedException
      */
-    public function __construct(ScenarioTemplateId $id, ResearcherId $author, $name, $nbSequences)
+    public function __construct(ScenarioTemplateId $id, ResearcherId $author, $name)
     {
         $this->id = $id;
         $this->author = $author;
         $this->name = $name;
-        $this->nbSequences = $nbSequences;
         $this->sequences = new SequenceCollection();
     }
 
@@ -72,11 +67,27 @@ class ScenarioTemplate
     }
 
     /**
-     * @return int
+     * @param string $name
      */
-    public function getNbSequences()
+    public function changeName($name)
     {
-        return $this->nbSequences;
+        $this->name = $name;
+    }
+
+    /**
+     * @param ResearcherId $author
+     */
+    public function changeAuthor(ResearcherId $author)
+    {
+        $this->author = $author;
+    }
+
+    /**
+     * @param SequenceCollection $sequences
+     */
+    public function setSequences(SequenceCollection $sequences)
+    {
+        $this->sequences = $sequences;
     }
 
     /**
@@ -87,8 +98,6 @@ class ScenarioTemplate
      */
     public function addSequence(Sequence $sequence)
     {
-        $this->ensureScenarioIsNotCompleteYet();
-
         $this->sequences->add($sequence);
     }
 
@@ -129,38 +138,7 @@ class ScenarioTemplate
      */
     public function getScenario()
     {
-        $this->ensureScenarioIsComplete();
-
         return new Scenario($this->sequences);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isComplete()
-    {
-        return $this->sequences->count() === $this->nbSequences;
-    }
-
-    /**
-     * @throws ScenarioException
-     */
-    private function ensureScenarioIsNotCompleteYet()
-    {
-        ScenarioAssertion::lessThan(
-            $this->sequences->count(),
-            $this->nbSequences,
-            'ScenarioTemplate is already complete.'
-        );
-    }
-
-    /**
-     * @throws ScenarioException
-     * @throws AssertionFailedException
-     */
-    private function ensureScenarioIsComplete()
-    {
-        ScenarioAssertion::true($this->isComplete(), 'Scenario template is not complete.');
     }
 
     /**

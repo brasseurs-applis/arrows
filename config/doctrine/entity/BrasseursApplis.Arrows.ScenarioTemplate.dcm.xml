@@ -4,7 +4,6 @@
         <id name="id" column="id" type="scenario_template_id" />
         <field name="author" type="researcher_id" nullable="false" />
         <field name="name" type="string" length="255" nullable="false" />
-        <field name="nbSequences" type="integer" nullable="false" />
         <field name="sequences" type="sequence_collection" column="scenario_sequences" nullable="false" />
     </entity>
 </doctrine-mapping>

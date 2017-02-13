@@ -18,7 +18,4 @@ $userService = $container['arrows.user.service'];
 /** @var UserFinder $userFinder */
 $userFinder = $container['arrows.user.finder'];
 
-// $admin = $userFinder->findByUserName('admin');
-// $userService->createUser(new UserId($admin->getId()), 'admin', [ User::ROLE_ADMIN, User::ROLE_RESEARCHER ]);
-
-$userService->createUser(new UserId((string) Uuid::uuid4()), 'admin', 'admin', [ User::ROLE_ADMIN, User::ROLE_RESEARCHER ]);
+$userService->createUser(new UserId((string) Uuid::uuid4()), 'admin', 'admin', [ User::ROLE_ADMIN ]);

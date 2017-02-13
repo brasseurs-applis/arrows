@@ -10,6 +10,7 @@ use BrasseursApplis\Arrows\App\Controller\Session\ArrowsController;
 use BrasseursApplis\Arrows\App\Doctrine\ResearcherIdType;
 use BrasseursApplis\Arrows\App\Doctrine\ScenarioTemplateIdType;
 use BrasseursApplis\Arrows\App\Doctrine\SequenceCollectionType;
+use BrasseursApplis\Arrows\App\Doctrine\SequencesType;
 use BrasseursApplis\Arrows\App\Doctrine\SessionIdType;
 use BrasseursApplis\Arrows\App\Doctrine\SubjectIdType;
 use BrasseursApplis\Arrows\App\Doctrine\UserIdType;
@@ -24,6 +25,8 @@ use BrasseursApplis\Arrows\App\Socket\ArrowsMessageComponent;
 use BrasseursApplis\Arrows\Id\ResearcherId;
 use BrasseursApplis\Arrows\Id\SessionId;
 use BrasseursApplis\Arrows\Id\SubjectId;
+use BrasseursApplis\Arrows\ScenarioTemplate;
+use BrasseursApplis\Arrows\Service\ScenarioService;
 use BrasseursApplis\Arrows\Service\UserService;
 use BrasseursApplis\Arrows\Session;
 use BrasseursApplis\Arrows\User;
@@ -194,7 +197,9 @@ class ApplicationBuilder
                         SubjectIdType::SUBJECT_ID => SubjectIdType::class,
                         UserIdType::USER_ID => UserIdType::class,
 
-                        SequenceCollectionType::SEQUENCE_COLLECTION => SequenceCollectionType::class
+                        SequenceCollectionType::SEQUENCE_COLLECTION => SequenceCollectionType::class,
+
+                        SequencesType::SEQUENCES => SequencesType::class
                     ]
                 ],
             ]
@@ -210,6 +215,8 @@ class ApplicationBuilder
             $platform->registerDoctrineTypeMapping(UserIdType::USER_ID, UserIdType::USER_ID);
 
             $platform->registerDoctrineTypeMapping(SequenceCollectionType::SEQUENCE_COLLECTION, SequenceCollectionType::SEQUENCE_COLLECTION);
+
+            $platform->registerDoctrineTypeMapping(SequencesType::SEQUENCES, SequencesType::SEQUENCES);
 
             return $em;
         });
@@ -257,32 +264,35 @@ class ApplicationBuilder
         $sessionRepository = new InMemorySessionRepository();
         $sessionRepository->persist($session);
 
+        $this->application['arrows.user.repository'] = function () {
+            return $this->application['orm.em']->getRepository(User::class);
+        };
+        $this->application['arrows.scenario.repository'] = function () {
+            return $this->application['orm.em']->getRepository(ScenarioTemplate::class);
+        };
         $this->application['arrows.session.repository'] = function () use ($sessionRepository) {
             return $sessionRepository;
         };
 
-        $this->application['arrows.user.repository'] = function () {
-            return $this->application['orm.em']->getRepository(User::class);
-        };
-
-
         $this->application['arrows.user.finder'] = function () {
             return $this->application['orm.em']->getRepository(UserDTO::class);
         };
-
         $this->application['arrows.scenario.finder'] = function () {
             return $this->application['orm.em']->getRepository(ScenarioDTO::class);
         };
-
         $this->application['arrows.session.finder'] = function () {
             return $this->application['orm.em']->getRepository(SessionDTO::class);
         };
-
 
         $this->application['arrows.user.service'] = function () {
             return new UserService(
                 $this->application['arrows.user.repository'],
                 $this->application['security.default_encoder']
+            );
+        };
+        $this->application['arrows.scenario.service'] = function () {
+            return new ScenarioService(
+                $this->application['arrows.scenario.repository']
             );
         };
     }
@@ -332,9 +342,11 @@ class ApplicationBuilder
         $this->application['scenario.controller'] = function() {
             return new ScenarioController(
                 $this->application['arrows.scenario.finder'],
+                $this->application['arrows.scenario.service'],
                 $this->application['form.factory'],
                 $this->application['twig'],
-                $this->application['url_generator']
+                $this->application['url_generator'],
+                $this->application['security.token_storage']
             );
         };
 

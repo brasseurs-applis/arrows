@@ -18,7 +18,7 @@
     {% if elements is not empty %}
     <ul>
         {% for scenario in elements %}
-        <li>{{ scenario.id }} <a href="{{ path('scenario_edit', { scenarioId : scenario.id }) }}">edit</a></li>
+        <li>{{ scenario.name }} <a href="{{ path('scenario_edit', { scenarioId : scenario.id }) }}">edit</a></li>
         {% endfor %}
     </ul>
     {% else %}

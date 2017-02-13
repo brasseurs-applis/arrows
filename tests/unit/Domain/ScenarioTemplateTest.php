@@ -95,34 +95,6 @@ class ScenarioTemplateTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function itShouldHaveANumberOfSequences()
-    {
-        $this->assertEquals($this->nbSequences, $this->serviceUnderTest->getNbSequences());
-    }
-
-    /**
-     * @test
-     */
-    public function itShouldAllowToAddNoMoreThanTheSpecifiedNumberOfSequences()
-    {
-        $this->assertFalse($this->serviceUnderTest->isComplete());
-        $this->serviceUnderTest->addSequence($this->firstSequence);
-
-        $this->assertFalse($this->serviceUnderTest->isComplete());
-        $this->serviceUnderTest->addSequence($this->secondSequence);
-
-        $this->assertFalse($this->serviceUnderTest->isComplete());
-        $this->serviceUnderTest->addSequence($this->thirdSequence);
-
-        $this->assertTrue($this->serviceUnderTest->isComplete());
-
-        $this->setExpectedException(ScenarioException::class);
-        $this->serviceUnderTest->addSequence($this->fourthSequence);
-    }
-
-    /**
-     * @test
-     */
     public function itShouldAllowToReplaceASequence()
     {
         $this->givenACompleteScenarioTemplate();
@@ -152,16 +124,6 @@ class ScenarioTemplateTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->firstSequence, $scenario->run());
         $this->assertEquals($this->secondSequence, $scenario->next());
         $this->assertEquals($this->thirdSequence, $scenario->next());
-    }
-
-    /**
-     * @test
-     */
-    public function itShouldNotBePossibleToGetAnIncompleteScenarioFromTheTemplate()
-    {
-        $this->setExpectedException(ScenarioException::class);
-
-        $this->serviceUnderTest->getScenario();
     }
 
     protected function givenACompleteScenarioTemplate()

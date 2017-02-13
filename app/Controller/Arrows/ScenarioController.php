@@ -4,10 +4,14 @@ namespace BrasseursApplis\Arrows\App\Controller\Arrows;
 
 use Assert\AssertionFailedException;
 use BrasseursApplis\Arrows\App\Controller\Util\Paginator;
+use BrasseursApplis\Arrows\App\DTO\Helper\SequenceConverter;
 use BrasseursApplis\Arrows\App\DTO\ScenarioDTO;
 use BrasseursApplis\Arrows\App\Finder\ScenarioFinder;
 use BrasseursApplis\Arrows\App\Form\ScenarioType;
+use BrasseursApplis\Arrows\App\Security\AuthorizationUser;
+use BrasseursApplis\Arrows\Id\ResearcherId;
 use BrasseursApplis\Arrows\Id\ScenarioTemplateId;
+use BrasseursApplis\Arrows\Service\ScenarioService;
 use Doctrine\ORM\ORMInvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -20,11 +24,15 @@ use Symfony\Component\Routing\Exception\InvalidParameterException;
 use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class ScenarioController
 {
     /** @var ScenarioFinder */
     private $scenarioFinder;
+
+    /** @var ScenarioService */
+    private $scenarioService;
 
     /** @var FormFactoryInterface */
     private $formFactory;
@@ -35,24 +43,33 @@ class ScenarioController
     /** @var UrlGenerator */
     private $urlGenerator;
 
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
+
     /**
      * ScenarioController constructor.
      *
-     * @param ScenarioFinder       $scenarioFinder
-     * @param FormFactoryInterface $formFactory
-     * @param \Twig_Environment    $twig
-     * @param UrlGenerator         $urlGenerator
+     * @param ScenarioFinder        $scenarioFinder
+     * @param ScenarioService       $scenarioService
+     * @param FormFactoryInterface  $formFactory
+     * @param \Twig_Environment     $twig
+     * @param UrlGenerator          $urlGenerator
+     * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(
         ScenarioFinder $scenarioFinder,
+        ScenarioService $scenarioService,
         FormFactoryInterface $formFactory,
         \Twig_Environment $twig,
-        UrlGenerator $urlGenerator
+        UrlGenerator $urlGenerator,
+        TokenStorageInterface $tokenStorage
     ) {
         $this->scenarioFinder = $scenarioFinder;
+        $this->scenarioService = $scenarioService;
         $this->formFactory = $formFactory;
         $this->twig = $twig;
         $this->urlGenerator = $urlGenerator;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -85,6 +102,9 @@ class ScenarioController
      */
     public function editAction(Request $request, $scenarioId)
     {
+        /** @var AuthorizationUser $connectedUser */
+        $connectedUser = $this->tokenStorage->getToken()->getUser();
+
         $scenario = $this->scenarioFinder->find($scenarioId);
         $new = false;
 
@@ -111,11 +131,22 @@ class ScenarioController
         /** @var ScenarioDTO $scenario */
         $scenario = $form->getData();
         $domainScenarioTemplateId = new ScenarioTemplateId($scenario->getId());
+        $sequences = SequenceConverter::toSequenceCollection($scenario->getSequences());
 
         if ($new) {
-            // Create scenario
+            $this->scenarioService->createScenario(
+                $domainScenarioTemplateId,
+                new ResearcherId($connectedUser->getId()),
+                $scenario->getName(),
+                $sequences
+            );
         } else {
-            // Update Scenario
+            $this->scenarioService->updateScenario(
+                $domainScenarioTemplateId,
+                new ResearcherId($connectedUser->getId()),
+                $scenario->getName(),
+                $sequences
+            );
         }
 
         return new RedirectResponse($this->urlGenerator->generate('scenario_list'));
