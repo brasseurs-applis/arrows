@@ -36,7 +36,9 @@
         "symfony/form": "^3.2",
         "symfony/validator": "^3.2",
         "symfony/config": "^3.2",
-        "symfony/translation": "^3.2"
+        "symfony/translation": "^3.2",
+        "symfony/doctrine-bridge": "^3.2",
+        "saxulum/saxulum-doctrine-orm-manager-registry-provider": "^3.1"
     },
     "require-dev": {
         "behat/behat": "^3.3",

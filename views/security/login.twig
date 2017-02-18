@@ -6,6 +6,9 @@
     {{ parent() }}
 {% endblock %}
 
+{% block header %}
+{% endblock %}
+
 {% block content %}
     <form action="{{ path('login_check') }}" method="post">
         {{ error }}

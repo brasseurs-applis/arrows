@@ -2,11 +2,11 @@
 
 namespace BrasseursApplis\Arrows\App\Controller\Util;
 
-use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\ORM\Tools\Pagination\Paginator as OrmPaginator;
 
 class Pagination
 {
-    /** @var Paginator */
+    /** @var OrmPaginator */
     private $elements;
 
     /** @var int */

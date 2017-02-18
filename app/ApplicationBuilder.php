@@ -46,6 +46,7 @@ use Pimple\Container;
 use Ramsey\Uuid\Uuid;
 use Ratchet\App;
 use RemiSan\Silex\JWT\ServiceProvider\JwtServiceProvider;
+use Saxulum\DoctrineOrmManagerRegistry\Provider\DoctrineOrmManagerRegistryProvider;
 use Silex\Application;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\FormServiceProvider;
@@ -324,6 +325,7 @@ class ApplicationBuilder
         $this->application->register(new FormServiceProvider());
         $this->application->register(new TranslationServiceProvider(), ['locale' => 'fr', 'translator.domains' => []]);
         $this->application->register(new ValidatorServiceProvider());
+        $this->application->register(new DoctrineOrmManagerRegistryProvider());
 
         $this->application['index.controller'] = function() {
             return new IndexController($this->application['twig']);
