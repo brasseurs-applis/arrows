@@ -132,9 +132,6 @@ class ScenarioTemplate
 
     /**
      * @return Scenario
-     *
-     * @throws ScenarioException
-     * @throws AssertionFailedException
      */
     public function getScenario()
     {

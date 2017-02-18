@@ -17,25 +17,16 @@ use BrasseursApplis\Arrows\App\Doctrine\UserIdType;
 use BrasseursApplis\Arrows\App\DTO\ScenarioDTO;
 use BrasseursApplis\Arrows\App\DTO\SessionDTO;
 use BrasseursApplis\Arrows\App\DTO\UserDTO;
-use BrasseursApplis\Arrows\App\Repository\InMemory\InMemorySessionRepository;
 use BrasseursApplis\Arrows\App\Security\ArrowsJwtUserBuilder;
 use BrasseursApplis\Arrows\App\Security\SessionVoter;
 use BrasseursApplis\Arrows\App\Security\UserProvider;
 use BrasseursApplis\Arrows\App\Socket\ArrowsMessageComponent;
-use BrasseursApplis\Arrows\Id\ResearcherId;
-use BrasseursApplis\Arrows\Id\SessionId;
-use BrasseursApplis\Arrows\Id\SubjectId;
 use BrasseursApplis\Arrows\ScenarioTemplate;
 use BrasseursApplis\Arrows\Service\ScenarioService;
+use BrasseursApplis\Arrows\Service\SessionService;
 use BrasseursApplis\Arrows\Service\UserService;
 use BrasseursApplis\Arrows\Session;
 use BrasseursApplis\Arrows\User;
-use BrasseursApplis\Arrows\VO\Orientation;
-use BrasseursApplis\Arrows\VO\Position;
-use BrasseursApplis\Arrows\VO\Scenario;
-use BrasseursApplis\Arrows\VO\Sequence;
-use BrasseursApplis\Arrows\VO\SequenceCollection;
-use BrasseursApplis\Arrows\VO\SubjectsCouple;
 use Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DBALException;
@@ -43,7 +34,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\Tools\Psr3SqlLogger;
 use Monolog\Logger;
 use Pimple\Container;
-use Ramsey\Uuid\Uuid;
 use Ratchet\App;
 use RemiSan\Silex\JWT\ServiceProvider\JwtServiceProvider;
 use Saxulum\DoctrineOrmManagerRegistry\Provider\DoctrineOrmManagerRegistryProvider;
@@ -225,54 +215,14 @@ class ApplicationBuilder
 
     private function domain()
     {
-        // TODO add real impl
-
-        $session = new Session(
-            new SessionId('ddf5ddfa-0990-4c30-9c4c-db2214ed06c1'),
-            new Scenario(
-                new SequenceCollection(
-                    [
-                        new Sequence(
-                            Position::top(),
-                            Orientation::left(),
-                            Orientation::right(),
-                            Orientation::left()
-                        ),
-                        new Sequence(
-                            Position::top(),
-                            Orientation::right(),
-                            Orientation::right(),
-                            Orientation::left()
-                        ),
-                        new Sequence(
-                            Position::top(),
-                            Orientation::left(),
-                            Orientation::right(),
-                            Orientation::right()
-                        ),
-                        new Sequence(
-                            Position::top(),
-                            Orientation::left(),
-                            Orientation::left(),
-                            Orientation::right()
-                        )
-                    ]
-                )
-            ),
-            new SubjectsCouple(new SubjectId(Uuid::uuid4()), new SubjectId(Uuid::uuid4())),
-            new ResearcherId(Uuid::uuid4())
-        );
-        $sessionRepository = new InMemorySessionRepository();
-        $sessionRepository->persist($session);
-
         $this->application['arrows.user.repository'] = function () {
             return $this->application['orm.em']->getRepository(User::class);
         };
         $this->application['arrows.scenario.repository'] = function () {
             return $this->application['orm.em']->getRepository(ScenarioTemplate::class);
         };
-        $this->application['arrows.session.repository'] = function () use ($sessionRepository) {
-            return $sessionRepository;
+        $this->application['arrows.session.repository'] = function () {
+            return $this->application['orm.em']->getRepository(Session::class);
         };
 
         $this->application['arrows.user.finder'] = function () {
@@ -293,6 +243,12 @@ class ApplicationBuilder
         };
         $this->application['arrows.scenario.service'] = function () {
             return new ScenarioService(
+                $this->application['arrows.scenario.repository']
+            );
+        };
+        $this->application['arrows.session.service'] = function () {
+            return new SessionService(
+                $this->application['arrows.session.repository'],
                 $this->application['arrows.scenario.repository']
             );
         };
@@ -355,6 +311,7 @@ class ApplicationBuilder
         $this->application['session.controller'] = function() {
             return new SessionController(
                 $this->application['arrows.session.finder'],
+                $this->application['arrows.session.service'],
                 $this->application['form.factory'],
                 $this->application['twig'],
                 $this->application['url_generator']

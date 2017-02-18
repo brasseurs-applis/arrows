@@ -3,6 +3,7 @@
     <entity name="BrasseursApplis\Arrows\Session" repository-class="BrasseursApplis\Arrows\App\Repository\Doctrine\DoctrineSessionRepository" table="session" schema="arrows">
         <id name="id" column="id" type="session_id" />
         <field name="observer" type="researcher_id" column="observer_id" nullable="false" />
+        <field name="scenarioTemplateId" type="scenario_template_id" column="scenario_template_id" nullable="true" />
         <embedded name="scenario" class="BrasseursApplis\Arrows\VO\Scenario" use-column-prefix="false" />
         <embedded name="subjects" class="BrasseursApplis\Arrows\VO\SubjectsCouple" use-column-prefix="false" />
         <one-to-many field="results" target-entity="BrasseursApplis\Arrows\Result" mapped-by="session" fetch="LAZY">

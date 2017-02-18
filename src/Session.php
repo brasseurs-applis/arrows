@@ -5,6 +5,7 @@ namespace BrasseursApplis\Arrows;
 use Assert\Assertion;
 use Assert\AssertionFailedException;
 use BrasseursApplis\Arrows\Id\ResearcherId;
+use BrasseursApplis\Arrows\Id\ScenarioTemplateId;
 use BrasseursApplis\Arrows\Id\SessionId;
 use BrasseursApplis\Arrows\VO\Duration;
 use BrasseursApplis\Arrows\VO\Orientation;
@@ -18,6 +19,9 @@ class Session
 {
     /** @var SessionId */
     private $id;
+
+    /** @var ScenarioTemplateId */
+    private $scenarioTemplateId;
 
     /** @var Scenario */
     private $scenario;
@@ -34,18 +38,21 @@ class Session
     /**
      * Session constructor.
      *
-     * @param SessionId      $id
-     * @param Scenario       $scenario
-     * @param SubjectsCouple $subjects
-     * @param ResearcherId   $observer
+     * @param SessionId          $id
+     * @param ScenarioTemplateId $scenarioTemplateId
+     * @param Scenario           $scenario
+     * @param SubjectsCouple     $subjects
+     * @param ResearcherId       $observer
      */
     public function __construct(
         SessionId $id,
+        ScenarioTemplateId $scenarioTemplateId,
         Scenario $scenario,
         SubjectsCouple $subjects,
         ResearcherId $observer
     ) {
         $this->id = $id;
+        $this->scenarioTemplateId = $scenarioTemplateId;
         $this->scenario = $scenario;
         $this->subjects = $subjects;
         $this->observer = $observer;
@@ -57,6 +64,14 @@ class Session
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return ScenarioTemplateId
+     */
+    public function getScenarioTemplateId()
+    {
+        return $this->scenarioTemplateId;
     }
 
     /**
@@ -81,6 +96,38 @@ class Session
     public function getObserver()
     {
         return $this->observer;
+    }
+
+    /**
+     * @param ResearcherId $observer
+     */
+    public function changeObserver(ResearcherId $observer)
+    {
+        $this->ensureSessionIsModifiable();
+
+        $this->observer = $observer;
+    }
+
+    /**
+     * @param SubjectsCouple $subjects
+     */
+    public function changeSubjects(SubjectsCouple $subjects)
+    {
+        $this->ensureSessionIsModifiable();
+
+        $this->subjects = $subjects;
+    }
+
+    /**
+     * @param ScenarioTemplateId $scenarioTemplateId
+     * @param Scenario           $scenario
+     */
+    public function changeScenario(ScenarioTemplateId $scenarioTemplateId, Scenario $scenario)
+    {
+        $this->ensureSessionIsModifiable();
+
+        $this->scenarioTemplateId = $scenarioTemplateId;
+        $this->scenario = $scenario;
     }
 
     /**
@@ -159,5 +206,10 @@ class Session
     protected function ensureThereIsACurrentSequence()
     {
         Assertion::true($this->scenario->isRunning(), 'You cannot add a result matching no sequence.');
+    }
+
+    private function ensureSessionIsModifiable()
+    {
+        Assertion::true($this->results->isEmpty(), 'You cannot modify a started session');
     }
 }

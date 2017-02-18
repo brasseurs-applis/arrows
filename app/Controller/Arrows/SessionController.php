@@ -7,7 +7,11 @@ use BrasseursApplis\Arrows\App\Controller\Util\Paginator;
 use BrasseursApplis\Arrows\App\DTO\SessionDTO;
 use BrasseursApplis\Arrows\App\Finder\SessionFinder;
 use BrasseursApplis\Arrows\App\Form\SessionType;
+use BrasseursApplis\Arrows\Id\ResearcherId;
+use BrasseursApplis\Arrows\Id\ScenarioTemplateId;
 use BrasseursApplis\Arrows\Id\SessionId;
+use BrasseursApplis\Arrows\Id\SubjectId;
+use BrasseursApplis\Arrows\Service\SessionService;
 use Doctrine\ORM\ORMInvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -26,6 +30,9 @@ class SessionController
     /** @var SessionFinder */
     private $sessionFinder;
 
+    /** @var SessionService */
+    private $sessionService;
+
     /** @var FormFactoryInterface */
     private $formFactory;
 
@@ -38,18 +45,21 @@ class SessionController
     /**
      * SessionController constructor.
      *
-     * @param SessionFinder       $sessionFinder
+     * @param SessionFinder        $sessionFinder
+     * @param SessionService       $sessionService
      * @param FormFactoryInterface $formFactory
      * @param \Twig_Environment    $twig
      * @param UrlGenerator         $urlGenerator
      */
     public function __construct(
         SessionFinder $sessionFinder,
+        SessionService $sessionService,
         FormFactoryInterface $formFactory,
         \Twig_Environment $twig,
         UrlGenerator $urlGenerator
     ) {
         $this->sessionFinder = $sessionFinder;
+        $this->sessionService = $sessionService;
         $this->formFactory = $formFactory;
         $this->twig = $twig;
         $this->urlGenerator = $urlGenerator;
@@ -111,11 +121,28 @@ class SessionController
         /** @var SessionDTO $session */
         $session = $form->getData();
         $domainSessionId = new SessionId($session->getId());
+        $researcher = new ResearcherId($session->getResearcher()->getId());
+        $subjectOne = new SubjectId($session->getSubjectOne()->getId());
+        $subjectTwo = new SubjectId($session->getSubjectTwo()->getId());
+        $scenarioId = new ScenarioTemplateId($session->getScenario()->getId());
+
 
         if ($new) {
-            // Create session
+            $this->sessionService->createSession(
+                $domainSessionId,
+                $researcher,
+                $subjectOne,
+                $subjectTwo,
+                $scenarioId
+            );
         } else {
-            // Update Session
+            $this->sessionService->updateSession(
+                $domainSessionId,
+                $researcher,
+                $subjectOne,
+                $subjectTwo,
+                $scenarioId
+            );
         }
 
         return new RedirectResponse($this->urlGenerator->generate('session_list'));

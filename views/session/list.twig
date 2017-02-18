@@ -18,7 +18,7 @@
     {% if elements is not empty %}
     <ul>
         {% for session in elements %}
-        <li>{{ session.id }} <a href="{{ path('session_edit', { sessionId : session.id }) }}">edit</a></li>
+        <li>{{ session.scenario.name }} <a href="{{ path('session_edit', { sessionId : session.id }) }}">edit</a></li>
         {% endfor %}
     </ul>
     {% else %}
