@@ -30,8 +30,8 @@ class Version20170119212421 extends AbstractMigration
                 sequence_initiation_orientation VARCHAR(10) NOT NULL,
                 sequence_main_orientation VARCHAR(10) NOT NULL,
                 orientation VARCHAR(10) NOT NULL,
-                start_timestamp INT NOT NULL,
-                end_timestamp INT NOT NULL,
+                start_timestamp BIGINT NOT NULL,
+                end_timestamp BIGINT NOT NULL,
                 PRIMARY KEY(id)
             )',
             'CREATE TABLE arrows.scenario_template (
