@@ -201,6 +201,7 @@ class Session
     protected function ensureThereIsNoPendingSequence($message)
     {
         Assertion::false($this->scenario->isRunning(), $message);
+        Assertion::true($this->results->isEmpty(), $message);
     }
 
     protected function ensureThereIsACurrentSequence()

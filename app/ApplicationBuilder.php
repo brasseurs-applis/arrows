@@ -21,6 +21,7 @@ use BrasseursApplis\Arrows\App\Security\ArrowsJwtUserBuilder;
 use BrasseursApplis\Arrows\App\Security\SessionVoter;
 use BrasseursApplis\Arrows\App\Security\UserProvider;
 use BrasseursApplis\Arrows\App\Socket\ArrowsMessageComponent;
+use BrasseursApplis\Arrows\App\Socket\EntityManagerComponent;
 use BrasseursApplis\Arrows\ScenarioTemplate;
 use BrasseursApplis\Arrows\Service\ScenarioService;
 use BrasseursApplis\Arrows\Service\SessionService;
@@ -35,6 +36,7 @@ use Doctrine\Tools\Psr3SqlLogger;
 use Monolog\Logger;
 use Pimple\Container;
 use Ratchet\App;
+use React\EventLoop\Factory as LoopFactory;
 use RemiSan\Silex\JWT\ServiceProvider\JwtServiceProvider;
 use Saxulum\DoctrineOrmManagerRegistry\Provider\DoctrineOrmManagerRegistryProvider;
 use Silex\Application;
@@ -407,16 +409,24 @@ class ApplicationBuilder
             ]
         ];
 
+        $this->application['event.loop'] = function() {
+            return LoopFactory::create();
+        };
+
         $this->application['socket.arrows.message.component'] = function() {
-            return new ArrowsMessageComponent(
-                $this->application['arrows.session.repository'],
-                $this->application['security.jwt.authenticator'],
-                $this->application['security.authorization_checker']
+            return new EntityManagerComponent(
+                new ArrowsMessageComponent(
+                    $this->application['arrows.session.repository'],
+                    $this->application['security.jwt.authenticator'],
+                    $this->application['security.authorization_checker']
+                ),
+                $this->application['orm.em'],
+                $this->application['event.loop']
             );
         };
 
         $this->application['socket.application'] = function () use ($httpHost, $port) {
-            $application = new App($httpHost, $port);
+            $application = new App($httpHost, $port, '127.0.0.1', $this->application['event.loop']);
 
             $application->route(
                 '/socket/{sessionId}/{role}',
