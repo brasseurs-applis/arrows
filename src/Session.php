@@ -146,6 +146,21 @@ class Session
     }
 
     /**
+     * @return Sequence
+     *
+     * @throws Exception\ScenarioException
+     * @throws \Assert\AssertionFailedException
+     */
+    public function resume()
+    {
+        if (!$this->scenario->isRunning()) {
+            return $this->start();
+        }
+
+        return $this->scenario->current();
+    }
+
+    /**
      * @param Orientation $orientation
      * @param Duration    $duration
      *

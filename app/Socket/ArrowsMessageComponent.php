@@ -205,7 +205,9 @@ class ArrowsMessageComponent implements MessageComponentInterface
             if (! $this->authorizationChecker->isGranted(SessionVoter::OBSERVE, $session)) {
                 throw new UnauthorizedException('You must be the observer to launch the test');
             }
-            return new SessionSequence($session->start());
+
+
+            return new SessionSequence($session->resume());
         }
 
         // Response message: send response & return next sequence
