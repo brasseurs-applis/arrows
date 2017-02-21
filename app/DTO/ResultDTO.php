@@ -137,4 +137,12 @@ class ResultDTO
     {
         return $this->end;
     }
+
+    /**
+     * @return int
+     */
+    public function getDuration()
+    {
+        return $this->end - $this->start;
+    }
 }

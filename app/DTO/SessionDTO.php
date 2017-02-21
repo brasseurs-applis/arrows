@@ -122,4 +122,12 @@ class SessionDTO
     {
         return $this->results;
     }
+
+    /**
+     * @return int
+     */
+    public function numberOfSequences()
+    {
+        return count($this->scenario->getSequences());
+    }
 }

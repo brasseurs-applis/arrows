@@ -11,13 +11,16 @@
 {% endblock %}
 
 {% block content %}
+    {% if session.results|length < session.numberOfSequences %}
     <form>
         <input type="button" id="start" value="start" style="display:none" />
     </form>
+    {% endif %}
     <table>
         <thead>
             <tr>
                 <th>#</th>
+                <th>Position</th>
                 <th>Preview</th>
                 <th>Init</th>
                 <th>Main</th>
@@ -26,20 +29,32 @@
             </tr>
         </thead>
         <tbody id="sequences">
+        {% for result in session.results %}
+            <tr id="result_{{ loop.index }}">
+                <td>{{ loop.index }}</td>
+                <td>{{ result.position }}</td>
+                <td>{{ result.previewOrientation }}</td>
+                <td>{{ result.initiationOrientation }}</td>
+                <td>{{ result.mainOrientation }}</td>
+                <td class="result">{{ result.answerOrientation }}</td>
+                <td class="time">{{ result.duration }}</td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
+    {% if session.results|length < session.numberOfSequences %}
     <script>
         var sequenceNumber;
         var sequenceLine;
         var sequenceTable = document.getElementById('sequences');
 
-        var conn = new WebSocket('ws://localhost:8080/socket/{{ sessionId }}/observer?jwt={{ app.user.jwt }}');
+        var conn = new WebSocket('ws://localhost:8080/socket/{{ session.id }}/observer?jwt={{ app.user.jwt }}');
         conn.onclose = function() { console.log('close'); };
         conn.onerror = function() { console.log('error'); };
 
-        conn.onopen = function (e) {
+        conn.onopen = function () {
             console.log('open');
-            sequenceNumber = 0;
+            sequenceNumber = {{ session.results|length }};
         };
 
         conn.onmessage = function(e) {
@@ -62,8 +77,9 @@
                     sequenceNumber++;
 
                     sequenceLine = document.createElement('tr');
-                    sequenceLine.id = 'session_'+sequenceNumber;
+                    sequenceLine.id = 'result_'+sequenceNumber;
                     sequenceLine.innerHTML  = '<td>'+sequenceNumber+'</td>';
+                    sequenceLine.innerHTML += '<td>'+message.position+'</td>';
                     sequenceLine.innerHTML += '<td>'+message.previewOrientation+'</td>';
                     sequenceLine.innerHTML += '<td>'+message.initiationOrientation+'</td>';
                     sequenceLine.innerHTML += '<td>'+message.mainOrientation+'</td>';
@@ -78,4 +94,5 @@
             }
         };
     </script>
+    {% endif %}
 {% endblock %}

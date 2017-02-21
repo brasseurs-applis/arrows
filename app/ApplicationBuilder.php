@@ -321,7 +321,10 @@ class ApplicationBuilder
         };
 
         $this->application['arrows.controller'] = function() {
-            return new ArrowsController($this->application['twig']);
+            return new ArrowsController(
+                $this->application['arrows.session.finder'],
+                $this->application['twig']
+            );
         };
 
         $this->application['security.firewalls'] = [

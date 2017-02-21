@@ -20,10 +20,14 @@
         {% for session in elements %}
         <li>
             {{ session.scenario.name }}
+            {% if session.results|length == 0 %}
             <a href="{{ path('session_edit', { sessionId : session.id }) }}">edit</a>
+            {% endif %}
             <a href="{{ path('observer', { sessionId : session.id }) }}">observer</a>
-            <a href="{{ path('position_one', { sessionId : session.id }) }}">Position #1</a>
-            <a href="{{ path('position_two', { sessionId : session.id }) }}">Position #2</a>
+            {% if session.results|length < session.numberOfSequences %}
+                <a href="{{ path('position_one', { sessionId : session.id }) }}">Position #1</a>
+                <a href="{{ path('position_two', { sessionId : session.id }) }}">Position #2</a>
+            {% endif %}
         </li>
         {% endfor %}
     </ul>
