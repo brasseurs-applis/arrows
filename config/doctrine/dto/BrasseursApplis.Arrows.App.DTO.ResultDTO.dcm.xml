@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="BrasseursApplis\Arrows\App\DTO\ResultDTO" table="result" schema="arrows">
+        <id name="id" column="id" type="guid" />
+        <field name="position" type="string" column="sequence_position" length="10" nullable="false" />
+        <field name="previewOrientation" type="string" column="sequence_preview_orientation" length="10" nullable="false" />
+        <field name="initiationOrientation" type="string" column="sequence_initiation_orientation" length="10" nullable="false" />
+        <field name="mainOrientation" type="string" column="sequence_main_orientation" length="10" nullable="false" />
+        <field name="answerOrientation" type="string" column="orientation" length="10" nullable="false" />
+        <field name="start" type="integer" column="start_timestamp" nullable="false" />
+        <field name="end" type="integer" column="end_timestamp" nullable="false" />
+        <many-to-one field="session" target-entity="BrasseursApplis\Arrows\App\DTO\SessionDTO" inversed-by="results" fetch="LAZY">
+            <join-columns>
+                <join-column name="session_id" referenced-column-name="id"/>
+            </join-columns>
+        </many-to-one>
+    </entity>
+</doctrine-mapping>

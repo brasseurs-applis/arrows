@@ -2,6 +2,7 @@
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <entity name="BrasseursApplis\Arrows\App\DTO\SessionDTO" repository-class="BrasseursApplis\Arrows\App\Finder\SessionFinder" table="session" schema="arrows">
         <id name="id" column="id" type="guid" />
+        <one-to-many field="results" target-entity="BrasseursApplis\Arrows\App\DTO\ResultDTO" mapped-by="session" fetch="LAZY" />
         <many-to-one field="researcher" target-entity="BrasseursApplis\Arrows\App\DTO\UserDTO" fetch="EAGER">
             <join-columns>
                 <join-column name="observer_id" referenced-column-name="id"/>

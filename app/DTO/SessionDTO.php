@@ -2,10 +2,7 @@
 
 namespace BrasseursApplis\Arrows\App\DTO;
 
-use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
-use Symfony\Component\Validator\Exception\InvalidOptionsException;
-use Symfony\Component\Validator\Exception\MissingOptionsException;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class SessionDTO
 {
@@ -24,6 +21,9 @@ class SessionDTO
     /** @var ScenarioDTO */
     private $scenario;
 
+    /** @var ResultDTO[] | ArrayCollection */
+    private $results;
+
     /**
      * SessionDTO constructor.
      *
@@ -32,6 +32,7 @@ class SessionDTO
     public function __construct($id)
     {
         $this->id = $id;
+        $this->results = new ArrayCollection();
     }
 
     /**
@@ -112,5 +113,13 @@ class SessionDTO
     public function setScenario($scenario)
     {
         $this->scenario = $scenario;
+    }
+
+    /**
+     * @return ResultDTO[]
+     */
+    public function getResults()
+    {
+        return $this->results;
     }
 }
