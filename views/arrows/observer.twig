@@ -46,7 +46,9 @@
     <script>
         var sequenceNumber;
         var sequenceLine;
+        var answerReceived = false;
         var sequenceTable = document.getElementById('sequences');
+        var startButton = document.getElementById('start');
 
         var conn = new WebSocket('ws://localhost:8080/socket/{{ session.id }}/observer?jwt={{ app.user.jwt }}');
         conn.onclose = function() { console.log('close'); };
@@ -59,12 +61,13 @@
 
         conn.onmessage = function(e) {
             var message = JSON.parse(e.data);
-            var startButton = document.getElementById('start');
 
             console.log(message);
 
             switch (message.type) {
                 case 'session.ready':
+                    answerReceived = false;
+
                     startButton.style.display = 'inline';
                     startButton.onclick = function () {
                         conn.send(JSON.stringify({
@@ -73,6 +76,8 @@
                     };
                     break;
                 case 'session.sequence':
+                    answerReceived = false;
+
                     startButton.style.display = 'none';
                     sequenceNumber++;
 
@@ -88,8 +93,18 @@
                     sequenceTable.appendChild(sequenceLine);
                     break;
                 case 'session.result':
+                    answerReceived = true;
+
                     sequenceLine.getElementsByClassName('result')[0].innerHTML = message.orientation;
                     sequenceLine.getElementsByClassName('time')[0].innerHTML = message.endingTime-message.startingTime;
+                    break;
+                case 'session.ended':
+                    if (answerReceived === false) {
+                        sequenceTable.removeChild(sequenceTable.lastChild);
+                        sequenceNumber--;
+                    }
+
+                    answerReceived = false;
                     break;
             }
         };

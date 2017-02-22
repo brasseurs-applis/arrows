@@ -15,11 +15,14 @@ class DoctrineSessionRepository extends EntityRepository implements SessionRepos
      * @param SessionId $id
      *
      * @return Session
+     *
+     * @throws ORMInvalidArgumentException
      */
     public function get(SessionId $id)
     {
         /** @var Session $session */
         $session = $this->find((string) $id);
+        $this->getEntityManager()->refresh($session);
 
         return $session;
     }

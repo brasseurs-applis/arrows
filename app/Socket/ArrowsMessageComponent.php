@@ -120,10 +120,6 @@ class ArrowsMessageComponent implements MessageComponentInterface
                 $sessionConnections = $this->getSessionConnections($connectionInformation->getSessionId());
                 $sessionConnections->unregister($connectionInformation);
 
-                $session->cancel();
-
-                $this->sessionRepository->persist($session);
-
                 $sessionConnections->broadcast(new SessionEnded());
             }
         );
