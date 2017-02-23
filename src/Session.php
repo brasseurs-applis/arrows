@@ -56,6 +56,7 @@ class Session
         $this->scenario = $scenario;
         $this->subjects = $subjects;
         $this->observer = $observer;
+        $this->results = new ArrayCollection();
     }
 
     /**

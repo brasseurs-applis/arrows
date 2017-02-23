@@ -27,10 +27,10 @@ class SessionSequence implements Message, \JsonSerializable
      * @param Sequence $sequence
      */
     public function __construct(Sequence $sequence) {
-        $this->position = (string) $sequence->getPosition();
-        $this->previewOrientation = (string) $sequence->getPreviewOrientation();
-        $this->initiationOrientation = (string) $sequence->getInitiationOrientation();
-        $this->mainOrientation = (string) $sequence->getMainOrientation();
+        $this->position = (string) $sequence->getPosition() ? : null;
+        $this->previewOrientation = (string) $sequence->getPreviewOrientation() ? : null;
+        $this->initiationOrientation = (string) $sequence->getInitiationOrientation() ? : null;
+        $this->mainOrientation = (string) $sequence->getMainOrientation() ? : null;
     }
 
     /**

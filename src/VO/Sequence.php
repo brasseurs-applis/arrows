@@ -27,7 +27,7 @@ class Sequence implements \JsonSerializable
     public function __construct(
         Position $position,
         Orientation $previewOrientation,
-        Orientation $initiationOrientation,
+        Orientation $initiationOrientation = null,
         Orientation $mainOrientation
     ) {
         $this->position = $position;
@@ -53,7 +53,7 @@ class Sequence implements \JsonSerializable
     }
 
     /**
-     * @return mixed
+     * @return Orientation
      */
     public function getInitiationOrientation()
     {
@@ -61,7 +61,7 @@ class Sequence implements \JsonSerializable
     }
 
     /**
-     * @return mixed
+     * @return Orientation
      */
     public function getMainOrientation()
     {

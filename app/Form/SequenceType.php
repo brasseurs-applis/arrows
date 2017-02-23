@@ -35,6 +35,7 @@ class SequenceType extends AbstractType
             ])
             ->add('initiationOrientation', ChoiceType::class, [
                 'choices'  => [
+                    '' => null,
                     'left' => Orientation::LEFT,
                     'right' => Orientation::RIGHT
                 ]

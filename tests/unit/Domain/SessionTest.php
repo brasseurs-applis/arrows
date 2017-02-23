@@ -3,6 +3,7 @@
 namespace BrasseursApplis\Arrows\Test\Unit\Domain;
 
 use BrasseursApplis\Arrows\Id\ResearcherId;
+use BrasseursApplis\Arrows\Id\ScenarioTemplateId;
 use BrasseursApplis\Arrows\Id\SessionId;
 use BrasseursApplis\Arrows\Id\SubjectId;
 use BrasseursApplis\Arrows\Result;
@@ -20,7 +21,10 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     /** @var SessionId */
     private $sessionId;
 
-    /** @var \BrasseursApplis\Arrows\VO\Scenario | Mock */
+    /** @var ScenarioTemplateId */
+    private $scenarioTemplateId;
+
+    /** @var Scenario | Mock */
     private $scenario;
 
     /** @var SubjectsCouple */
@@ -52,6 +56,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $faker = Factory::create();
 
         $this->sessionId = new SessionId($faker->uuid);
+        $this->scenarioTemplateId = new ScenarioTemplateId($faker->uuid);
         $this->scenario = \Mockery::mock(Scenario::class);
         $this->subjects = new SubjectsCouple(new SubjectId($faker->uuid), new SubjectId($faker->uuid));
         $this->observer = new ResearcherId($faker->uuid);
@@ -200,7 +205,13 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 
     private function givenASession()
     {
-        $this->serviceUnderTest = new Session($this->sessionId, $this->scenario, $this->subjects, $this->observer);
+        $this->serviceUnderTest = new Session(
+            $this->sessionId,
+            $this->scenarioTemplateId,
+            $this->scenario,
+            $this->subjects,
+            $this->observer
+        );
     }
 
     private function givenScenarioCanRun()

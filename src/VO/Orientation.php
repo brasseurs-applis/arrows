@@ -8,6 +8,7 @@ class Orientation implements \JsonSerializable
 {
     const RIGHT = 'right';
     const LEFT = 'left';
+    const NULL = null;
 
     /** @var string */
     private $orientation;
@@ -19,7 +20,7 @@ class Orientation implements \JsonSerializable
      */
     public function __construct($orientation)
     {
-        Assertion::inArray($orientation, [self::LEFT, self::RIGHT]);
+        Assertion::inArray($orientation, [self::LEFT, self::RIGHT, self::NULL]);
 
         $this->orientation = $orientation;
     }
@@ -41,11 +42,19 @@ class Orientation implements \JsonSerializable
     }
 
     /**
+     * @return Orientation
+     */
+    public static function null()
+    {
+        return new self(self::NULL);
+    }
+
+    /**
      * @return string
      */
     public function __toString()
     {
-        return $this->orientation;
+        return (string) $this->orientation;
     }
 
     /**

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <embeddable name="BrasseursApplis\Arrows\VO\Sequence">
-        <embedded name="position" class="BrasseursApplis\Arrows\VO\Position" use-column-prefix="false" />
-        <embedded name="previewOrientation" class="BrasseursApplis\Arrows\VO\Orientation" column-prefix="preview_" />
-        <embedded name="initiationOrientation" class="BrasseursApplis\Arrows\VO\Orientation" column-prefix="initiation_" />
-        <embedded name="mainOrientation" class="BrasseursApplis\Arrows\VO\Orientation" column-prefix="main_" />
+        <field name="position" type="position" column="position" length="10" nullable="false" />
+        <field name="previewOrientation" type="orientation" column="preview_orientation" length="10" nullable="false" />
+        <field name="initiationOrientation" type="orientation" column="initiation_orientation" length="10" nullable="true" />
+        <field name="mainOrientation" type="orientation" column="main_orientation" length="10" nullable="false" />
     </embeddable>
 </doctrine-mapping>

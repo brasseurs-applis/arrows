@@ -7,6 +7,8 @@ use BrasseursApplis\Arrows\App\Controller\Arrows\SessionController;
 use BrasseursApplis\Arrows\App\Controller\IndexController;
 use BrasseursApplis\Arrows\App\Controller\Security\UserController;
 use BrasseursApplis\Arrows\App\Controller\Session\ArrowsController;
+use BrasseursApplis\Arrows\App\Doctrine\OrientationType;
+use BrasseursApplis\Arrows\App\Doctrine\PositionType;
 use BrasseursApplis\Arrows\App\Doctrine\ResearcherIdType;
 use BrasseursApplis\Arrows\App\Doctrine\ScenarioTemplateIdType;
 use BrasseursApplis\Arrows\App\Doctrine\SequenceCollectionType;
@@ -191,6 +193,9 @@ class ApplicationBuilder
                         SubjectIdType::SUBJECT_ID => SubjectIdType::class,
                         UserIdType::USER_ID => UserIdType::class,
 
+                        OrientationType::ORIENTATION => OrientationType::class,
+                        PositionType::POSITION => PositionType::class,
+
                         SequenceCollectionType::SEQUENCE_COLLECTION => SequenceCollectionType::class,
 
                         SequencesType::SEQUENCES => SequencesType::class
@@ -207,6 +212,9 @@ class ApplicationBuilder
             $platform->registerDoctrineTypeMapping(SessionIdType::SESSION_ID, SessionIdType::SESSION_ID);
             $platform->registerDoctrineTypeMapping(SubjectIdType::SUBJECT_ID, SubjectIdType::SUBJECT_ID);
             $platform->registerDoctrineTypeMapping(UserIdType::USER_ID, UserIdType::USER_ID);
+
+            $platform->registerDoctrineTypeMapping(OrientationType::ORIENTATION, OrientationType::ORIENTATION);
+            $platform->registerDoctrineTypeMapping(PositionType::POSITION, PositionType::POSITION);
 
             $platform->registerDoctrineTypeMapping(SequenceCollectionType::SEQUENCE_COLLECTION, SequenceCollectionType::SEQUENCE_COLLECTION);
 

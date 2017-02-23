@@ -27,7 +27,7 @@ class Version20170119212421 extends AbstractMigration
                 session_id UUID DEFAULT NULL,
                 sequence_position VARCHAR(10) NOT NULL,
                 sequence_preview_orientation VARCHAR(10) NOT NULL,
-                sequence_initiation_orientation VARCHAR(10) NOT NULL,
+                sequence_initiation_orientation VARCHAR(10) NULL,
                 sequence_main_orientation VARCHAR(10) NOT NULL,
                 orientation VARCHAR(10) NOT NULL,
                 start_timestamp BIGINT NOT NULL,

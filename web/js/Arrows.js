@@ -58,7 +58,9 @@ var Arrows = function(ctx, width, height, callback) {
         var imgSecond = (second === "left") ? this.bigLeft : this.bigRight;
 
         setTimeout(function(){
-            self.ctx.drawImage(imgFirst, 0, 0, self.imgWidth, self.imgHeight, x, y, width, height);
+            if (first !== null) {
+                self.ctx.drawImage(imgFirst, 0, 0, self.imgWidth, self.imgHeight, x, y, width, height);
+            }
             setTimeout(function() {
                 self.ctx.clearRect(0, 0, self.imgWidth, self.imgHeight);
                 setTimeout(function(){
