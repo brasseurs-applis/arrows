@@ -3,8 +3,8 @@
 namespace BrasseursApplis\Arrows\App\Socket;
 
 use Assert\AssertionFailedException;
-use BrasseursApplis\Arrows\App\Security\SessionVoter;
 use BrasseursApplis\Arrows\App\Security\UnauthorizedException;
+use BrasseursApplis\Arrows\App\Security\Voter\SessionVoter;
 use BrasseursApplis\Arrows\App\Socket\Connection\ArrowsConnectionInformation;
 use BrasseursApplis\Arrows\App\Socket\Connection\SessionConnections;
 use BrasseursApplis\Arrows\App\Socket\Message\Inbound\SessionResult;
@@ -144,23 +144,21 @@ class ArrowsMessageComponent implements MessageComponentInterface
      */
     private function protect(ConnectionInterface $conn, \Closure $protected)
     {
-        $connectionInformation = new ArrowsConnectionInformation($conn);
-        $connectionInformation->authenticate($this->jwtAuthenticator);
-
-        $session = $this->sessionRepository->get(new SessionId($connectionInformation->getSessionId()));
-
-        if ($session === null) {
-            throw new \InvalidArgumentException('Session not found');
-        }
-
-        if (! $this->authorizationChecker->isGranted(SessionVoter::ACCESS, $session)) {
-            throw new UnauthorizedException();
-        }
-
         try {
+            $connectionInformation = new ArrowsConnectionInformation($conn);
+            $connectionInformation->authenticate($this->jwtAuthenticator);
+
+            $session = $this->sessionRepository->get(new SessionId($connectionInformation->getSessionId()));
+
+            if ($session === null) {
+                throw new \InvalidArgumentException('Session not found');
+            }
+
+            if (! $this->authorizationChecker->isGranted(SessionVoter::ACCESS, $session)) {
+                throw new UnauthorizedException('User cannot access the session');
+            }
+
             $protected($connectionInformation, $session);
-        } catch (UnauthorizedException $e) {
-            throw $e;
         } catch (\Exception $e) {
             $connectionInformation->send(new Error($e->getMessage()));
         }

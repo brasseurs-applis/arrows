@@ -2,9 +2,13 @@
 
 namespace BrasseursApplis\Arrows\App\Controller\Session;
 
+use BrasseursApplis\Arrows\App\DTO\SessionDTO;
 use BrasseursApplis\Arrows\App\Finder\SessionFinder;
+use BrasseursApplis\Arrows\App\Security\Voter\SessionVoter;
 use Doctrine\ORM\ORMInvalidArgumentException;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ArrowsController
 {
@@ -14,17 +18,23 @@ class ArrowsController
     /** @var \Twig_Environment */
     private $twig;
 
+    /** @var AuthorizationCheckerInterface */
+    private $authorizationChecker;
+
     /**
      * IndexController constructor.
      *
-     * @param SessionFinder     $sessionFinder
-     * @param \Twig_Environment $twig
+     * @param SessionFinder                 $sessionFinder
+     * @param AuthorizationCheckerInterface $authorizationChecker
+     * @param \Twig_Environment             $twig
      */
     public function __construct(
         SessionFinder $sessionFinder,
+        AuthorizationCheckerInterface $authorizationChecker,
         \Twig_Environment $twig
     ) {
         $this->sessionFinder = $sessionFinder;
+        $this->authorizationChecker = $authorizationChecker;
         $this->twig = $twig;
     }
 
@@ -33,6 +43,7 @@ class ArrowsController
      *
      * @return Response
      *
+     * @throws AccessDeniedException
      * @throws ORMInvalidArgumentException
      * @throws \UnexpectedValueException
      * @throws \InvalidArgumentException
@@ -42,14 +53,19 @@ class ArrowsController
      */
     public function observerAction($sessionId)
     {
+        /** @var SessionDTO $session */
         $session = $this->sessionFinder->find($sessionId);
+
+        if (! $this->authorizationChecker->isGranted(SessionVoter::OBSERVE, $session)) {
+            throw new AccessDeniedException();
+        }
 
         $response = new Response();
         $response->setContent(
             $this->twig->render(
                 'arrows/observer.twig',
                 [
-                    'session' => $session,
+                    'session' => $session
                 ]
             )
         );
@@ -62,6 +78,8 @@ class ArrowsController
      *
      * @return Response
      *
+     * @throws AccessDeniedException
+     * @throws ORMInvalidArgumentException
      * @throws \UnexpectedValueException
      * @throws \InvalidArgumentException
      * @throws \Twig_Error_Syntax
@@ -70,12 +88,19 @@ class ArrowsController
      */
     public function positionOneAction($sessionId)
     {
+        /** @var SessionDTO $session */
+        $session = $this->sessionFinder->find($sessionId);
+
+        if (! $this->authorizationChecker->isGranted(SessionVoter::RESPOND, $session)) {
+            throw new AccessDeniedException();
+        }
+
         $response = new Response();
         $response->setContent(
             $this->twig->render(
                 'arrows/positionOne.twig',
                 [
-                    'sessionId' => $sessionId
+                    'session' => $session
                 ]
             )
         );
@@ -88,6 +113,8 @@ class ArrowsController
      *
      * @return Response
      *
+     * @throws AccessDeniedException
+     * @throws ORMInvalidArgumentException
      * @throws \UnexpectedValueException
      * @throws \InvalidArgumentException
      * @throws \Twig_Error_Syntax
@@ -96,12 +123,19 @@ class ArrowsController
      */
     public function positionTwoAction($sessionId)
     {
+        /** @var SessionDTO $session */
+        $session = $this->sessionFinder->find($sessionId);
+
+        if (! $this->authorizationChecker->isGranted(SessionVoter::PREVIEW, $session)) {
+            throw new AccessDeniedException();
+        }
+
         $response = new Response();
         $response->setContent(
             $this->twig->render(
                 'arrows/positionTwo.twig',
                 [
-                    'sessionId' => $sessionId
+                    'session' => $session
                 ]
             )
         );

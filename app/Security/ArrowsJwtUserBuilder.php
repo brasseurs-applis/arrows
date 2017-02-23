@@ -57,7 +57,7 @@ class ArrowsJwtUserBuilder implements JwtUserBuilder
 
         return new AuthorizationUser(
             new UserDTO(
-                new UserId($decodedJwt->sub),
+                $decodedJwt->sub,
                 $decodedJwt->username,
                 null,
                 null,

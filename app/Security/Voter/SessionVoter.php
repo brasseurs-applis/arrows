@@ -1,7 +1,8 @@
 <?php
 
-namespace BrasseursApplis\Arrows\App\Security;
+namespace BrasseursApplis\Arrows\App\Security\Voter;
 
+use BrasseursApplis\Arrows\App\Security\AuthorizationUser;
 use BrasseursApplis\Arrows\Session;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -24,7 +25,7 @@ class SessionVoter extends Voter
     protected function supports($attribute, $subject)
     {
         // if the attribute isn't one we support, return false
-        if (!in_array($attribute, [ self::ACCESS, self::OBSERVE, self::RESPOND ], true)) {
+        if (!in_array($attribute, [ self::ACCESS, self::OBSERVE, self::RESPOND, self::PREVIEW ], true)) {
             return false;
         }
 
@@ -79,7 +80,9 @@ class SessionVoter extends Voter
      */
     private function canAccess(Session $subject, AuthorizationUser $user)
     {
-        return true;
+        return $this->canObserve($subject, $user)
+            || $this->canRespond($subject, $user)
+            || $this->canPreview($subject, $user);
     }
 
     /**
@@ -90,7 +93,7 @@ class SessionVoter extends Voter
      */
     private function canObserve(Session $subject, AuthorizationUser $user)
     {
-        return true;
+        return ((string) $subject->getObserver()) === $user->getId();
     }
 
     /**
@@ -101,7 +104,7 @@ class SessionVoter extends Voter
      */
     private function canRespond(Session $subject, AuthorizationUser $user)
     {
-        return true;
+        return ((string) $subject->getSubjects()->getPositionOne()) === $user->getId();
     }
 
     /**
@@ -112,6 +115,6 @@ class SessionVoter extends Voter
      */
     private function canPreview(Session $subject, AuthorizationUser $user)
     {
-        return true;
+        return ((string) $subject->getSubjects()->getPositionTwo()) === $user->getId();
     }
 }

@@ -18,8 +18,9 @@ use BrasseursApplis\Arrows\App\DTO\ScenarioDTO;
 use BrasseursApplis\Arrows\App\DTO\SessionDTO;
 use BrasseursApplis\Arrows\App\DTO\UserDTO;
 use BrasseursApplis\Arrows\App\Security\ArrowsJwtUserBuilder;
-use BrasseursApplis\Arrows\App\Security\SessionVoter;
 use BrasseursApplis\Arrows\App\Security\UserProvider;
+use BrasseursApplis\Arrows\App\Security\Voter\SessionDTOVoter;
+use BrasseursApplis\Arrows\App\Security\Voter\SessionVoter;
 use BrasseursApplis\Arrows\App\Socket\ArrowsMessageComponent;
 use BrasseursApplis\Arrows\App\Socket\EntityManagerComponent;
 use BrasseursApplis\Arrows\ScenarioTemplate;
@@ -266,8 +267,13 @@ class ApplicationBuilder
             return new SessionVoter();
         };
 
+        $this->application['security.voter.sessionDTO'] = function () {
+            return new SessionDTOVoter();
+        };
+
         $this->application['security.voters'] = $this->application->extend('security.voters', function ($voters) {
             $voters[] = $this->application['security.voter.session'];
+            $voters[] = $this->application['security.voter.sessionDTO'];
             return $voters;
         });
     }
@@ -323,6 +329,7 @@ class ApplicationBuilder
         $this->application['arrows.controller'] = function() {
             return new ArrowsController(
                 $this->application['arrows.session.finder'],
+                $this->application['security.authorization_checker'],
                 $this->application['twig']
             );
         };
