@@ -15,11 +15,14 @@ class ArrowsController
     /** @var SessionFinder */
     private $sessionFinder;
 
+    /** @var AuthorizationCheckerInterface */
+    private $authorizationChecker;
+
     /** @var \Twig_Environment */
     private $twig;
 
-    /** @var AuthorizationCheckerInterface */
-    private $authorizationChecker;
+    /** @var string */
+    private $webSocketHost;
 
     /**
      * IndexController constructor.
@@ -27,15 +30,18 @@ class ArrowsController
      * @param SessionFinder                 $sessionFinder
      * @param AuthorizationCheckerInterface $authorizationChecker
      * @param \Twig_Environment             $twig
+     * @param string                        $webSocketHost
      */
     public function __construct(
         SessionFinder $sessionFinder,
         AuthorizationCheckerInterface $authorizationChecker,
-        \Twig_Environment $twig
+        \Twig_Environment $twig,
+        $webSocketHost
     ) {
         $this->sessionFinder = $sessionFinder;
         $this->authorizationChecker = $authorizationChecker;
         $this->twig = $twig;
+        $this->webSocketHost = $webSocketHost;
     }
 
     /**
@@ -64,9 +70,7 @@ class ArrowsController
         $response->setContent(
             $this->twig->render(
                 'arrows/observer.twig',
-                [
-                    'session' => $session
-                ]
+                $this->getTwigParameters($session)
             )
         );
 
@@ -99,9 +103,7 @@ class ArrowsController
         $response->setContent(
             $this->twig->render(
                 'arrows/positionOne.twig',
-                [
-                    'session' => $session
-                ]
+                $this->getTwigParameters($session)
             )
         );
 
@@ -134,12 +136,23 @@ class ArrowsController
         $response->setContent(
             $this->twig->render(
                 'arrows/positionTwo.twig',
-                [
-                    'session' => $session
-                ]
+                $this->getTwigParameters($session)
             )
         );
 
         return $response;
+    }
+
+    /**
+     * @param $session
+     *
+     * @return array
+     */
+    private function getTwigParameters($session)
+    {
+        return [
+            'session' => $session,
+            'webSocketHost' => $this->webSocketHost
+        ];
     }
 }

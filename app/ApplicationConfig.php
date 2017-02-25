@@ -60,7 +60,7 @@ class ApplicationConfig
 
         $this->dbConnectionOptions = [
             'driver'   => 'pdo_pgsql',
-            'host'     => 'default',
+            'host'     => 'postgres',
             'dbname'   => 'arrows',
             'user'     => 'postgres',
             'password' => 'postgres'
@@ -72,8 +72,8 @@ class ApplicationConfig
 
         $this->viewsFilePath = dirname(__DIR__) . '/views';
 
-        $this->socketHost = 'localhost';
-        $this->socketPort = 8080;
+        $this->socketHost = 'wss.entartage.local';
+        $this->socketPort = 1337;
     }
 
     /**

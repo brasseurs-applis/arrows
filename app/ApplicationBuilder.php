@@ -338,7 +338,8 @@ class ApplicationBuilder
             return new ArrowsController(
                 $this->application['arrows.session.finder'],
                 $this->application['security.authorization_checker'],
-                $this->application['twig']
+                $this->application['twig'],
+                $this->config->getSocketHost()
             );
         };
 
@@ -444,7 +445,7 @@ class ApplicationBuilder
         };
 
         $this->application['socket.application'] = function () use ($httpHost, $port) {
-            $application = new App($httpHost, $port, '127.0.0.1', $this->application['event.loop']);
+            $application = new App($httpHost, $port, '0.0.0.0', $this->application['event.loop']);
 
             $application->route(
                 '/socket/{sessionId}/{role}',

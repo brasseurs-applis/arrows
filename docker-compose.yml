@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+    web:
+        image: nginx:1.11-alpine
+        ports:
+            - 443:443
+        volumes:
+            - .:/code:ro
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+            - ./docker/ssl:/ssl:ro
+
+    phpfpm:
+        build: ./docker/dockerfiles/php-fpm
+        volumes:
+            - .:/code:rw
+        external_links:
+            - postgres:postgres
+
+    php:
+        build: ./docker/dockerfiles/php-cli
+        expose:
+            - 1337
+        volumes:
+            - .:/code:rw
+        external_links:
+            - postgres:postgres
+        command: [ "php", "/code/bin/server" ]

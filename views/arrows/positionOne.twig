@@ -29,7 +29,7 @@
 {% block content %}
     <canvas id="arrows" width="773" height="580" style></canvas>
     <script>
-        var conn = new WebSocket('ws://localhost:8080/socket/{{ session.id }}/position1?jwt={{ app.user.jwt }}');
+        var conn = new WebSocket('wss://{{ webSocketHost }}/socket/{{ session.id }}/position1?jwt={{ app.user.jwt }}');
         var canvas = document.getElementById("arrows");
         var arrows = new Arrows(
             canvas.getContext("2d"),

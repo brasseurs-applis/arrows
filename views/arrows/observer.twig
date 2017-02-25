@@ -50,7 +50,7 @@
         var sequenceTable = document.getElementById('sequences');
         var startButton = document.getElementById('start');
 
-        var conn = new WebSocket('ws://localhost:8080/socket/{{ session.id }}/observer?jwt={{ app.user.jwt }}');
+        var conn = new WebSocket('wss://{{ webSocketHost }}/socket/{{ session.id }}/observer?jwt={{ app.user.jwt }}');
         conn.onclose = function() { console.log('close'); };
         conn.onerror = function() { console.log('error'); };
 
