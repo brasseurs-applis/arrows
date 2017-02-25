@@ -22,7 +22,8 @@ class ScenarioType extends AbstractType
             ->add('name', TextType::class)
             ->add('sequences', CollectionType::class, [
                 'entry_type' => SequenceType::class,
-                'allow_add'  => true
+                'allow_add'  => true,
+                'allow_delete'  => true
             ]);
     }
 
