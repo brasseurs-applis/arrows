@@ -1,4 +1,4 @@
-<nav aria-label="Navigation">
+<nav aria-label="Navigation" class="text-center">
     <ul class="pagination">
         <li {% if pagination.page == 1 %}class="disabled"{% endif %}>
             <a href="{% if pagination.page > 1 %}{{ path(route) }}?page={{ pagination.page-1 }}{% else %}#{% endif %}" aria-label="Previous">
