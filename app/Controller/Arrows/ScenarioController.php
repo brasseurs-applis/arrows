@@ -28,6 +28,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class ScenarioController
 {
+    const PAGE_CATEGORY = 'scenario';
+
     /** @var ScenarioFinder */
     private $scenarioFinder;
 
@@ -121,7 +123,11 @@ class ScenarioController
             $response->setContent(
                 $this->twig->render(
                     'scenario/edit.twig',
-                    [ 'form' => $form->createView(), 'scenarioId' => (string) $scenarioId ]
+                    [
+                        'pageCategory' => self::PAGE_CATEGORY,
+                        'form' => $form->createView(),
+                        'scenarioId' => (string) $scenarioId,
+                    ]
                 )
             );
 
@@ -179,7 +185,7 @@ class ScenarioController
         $response->setContent(
             $this->twig->render(
                 'scenario/list.twig',
-                $pagination->toArray()
+                array_merge([ 'pageCategory' => self::PAGE_CATEGORY ], $pagination->toArray())
             )
         );
 

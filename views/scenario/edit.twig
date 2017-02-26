@@ -29,6 +29,10 @@
         <input type="submit" />
 
     {{ form_end(form) }}
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
     <script type="application/javascript">
 
         var $addSequenceLink = $('<a href="#" class="add_sequence_link">Add a sequence</a>');

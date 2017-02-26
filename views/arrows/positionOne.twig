@@ -11,6 +11,18 @@
 
 {% block head %}
     {{ parent() }}
+{% endblock %}
+
+{% block header %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <canvas id="arrows" width="773" height="580" style></canvas>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
     <script src="/js/Arrows.js" type="text/javascript" language="javascript"></script>
     <script type="text/javascript" language="javascript">
         //This code prevents users from dragging the page
@@ -23,15 +35,7 @@
             },
             false
         );
-    </script>
-{% endblock %}
 
-{% block header %}
-{% endblock %}
-
-{% block content %}
-    <canvas id="arrows" width="773" height="580" style></canvas>
-    <script>
         var conn = new WebSocket('wss://{{ webSocketHost }}/socket/{{ session.id }}/position1?jwt={{ app.user.jwt }}');
         var canvas = document.getElementById("arrows");
         var arrows = new Arrows(

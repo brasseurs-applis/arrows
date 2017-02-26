@@ -42,6 +42,10 @@
         {% endfor %}
         </tbody>
     </table>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
     {% if session.results|length < session.numberOfSequences %}
     <script>
         var sequenceNumber;

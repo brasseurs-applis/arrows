@@ -6,6 +6,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class IndexController
 {
+    const PAGE_CATEGORY = 'index';
+
     /** @var \Twig_Environment */
     private $twig;
 
@@ -33,7 +35,10 @@ class IndexController
         $response = new Response();
         $response->setContent(
             $this->twig->render(
-                'index.twig'
+                'index.twig',
+                [
+                    'pageCategory' => self::PAGE_CATEGORY
+                ]
             )
         );
 

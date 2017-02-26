@@ -27,6 +27,8 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class SessionController
 {
+    const PAGE_CATEGORY = 'session';
+
     /** @var SessionFinder */
     private $sessionFinder;
 
@@ -111,7 +113,11 @@ class SessionController
             $response->setContent(
                 $this->twig->render(
                     'session/edit.twig',
-                    [ 'form' => $form->createView(), 'sessionId' => (string) $sessionId ]
+                    [
+                        'pageCategory' => self::PAGE_CATEGORY,
+                        'form' => $form->createView(),
+                        'sessionId' => (string) $sessionId
+                    ]
                 )
             );
 
@@ -175,7 +181,7 @@ class SessionController
         $response->setContent(
             $this->twig->render(
                 'session/list.twig',
-                $pagination->toArray()
+                array_merge([ 'pageCategory' => self::PAGE_CATEGORY ], $pagination->toArray())
             )
         );
 

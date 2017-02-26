@@ -12,6 +12,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ArrowsController
 {
+    const PAGE_CATEGORY = 'session';
+
     /** @var SessionFinder */
     private $sessionFinder;
 
@@ -151,6 +153,7 @@ class ArrowsController
     private function getTwigParameters($session)
     {
         return [
+            'pageCategory' => self::PAGE_CATEGORY,
             'session' => $session,
             'webSocketHost' => $this->webSocketHost
         ];

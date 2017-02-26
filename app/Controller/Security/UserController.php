@@ -24,6 +24,8 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class UserController
 {
+    const PAGE_CATEGORY = 'user';
+
     /** @var UserFinder */
     private $userFinder;
 
@@ -108,7 +110,11 @@ class UserController
             $response->setContent(
                 $this->twig->render(
                     'user/edit.twig',
-                    [ 'form' => $form->createView(), 'userId' => (string) $userId ]
+                    [
+                        'pageCategory' => self::PAGE_CATEGORY,
+                        'form' => $form->createView(),
+                        'userId' => (string) $userId
+                    ]
                 )
             );
 
@@ -155,7 +161,7 @@ class UserController
         $response->setContent(
             $this->twig->render(
                 'user/list.twig',
-                $pagination->toArray()
+                array_merge([ 'pageCategory' => self::PAGE_CATEGORY ], $pagination->toArray())
             )
         );
 

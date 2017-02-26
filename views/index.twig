@@ -7,9 +7,7 @@
 {% endblock %}
 
 {% block header %}
-    <ul>
-        <li><a href="{{ path('logout') }}">Logout</a></li>
-    </ul>
+    {{ parent() }}
 {% endblock %}
 
 {% block content %}
@@ -22,4 +20,8 @@
         <li><a href="{{ path('scenario_list') }}">Scenarios</a></li>
         <li><a href="{{ path('session_list') }}">Sessions</a></li>
     </ul>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
 {% endblock %}

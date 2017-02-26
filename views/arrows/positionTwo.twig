@@ -12,6 +12,7 @@
 {% endblock %}
 
 {% block header %}
+    {{ parent() }}
 {% endblock %}
 
 {% block content %}
@@ -19,6 +20,10 @@
         <img src="/img/sm-left.png" id="preview-left" style="display:none" />
         <img src="/img/sm-right.png" id="preview-right" style="display:none" />
     </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
     <script>
         var conn = new WebSocket('wss://{{ webSocketHost }}/socket/{{ session.id }}/position2?jwt={{ app.user.jwt }}');
         conn.onopen = function (e) { console.log('open'); };
