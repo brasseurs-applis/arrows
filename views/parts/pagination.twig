@@ -1,0 +1,24 @@
+<nav aria-label="Navigation">
+    <ul class="pagination">
+        <li {% if pagination.page == 1 %}class="disabled"{% endif %}>
+            <a href="{% if pagination.page > 1 %}{{ path(route) }}?page={{ pagination.page-1 }}{% else %}#{% endif %}" aria-label="Previous">
+                    <span>
+                        <span aria-hidden="true">&laquo;</span>
+                    </span>
+            </a>
+        </li>
+
+        {% for index in range(1, pagination.totalPages) %}
+        <li {% if index == pagination.page %}class="active"{% endif %}>
+            <a href="{% if index != pagination.page %}{{ path(route) }}?page={{ index }}{% else %}#{% endif %}">{{ index }}</a>
+        </li>
+        {% endfor %}
+        <li {% if pagination.page == pagination.totalPages %}class="disabled"{% endif %}>
+            <a href="{% if pagination.page < pagination.totalPages %}{{ path(route) }}?page={{ pagination.page+1 }}{% else %}#{% endif %}" aria-label="Next">
+                    <span>
+                        <span aria-hidden="true">&raquo;</span>
+                    </span>
+            </a>
+        </li>
+    </ul>
+</nav>
