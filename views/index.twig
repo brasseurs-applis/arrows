@@ -11,14 +11,10 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Index</h1>
-    <p>
-        Access & modify stuff.
-    </p>
-    <ul>
-        <li><a href="{{ path('user_list') }}">Users</a></li>
-        <li><a href="{{ path('scenario_list') }}">Scenarios</a></li>
-        <li><a href="{{ path('session_list') }}">Sessions</a></li>
+    <ul class="list-group">
+        <li class="list-group-item"><a href="{{ path('user_list') }}">Users</a></li>
+        <li class="list-group-item"><a href="{{ path('scenario_list') }}">Scenarios</a></li>
+        <li class="list-group-item"><a href="{{ path('session_list') }}">Sessions</a></li>
     </ul>
 {% endblock %}
 

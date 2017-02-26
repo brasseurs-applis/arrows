@@ -11,28 +11,63 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Sessions</h1>
-
-    <a href="{{ path('session_create') }}">New</a>
+    <nav>
+        <a href="{{ path('session_create') }}" class="btn btn-default">New</a>
+    </nav>
 
     {% if elements is not empty %}
-    <ul>
+    <ul class="list-group">
         {% for session in elements %}
-        <li>
+        <li class="list-group-item">
             {{ session.scenario.name }}
+            <span class="tools pull-right">
             {% if session.results|length == 0 %}
-            <a href="{{ path('session_edit', { sessionId : session.id }) }}">edit</a>
+                <a href="{{ path('session_edit', { sessionId : session.id }) }}">
+                    <span class="glyphicon glyphicon-pencil" title="edit"></span>
+                </a>
             {% endif %}
-            <a href="{{ path('observer', { sessionId : session.id }) }}">observer</a>
+                <a href="{{ path('observer', { sessionId : session.id }) }}">
+                    <span class="glyphicon glyphicon-blackboard" title="observe"></span>
+                </a>
             {% if session.results|length < session.numberOfSequences %}
-                <a href="{{ path('position_one', { sessionId : session.id }) }}">Position #1</a>
-                <a href="{{ path('position_two', { sessionId : session.id }) }}">Position #2</a>
+                <a href="{{ path('position_one', { sessionId : session.id }) }}">
+                    <span class="glyphicon glyphicon-transfer" title="position #1"></span>
+                </a>
+                <a href="{{ path('position_two', { sessionId : session.id }) }}">
+                    <span class="glyphicon glyphicon-eye-open" title="position #2"></span>
+                </a>
             {% endif %}
+            </span>
         </li>
         {% endfor %}
     </ul>
+
+    <nav aria-label="Navigation">
+        <ul class="pagination">
+            <li {% if pagination.page == 1 %}class="disabled"{% endif %}>
+                <a href="{{ path('session_list') }}?page={{ pagination.page-1 }}" aria-label="Previous">
+                    <span>
+                        <span aria-hidden="true">&laquo;</span>
+                    </span>
+                </a>
+            </li>
+
+            {% for index in range(1, pagination.totalPages) %}
+            <li {% if index == pagination.page %}class="active"{% endif %}>
+                <a href="{{ path('session_list') }}?page={{ index }}">{{ index }}</a>
+            </li>
+            {% endfor %}
+            <li {% if pagination.page == pagination.totalPages %}class="disabled"{% endif %}>
+                <a href="{{ path('session_list') }}?page={{ pagination.page+1 }}" aria-label="Next">
+                    <span>
+                        <span aria-hidden="true">&raquo;</span>
+                    </span>
+                </a>
+            </li>
+        </ul>
+    </nav>
     {% else %}
-        <p>No session here.</p>
+    <p>No session here.</p>
     {% endif %}
 {% endblock %}
 
