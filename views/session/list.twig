@@ -11,42 +11,44 @@
 {% endblock %}
 
 {% block content %}
-    <nav>
-        <a href="{{ path('session_create') }}" class="btn btn-default">New</a>
-    </nav>
+    <div class="col-sm-offset-1 col-sm-10">
+        <nav>
+            <a href="{{ path('session_create') }}" class="btn btn-default">New</a>
+        </nav>
 
-    {% if elements is not empty %}
-    <ul class="list-group">
-        {% for session in elements %}
-        <li class="list-group-item">
-            {{ session.scenario.name }}
-            <span class="tools pull-right">
-            {% if session.results|length == 0 %}
-                <a href="{{ path('session_edit', { sessionId : session.id }) }}">
-                    <span class="glyphicon glyphicon-pencil" title="edit"></span>
-                </a>
-            {% endif %}
-                <a href="{{ path('observer', { sessionId : session.id }) }}">
-                    <span class="glyphicon glyphicon-blackboard" title="observe"></span>
-                </a>
-            {% if session.results|length < session.numberOfSequences %}
-                <a href="{{ path('position_one', { sessionId : session.id }) }}">
-                    <span class="glyphicon glyphicon-transfer" title="position #1"></span>
-                </a>
-                <a href="{{ path('position_two', { sessionId : session.id }) }}">
-                    <span class="glyphicon glyphicon-eye-open" title="position #2"></span>
-                </a>
-            {% endif %}
-            </span>
-        </li>
-        {% endfor %}
-    </ul>
+        {% if elements is not empty %}
+        <ul class="list-group">
+            {% for session in elements %}
+            <li class="list-group-item">
+                {{ session.scenario.name }}
+                <span class="tools pull-right">
+                {% if session.results|length == 0 %}
+                    <a href="{{ path('session_edit', { sessionId : session.id }) }}">
+                        <span class="glyphicon glyphicon-pencil" title="edit"></span>
+                    </a>
+                {% endif %}
+                    <a href="{{ path('observer', { sessionId : session.id }) }}">
+                        <span class="glyphicon glyphicon-blackboard" title="observe"></span>
+                    </a>
+                {% if session.results|length < session.numberOfSequences %}
+                    <a href="{{ path('position_one', { sessionId : session.id }) }}">
+                        <span class="glyphicon glyphicon-transfer" title="position #1"></span>
+                    </a>
+                    <a href="{{ path('position_two', { sessionId : session.id }) }}">
+                        <span class="glyphicon glyphicon-eye-open" title="position #2"></span>
+                    </a>
+                {% endif %}
+                </span>
+            </li>
+            {% endfor %}
+        </ul>
 
-    {% include 'parts/pagination.twig' with {'route': 'session_list'} %}
+        {% include 'parts/pagination.twig' with {'route': 'session_list'} %}
 
-    {% else %}
-    <p>No session here.</p>
-    {% endif %}
+        {% else %}
+        <p>No session here.</p>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block scripts %}

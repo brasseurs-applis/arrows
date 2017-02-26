@@ -11,29 +11,31 @@
 {% endblock %}
 
 {% block content %}
-    <nav>
-        <a href="{{ path('user_create') }}" class="btn btn-default">New</a>
-    </nav>
+    <div class="col-sm-offset-1 col-sm-10">
+        <nav>
+            <a href="{{ path('user_create') }}" class="btn btn-default">New</a>
+        </nav>
 
-    {% if elements is not empty %}
-    <ul class="list-group">
-        {% for user in elements %}
-        <li class="list-group-item">
-            {{ user.userName }}
-            <span class="tools pull-right">
-                <a href="{{ path('user_edit', { userId : user.id }) }}">
-                    <span class="glyphicon glyphicon-pencil" title="edit"></span>
-                </a>
-            </span>
-        </li>
-        {% endfor %}
-    </ul>
+        {% if elements is not empty %}
+        <ul class="list-group">
+            {% for user in elements %}
+            <li class="list-group-item">
+                {{ user.userName }}
+                <span class="tools pull-right">
+                    <a href="{{ path('user_edit', { userId : user.id }) }}">
+                        <span class="glyphicon glyphicon-pencil" title="edit"></span>
+                    </a>
+                </span>
+            </li>
+            {% endfor %}
+        </ul>
 
-    {% include 'parts/pagination.twig' with {'route': 'user_list'} %}
+        {% include 'parts/pagination.twig' with {'route': 'user_list'} %}
 
-    {% else %}
-    <p>No user here.</p>
-    {% endif %}
+        {% else %}
+        <p>No user here.</p>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block scripts %}
