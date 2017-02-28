@@ -2,7 +2,8 @@
 
 namespace BrasseursApplis\Arrows\App;
 
-use Monolog\Logger;
+use Assert\Assertion;
+use Assert\AssertionFailedException;
 
 class ApplicationConfig
 {
@@ -48,32 +49,28 @@ class ApplicationConfig
     /**
      * ApplicationConfig constructor.
      *
-     * @param bool $debug
+     * @throws AssertionFailedException
      */
-    public function __construct($debug = false)
+    public function __construct()
     {
-        $this->debug = $debug;
+        $configArray = self::getConfigArray();
 
-        $this->logFilePath = dirname(__DIR__) . '/log/app.log';
-        $this->logName = 'ARROWS';
-        $this->logLevel = Logger::DEBUG;
+        $this->debug = $configArray['debug'];
 
-        $this->dbConnectionOptions = [
-            'driver'   => 'pdo_pgsql',
-            'host'     => 'postgres',
-            'dbname'   => 'arrows',
-            'user'     => 'postgres',
-            'password' => 'postgres'
-        ];
+        $this->logFilePath = $configArray['log']['file'];
+        $this->logName     = $configArray['log']['name'];
+        $this->logLevel    = $configArray['log']['level'];
+
+        $this->dbConnectionOptions = $configArray['db'];
         $this->ormMappingsFilePath = dirname(__DIR__) . '/config/doctrine';
         $this->ormCacheFilePath = dirname(__DIR__) . '/cache/orm';
 
-        $this->jwtKey = 'myKey';
+        $this->jwtKey = $configArray['jwtKey'];
 
         $this->viewsFilePath = dirname(__DIR__) . '/views';
 
-        $this->socketHost = 'wss.entartage.local';
-        $this->socketPort = 1337;
+        $this->socketHost = $configArray['websocket']['host'];
+        $this->socketPort = $configArray['websocket']['port'];
     }
 
     /**
@@ -162,5 +159,36 @@ class ApplicationConfig
     public function getSocketPort()
     {
         return $this->socketPort;
+    }
+
+    /**
+     * @return array
+     * @throws AssertionFailedException
+     */
+    private static function getConfigArray()
+    {
+        $configArray = require dirname(__DIR__) . '/config/app-config.php';
+
+        Assertion::keyExists($configArray, 'debug');
+
+        Assertion::keyExists($configArray, 'log');
+        Assertion::keyExists($configArray['log'], 'file');
+        Assertion::keyExists($configArray['log'], 'name');
+        Assertion::keyExists($configArray['log'], 'level');
+
+        Assertion::keyExists($configArray, 'db');
+        Assertion::keyExists($configArray['db'], 'driver');
+        Assertion::keyExists($configArray['db'], 'host');
+        Assertion::keyExists($configArray['db'], 'dbname');
+        Assertion::keyExists($configArray['db'], 'user');
+        Assertion::keyExists($configArray['db'], 'password');
+
+        Assertion::keyExists($configArray, 'jwtKey');
+
+        Assertion::keyExists($configArray, 'websocket');
+        Assertion::keyExists($configArray['websocket'], 'host');
+        Assertion::keyExists($configArray['websocket'], 'port');
+
+        return $configArray;
     }
 }

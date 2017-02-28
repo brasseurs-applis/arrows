@@ -10,7 +10,7 @@ use Ramsey\Uuid\Uuid;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-$container = (new ApplicationBuilder(new ApplicationConfig(true)))->container();
+$container = (new ApplicationBuilder())->container();
 
 /** @var UserService $userService */
 $userService = $container['arrows.user.service'];

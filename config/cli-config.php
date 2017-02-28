@@ -6,6 +6,6 @@ use Doctrine\ORM\Tools\Console\ConsoleRunner;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$container = (new ApplicationBuilder(new ApplicationConfig(true)))->container();
+$container = (new ApplicationBuilder())->container();
 
 return ConsoleRunner::createHelperSet($container['orm.em']);

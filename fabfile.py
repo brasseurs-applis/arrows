@@ -10,6 +10,7 @@ release_dir = '/home/websites/arrows'
 keep_nb = 5
 
 
+@task
 def deploy(git_hash='master'):
     current_release = str(int(time.time())) + '-' + git_hash
     target_dir = release_dir + '/' + current_release

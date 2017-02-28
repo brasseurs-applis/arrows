@@ -2,6 +2,7 @@
 
 namespace BrasseursApplis\Arrows\App;
 
+use Assert\AssertionFailedException;
 use BrasseursApplis\Arrows\App\Controller\Arrows\ScenarioController;
 use BrasseursApplis\Arrows\App\Controller\Arrows\SessionController;
 use BrasseursApplis\Arrows\App\Controller\IndexController;
@@ -66,27 +67,26 @@ class ApplicationBuilder
     /**
      * ApplicationBuilder constructor.
      *
-     * @param ApplicationConfig $config
-     *
      * @throws DBALException
+     * @throws AssertionFailedException
      * @throws \InvalidArgumentException
      */
-    public function __construct(ApplicationConfig $config)
+    public function __construct()
     {
-        $this->application = new Application(['debug' => $config->isDebug()]);
+        $this->config = new ApplicationConfig();
 
-        $this->config = $config;
+        $this->application = new Application(['debug' => $this->config->isDebug()]);
 
         $this->log(
-            $config->getLogFilePath(),
-            $config->getLogName(),
-            $config->getLogLevel()
+            $this->config->getLogFilePath(),
+            $this->config->getLogName(),
+            $this->config->getLogLevel()
         );
 
         $this->orm(
-            $config->getDbConnectionOptions(),
-            $config->getOrmMappingsFilePath(),
-            $config->getOrmCacheFilePath()
+            $this->config->getDbConnectionOptions(),
+            $this->config->getOrmMappingsFilePath(),
+            $this->config->getOrmCacheFilePath()
         );
 
         $this->domain();

@@ -103,7 +103,7 @@
                     sequenceLine.getElementsByClassName('time')[0].innerHTML = message.endingTime-message.startingTime;
                     break;
                 case 'session.ended':
-                    if (answerReceived === false) {
+                    if (answerReceived === false && sequenceTable.lastChild) {
                         sequenceTable.removeChild(sequenceTable.lastChild);
                         sequenceNumber--;
                     }
