@@ -13,8 +13,11 @@ keep_nb = 5
 
 @task
 def deploy(git_hash='master'):
+    print('>>>>> deploy')
+
     current_release = str(int(time.time())) + '-' + git_hash
     target_dir = release_dir + '/' + current_release
+
     try:
         install(git_hash, target_dir)
         build(target_dir)
@@ -28,7 +31,9 @@ def deploy(git_hash='master'):
 
 def install(git_hash, target_dir):
     print('>>>>> install')
+
     run('mkdir %s' % target_dir)
+
     with cd(deploy_dir):
         run('git reset --hard')
         run('git fetch origin')
@@ -40,6 +45,7 @@ def install(git_hash, target_dir):
 
 def build(target_dir):
     print('>>>>> build')
+
     with cd(target_dir):
         run('composer install --no-dev --apcu-autoloader --optimize-autoloader')
         run ('cp %s %s' % (config_dir + '/app-config.php', target_dir + '/config/app-config.php'))
@@ -48,18 +54,19 @@ def build(target_dir):
 
 def release(target_dir):
     print('>>>>> release')
+
     run('ln -sfn %s %s/current' % (target_dir, release_dir))
 
 
 def cleanup(current_release):
     print('>>>>> clean-up')
+
     releases = get_releases()
 
     nb_delete = len(releases) - keep_nb
 
     if nb_delete > 0:
         nb_deleted = 0
-
         release_iterator = iter(releases)
 
         while nb_deleted < nb_delete:
@@ -78,15 +85,17 @@ def cleanup(current_release):
 
 def start():
     print('>>>>> run')
-    raise ValueError('test rollback')
+
+    run('supervisorctl restart arrows')
 
 
 def rollback(target_dir = None):
     print('>>>>> rollback')
+
     if (target_dir is not None):
         run('rm -Rf %s' % target_dir)
 
-    release( release_dir + '/' + get_releases()[-1]);
+    release(release_dir + '/' + get_releases()[-1]);
 
 
 def get_releases():
