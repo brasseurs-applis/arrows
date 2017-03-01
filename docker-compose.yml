@@ -4,6 +4,7 @@ services:
     web:
         image: nginx:1.11-alpine
         ports:
+            - 80:80
             - 443:443
         volumes:
             - .:/code:ro

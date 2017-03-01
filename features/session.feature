@@ -3,9 +3,9 @@ Feature: Creating a session and connecting to it
   As an administrator
   I want to create sessions and allow testers to connect to it
 
-  Scenario: A geonames entity creation will result in a Ptolemaeus place creation if it does not exist yet
+  Scenario: A session can be created by an administrator
     Given I am an administrator
-    And I want the session to be random
+    And I want the session to run a random scenario
     When I create the session
     Then the session should be available for tester on screen #1
     And the session should be available for tester on screen #2

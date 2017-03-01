@@ -16,9 +16,9 @@ class DefaultContext implements Context
     }
 
     /**
-     * @Given I want the session to be random
+     * @Given I want the session to run a random scenario
      */
-    public function iWantTheSessionToBeRandom()
+    public function iWantTheSessionToRunARandomScenario()
     {
         throw new PendingException();
     }
@@ -34,7 +34,7 @@ class DefaultContext implements Context
     /**
      * @Then the session should be available for tester on screen #1
      */
-    public function theSessionShouldBeAvailableForTesterOnScreen()
+    public function theSessionShouldBeAvailableForTesterOnScreen1()
     {
         throw new PendingException();
     }
@@ -42,7 +42,7 @@ class DefaultContext implements Context
     /**
      * @Given the session should be available for tester on screen #2
      */
-    public function theSessionShouldBeAvailableForTesterOnScreen1()
+    public function theSessionShouldBeAvailableForTesterOnScreen2()
     {
         throw new PendingException();
     }
