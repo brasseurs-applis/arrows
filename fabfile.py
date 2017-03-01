@@ -6,6 +6,7 @@ from fabric.api import *
 env.hosts = ['root@vps']
 
 deploy_dir = '/home/deploy/arrows'
+config_dir = '/home/deploy/config/arrows'
 release_dir = '/home/websites/arrows'
 keep_nb = 5
 
@@ -18,14 +19,15 @@ def deploy(git_hash='master'):
         install(git_hash, target_dir)
         build(target_dir)
         release(target_dir)
-        cleanup(current_release)
         start()
     except:
         rollback(target_dir)
 
+    cleanup(current_release)
+
 
 def install(git_hash, target_dir):
-    print('install')
+    print('>>>>> install')
     run('mkdir %s' % target_dir)
     with cd(deploy_dir):
         run('git reset --hard')
@@ -37,21 +39,23 @@ def install(git_hash, target_dir):
 
 
 def build(target_dir):
-    print('build')
+    print('>>>>> build')
     with cd(target_dir):
-        run('composer install --no-dev --optimize-autoloader')
+        run('composer install --no-dev --apcu-autoloader --optimize-autoloader')
+        run ('cp %s %s' % (config_dir + '/app-config.php', target_dir + '/config/app-config.php'))
+        run ('./vendor/bin/doctrine-migrations migrations:migrate -n')
 
 
 def release(target_dir):
-    print('release')
+    print('>>>>> release')
     run('ln -sfn %s %s/current' % (target_dir, release_dir))
 
 
 def cleanup(current_release):
-    print('clean-up')
+    print('>>>>> clean-up')
     releases = get_releases()
 
-    nb_delete = len(releases) - (keep_nb+1)
+    nb_delete = len(releases) - keep_nb
 
     if nb_delete > 0:
         nb_deleted = 0
@@ -73,11 +77,16 @@ def cleanup(current_release):
 
 
 def start():
-    print('run')
+    print('>>>>> run')
+    raise ValueError('test rollback')
 
 
-def rollback(target_dir):
-    run('rm -Rf %s' % target_dir)
+def rollback(target_dir = None):
+    print('>>>>> rollback')
+    if (target_dir is not None):
+        run('rm -Rf %s' % target_dir)
+
+    release( release_dir + '/' + get_releases()[-1]);
 
 
 def get_releases():
@@ -90,7 +99,9 @@ def get_releases():
 
     out = list()
     for elem in folder_list:
-        out.append(elem[:-1])
+        release = elem[:-1]
+        if (release != 'current'):
+            out.append(release)
 
     return out
 
@@ -99,7 +110,5 @@ def delete_release(release, current_release):
     with cd(release_dir):
         if release == current_release:
             raise Exception("Can't delete current version")
-        elif release == 'current':
-            raise Exception("Can't rm current")
         else:
             run("rm -rf -- %s" % release)
