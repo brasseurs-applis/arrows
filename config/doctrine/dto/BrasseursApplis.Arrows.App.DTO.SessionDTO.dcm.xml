@@ -2,6 +2,7 @@
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <entity name="BrasseursApplis\Arrows\App\DTO\SessionDTO" repository-class="BrasseursApplis\Arrows\App\Finder\SessionFinder" table="session" schema="arrows">
         <id name="id" column="id" type="guid" />
+        <embedded name="scenario" class="BrasseursApplis\Arrows\VO\Scenario" use-column-prefix="false" />
         <one-to-many field="results" target-entity="BrasseursApplis\Arrows\App\DTO\ResultDTO" mapped-by="session" fetch="LAZY">
             <order-by>
                 <order-by-field name="start" direction="ASC" />
@@ -22,7 +23,7 @@
                 <join-column name="position_two_id" referenced-column-name="id"/>
             </join-columns>
         </many-to-one>
-        <many-to-one field="scenario" target-entity="BrasseursApplis\Arrows\App\DTO\ScenarioDTO" fetch="EAGER">
+        <many-to-one field="scenarioTemplate" target-entity="BrasseursApplis\Arrows\App\DTO\ScenarioDTO" fetch="EAGER">
             <join-columns>
                 <join-column name="scenario_template_id" referenced-column-name="id"/>
             </join-columns>

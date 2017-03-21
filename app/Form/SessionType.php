@@ -32,7 +32,7 @@ class SessionType extends AbstractType
                 'class' => UserDTO::class,
                 'choice_label' => 'userName'
             ])
-            ->add('scenario', EntityType::class, [
+            ->add('scenarioTemplate', EntityType::class, [
                 'class' => ScenarioDTO::class,
                 'choice_label' => 'name'
             ]);

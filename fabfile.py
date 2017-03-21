@@ -41,6 +41,7 @@ def install(git_hash, target_dir):
         run('git pull --rebase origin %s' % git_hash)
         run('git clean -dfx')
         run('git archive %s | tar -x -C %s' % (git_hash, target_dir))
+        run('chown -R www-data:www-data %s' % target_dir)
 
 
 def build(target_dir):

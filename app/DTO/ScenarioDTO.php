@@ -79,7 +79,7 @@ class ScenarioDTO
     /**
      * @param SequenceDTO[] $sequences
      */
-    public function setSequences($sequences)
+    public function setSequences(array $sequences)
     {
         $this->sequences = $sequences;
     }

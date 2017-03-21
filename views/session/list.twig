@@ -20,7 +20,7 @@
         <ul class="list-group">
             {% for session in elements %}
             <li class="list-group-item">
-                {{ session.scenario.name }}
+                {{ session.scenarioTemplate.name }}
                 <span class="tools pull-right">
                 {% if session.results|length == 0 %}
                     <a href="{{ path('session_edit', { sessionId : session.id }) }}">

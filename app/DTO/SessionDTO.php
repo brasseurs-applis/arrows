@@ -2,6 +2,7 @@
 
 namespace BrasseursApplis\Arrows\App\DTO;
 
+use BrasseursApplis\Arrows\VO\Scenario;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class SessionDTO
@@ -19,6 +20,9 @@ class SessionDTO
     private $subjectTwo;
 
     /** @var ScenarioDTO */
+    private $scenarioTemplate;
+
+    /** @var Scenario */
     private $scenario;
 
     /** @var ResultDTO[] | ArrayCollection */
@@ -62,7 +66,7 @@ class SessionDTO
     /**
      * @param UserDTO $researcher
      */
-    public function setResearcher($researcher)
+    public function setResearcher(UserDTO $researcher)
     {
         $this->researcher = $researcher;
     }
@@ -78,7 +82,7 @@ class SessionDTO
     /**
      * @param UserDTO $subjectOne
      */
-    public function setSubjectOne($subjectOne)
+    public function setSubjectOne(UserDTO $subjectOne)
     {
         $this->subjectOne = $subjectOne;
     }
@@ -94,7 +98,7 @@ class SessionDTO
     /**
      * @param UserDTO $subjectTwo
      */
-    public function setSubjectTwo($subjectTwo)
+    public function setSubjectTwo(UserDTO $subjectTwo)
     {
         $this->subjectTwo = $subjectTwo;
     }
@@ -102,15 +106,31 @@ class SessionDTO
     /**
      * @return ScenarioDTO
      */
+    public function getScenarioTemplate()
+    {
+        return $this->scenarioTemplate;
+    }
+
+    /**
+     * @param ScenarioDTO $scenarioTemplate
+     */
+    public function setScenarioTemplate(ScenarioDTO $scenarioTemplate)
+    {
+        $this->scenarioTemplate = $scenarioTemplate;
+    }
+
+    /**
+     * @return Scenario
+     */
     public function getScenario()
     {
         return $this->scenario;
     }
 
     /**
-     * @param ScenarioDTO $scenario
+     * @param Scenario $scenario
      */
-    public function setScenario($scenario)
+    public function setScenario(Scenario $scenario)
     {
         $this->scenario = $scenario;
     }
@@ -128,6 +148,6 @@ class SessionDTO
      */
     public function numberOfSequences()
     {
-        return count($this->scenario->getSequences());
+        return $this->scenario->countSequences();
     }
 }

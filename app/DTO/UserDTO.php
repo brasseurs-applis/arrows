@@ -123,7 +123,7 @@ class UserDTO
     /**
      * @param string[] $roles
      */
-    public function setRoles($roles)
+    public function setRoles(array $roles)
     {
         $this->roles = $roles;
     }

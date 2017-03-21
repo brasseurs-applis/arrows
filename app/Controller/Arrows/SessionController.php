@@ -130,7 +130,7 @@ class SessionController
         $researcher = new ResearcherId($session->getResearcher()->getId());
         $subjectOne = new SubjectId($session->getSubjectOne()->getId());
         $subjectTwo = new SubjectId($session->getSubjectTwo()->getId());
-        $scenarioId = new ScenarioTemplateId($session->getScenario()->getId());
+        $scenarioId = new ScenarioTemplateId($session->getScenarioTemplate()->getId());
 
 
         if ($new) {
